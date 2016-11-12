@@ -128,7 +128,7 @@
                   </Button>
                   <Region layoutX="627.0" layoutY="10.0" prefWidth="8.0" />
                   <Label text="Scale:" />
-                  <ComboBox fx:id="guiScaleComboBox" prefWidth="80.0" promptText="100%" />
+                  <ComboBox fx:id="guiScaleComboBox" minWidth="80.0" promptText="100%" />
                   <Region prefWidth="8.0" />
                   <CheckBox fx:id="ui_PointsVisibleCheck" mnemonicParsing="false" text="Points" />
               </items>
