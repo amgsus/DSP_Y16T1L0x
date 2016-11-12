@@ -2,8 +2,6 @@ package dsplab.logic.algo.impl;
 
 import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.callback.DelegateWrapper;
-import dsplab.common.log.Logger;
-import dsplab.common.log.fa.LoggerManager;
 import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.algo.production.AlgorithmResultBuilder;
@@ -45,11 +43,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     public static AlgorithmThread newInstance() { return
         new AlgorithmThreadImpl(); }
-
-    // --------------------------------------------------------------------- //
-
-    private static final Logger LOG
-        = LoggerManager.getInstance().getLogger(AlgorithmThread.class);
 
     // --------------------------------------------------------------------- //
 
@@ -237,11 +230,13 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                 } catch (InterruptedException e) {
                     final String msg
                         = "Worker thread has been interrupted";
-                    LOG.e(e, msg);
+                    System.err.println(msg);
+                    e.printStackTrace();
                 } catch (ExecutionException e) {
                     final String msg
                         = "Worker thread has been interrupted by exception";
-                    LOG.e(e, msg);
+                    System.err.println(msg);
+                    e.printStackTrace();
                 }
 
             });

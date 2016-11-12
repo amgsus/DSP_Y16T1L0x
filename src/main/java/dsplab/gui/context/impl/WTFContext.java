@@ -2,8 +2,6 @@ package dsplab.gui.context.impl;
 
 import dsplab.architecture.ctrl.Controller;
 import dsplab.architecture.stage.StageComm;
-import dsplab.common.log.Logger;
-import dsplab.common.log.fa.LoggerManager;
 import dsplab.gui.context.AppContext;
 import dsplab.gui.Stages;
 import dsplab.gui.stage.main.MainStage;
@@ -20,8 +18,6 @@ public class WTFContext implements AppContext
 {
     WTFContext() {}
     public static AppContext newInstance() { return new WTFContext(); }
-
-    Logger logger = LoggerManager.getInstance().getLogger();
 
     @Override
     public
