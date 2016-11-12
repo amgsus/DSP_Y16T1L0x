@@ -13,7 +13,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
@@ -64,9 +63,9 @@
             </MenuBar>
             <ToolBar>
               <items>
-                <Button fx:id="guiFileNewButton" mnemonicParsing="false" prefWidth="65.0" text="New" />
-                  <SplitMenuButton fx:id="guiFileOpenButton" mnemonicParsing="false" prefWidth="75.0" text="Open" />
-                  <Button fx:id="guiFileSaveButton" layoutX="64.0" layoutY="10.0" mnemonicParsing="false" prefWidth="65.0" text="Save" />
+                <Button fx:id="guiFileNewButton" mnemonicParsing="false" prefWidth="75.0" text="New" />
+                  <Button fx:id="guiFileOpenButton" mnemonicParsing="false" prefWidth="75.0" text="Open" />
+                  <Button fx:id="guiFileSaveButton" layoutX="64.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Save" />
                   <Region prefWidth="8.0" />
                   <Button fx:id="guiSignalListEditButton" layoutX="118.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Signal E." />
                   <Button fx:id="guiRefreshButton" layoutX="184.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Refresh" />

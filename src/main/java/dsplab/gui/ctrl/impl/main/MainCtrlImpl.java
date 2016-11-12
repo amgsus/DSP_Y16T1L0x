@@ -698,7 +698,7 @@ public class MainCtrlImpl extends SimpleController implements
     private Button guiFileNewButton;
 
     @FXML
-    private SplitMenuButton guiFileOpenButton;
+    private Button guiFileOpenButton;
 
     @FXML
     private Button guiFileSaveButton;
