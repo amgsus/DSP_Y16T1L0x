@@ -16,6 +16,8 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -55,17 +57,75 @@
             </MenuBar>
             <ToolBar>
               <items>
-                <Button fx:id="guiFileNewButton" mnemonicParsing="false" prefWidth="75.0" text="New" />
-                  <Button fx:id="guiFileOpenButton" mnemonicParsing="false" prefWidth="75.0" text="Open" />
-                  <Button fx:id="guiFileSaveButton" layoutX="64.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Save" />
+                <Button fx:id="guiFileNewButton" contentDisplay="TOP" mnemonicParsing="false" prefWidth="75.0" text="New">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.NewFile.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button fx:id="guiFileOpenButton" contentDisplay="TOP" mnemonicParsing="false" prefWidth="75.0" text="Open">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.OpenFile.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="guiFileSaveButton" contentDisplay="TOP" layoutX="64.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Save">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.SaveFile.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                   <Region prefWidth="8.0" />
-                  <Button fx:id="guiSignalListEditButton" layoutX="118.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Signal E." />
-                  <Button fx:id="guiRefreshButton" layoutX="184.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Refresh" />
+                  <Button fx:id="guiSignalListEditButton" contentDisplay="TOP" layoutX="118.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Signal E.">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.SignalEditor.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button fx:id="guiRefreshButton" contentDisplay="TOP" layoutX="184.0" layoutY="10.0" mnemonicParsing="false" prefWidth="75.0" text="Refresh">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.Refresh.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                   <Region layoutX="397.0" layoutY="10.0" prefWidth="8.0" />
-                  <MenuButton fx:id="guiGenSelectButton" mnemonicParsing="false" text="Gen.: %NAME%" />
-                  <Button fx:id="guiGenSetupButton" mnemonicParsing="false" prefWidth="75.0" text="Setup" />
+                  <MenuButton fx:id="guiGenSelectButton" contentDisplay="TOP" mnemonicParsing="false" text="Gen.: %NAME%">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.Generator.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></MenuButton>
+                  <Button fx:id="guiGenSetupButton" contentDisplay="TOP" mnemonicParsing="false" prefWidth="75.0" text="Setup">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.GeneratorSetup.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                   <Region layoutX="417.0" layoutY="10.0" prefWidth="8.0" />
-                  <Button fx:id="guiTimelineSetupButton" mnemonicParsing="false" prefWidth="75.0" text="Timeline" />
+                  <Button fx:id="guiTimelineSetupButton" contentDisplay="TOP" mnemonicParsing="false" prefWidth="75.0" text="Timeline">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Main.Timeline.24px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                   <Region layoutX="627.0" layoutY="10.0" prefWidth="8.0" />
                   <Label text="Scale:" />
                   <ComboBox fx:id="guiScaleComboBox" prefWidth="80.0" promptText="100%" />
