@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
+
+<TabPane fx:id="guiTabPane" prefHeight="360.0" prefWidth="480.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <tabs>
+      <Tab fx:id="guiSpectrumTab" text="Spectrum" />
+      <Tab fx:id="guiRMSTab" text="RMSe [2]">
+         <content>
+            <VBox fx:id="guiRMSBox" spacing="6.0">
+               <padding>
+                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+               </padding>
+            </VBox>
+         </content>
+      </Tab>
+      <Tab fx:id="guiSmoothChartTab" text="Noise Filtering [4]" />
+      <Tab fx:id="guiSignalRestoringTab" text="Signal Restoring [3]" />
+   </tabs>
+</TabPane>

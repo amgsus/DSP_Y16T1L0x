@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="guiHBox" minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox minWidth="180.0" prefWidth="180.0" spacing="4.0">
+         <children>
+            <TreeView fx:id="guiTreeView" VBox.vgrow="ALWAYS">
+               <contextMenu>
+                  <ContextMenu>
+                    <items>
+                      <MenuItem fx:id="guiAddLikeSelectedMenuItem" mnemonicParsing="false" text="Add...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="INSERT" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="guiDeleteSelectedMenuItem" mnemonicParsing="false" text="Delete Selected...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="DELETE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                    </items>
+                  </ContextMenu>
+               </contextMenu></TreeView>
+            <HBox spacing="4.0">
+               <children>
+                  <SplitMenuButton fx:id="guiAddButton" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" HBox.hgrow="ALWAYS">
+                    <items>
+                      <MenuItem fx:id="guiSignalAddMenuItem" mnemonicParsing="false" text="Signal...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="INSERT" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                      <MenuItem fx:id="guiHarmonicAddMenuItem" mnemonicParsing="false" text="Harmonic To Selected Signal...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="INSERT" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator></MenuItem>
+                    </items>
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Add.16px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </SplitMenuButton>
+                  <Button fx:id="guiDeleteButton" mnemonicParsing="false" prefWidth="50.0" HBox.hgrow="ALWAYS">
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../images/Remove.16px.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" HBox.hgrow="ALWAYS">
+         <children>
+            <VBox fx:id="guiFieldsBox" alignment="CENTER" minHeight="-Infinity" minWidth="400.0" spacing="12.0" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <children>
+                  <Label fx:id="guiFieldsPlaceholderLabel" text="&lt;&lt;&lt;--- Select an item from the list &lt;&lt;&lt;---" textFill="#d0d0d0">
+                     <VBox.margin>
+                        <Insets left="12.0" />
+                     </VBox.margin></Label>
+               </children>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS" />
+            <HBox alignment="CENTER_RIGHT" spacing="4.0">
+               <children>
+                  <Button fx:id="guiOKButton" defaultButton="true" minWidth="75.0" mnemonicParsing="false" text="OK" />
+                  <Button fx:id="guiCancelButton" cancelButton="true" minWidth="75.0" mnemonicParsing="false" text="Cancel" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+   </padding>
+</HBox>

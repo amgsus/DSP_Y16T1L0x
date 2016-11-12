@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox alignment="CENTER_LEFT" spacing="2.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="guiWaveformIndicatorImage" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/SignalList.SubItem.Sine.16px.png" />
+         </image>
+      </ImageView>
+      <HBox alignment="CENTER_LEFT" spacing="2.0">
+         <children>
+            <Region prefWidth="2.0" style="-fx-background-color: #EEE;" visible="false" />
+            <VBox spacing="2.0">
+               <children>
+                  <Label fx:id="guiAmplitudeLabel" text="\%AMPLITUDE%" textFill="MAROON">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
+                  <HBox>
+                     <children>
+                        <Label fx:id="guiPhaseLabel" text="\%PHASE%" textFill="OLIVE">
+                           <font>
+                              <Font size="10.0" />
+                           </font></Label>
+                        <Label text="°" textFill="OLIVE">
+                           <font>
+                              <Font size="10.0" />
+                           </font></Label>
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label fx:id="guiFrequencyLabel" text="\%FREQUENCY%" textFill="GREEN">
+                           <font>
+                              <Font size="10.0" />
+                           </font></Label>
+                        <Label text="Hz" textFill="GREEN">
+                           <font>
+                              <Font size="10.0" />
+                           </font></Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
+</HBox>

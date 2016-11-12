@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox prefHeight="320.0" prefWidth="720.0" spacing="6.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox minWidth="-Infinity" spacing="6.0">
+         <children>
+            <VBox spacing="2.0">
+               <children>
+                  <Label fx:id="guiCaptionLabel" text="\%TEXT%">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Separator />
+               </children>
+            </VBox>
+            <HBox>
+               <children>
+                  <VBox>
+                     <children>
+                        <Label text="K:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="guiKConstValueLabel" text="\%K_VALUE%" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <VBox>
+                     <children>
+                        <Label text="RMS:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="guiRMSValueLabel" text="\%RMSVALUE%" />
+                     </children>
+                  </VBox>
+                  <VBox layoutX="22.0" layoutY="16.0">
+                     <children>
+                        <Label text="RMSe:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="guiRMSeValueLabel" text="\%RMSERROR%" textFill="MAROON" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <LineChart fx:id="guiRMSeChart" animated="false" createSymbols="false" legendVisible="false" title="RMSe (M)" HBox.hgrow="ALWAYS">
+         <xAxis>
+            <NumberAxis animated="false" autoRanging="false" minorTickCount="4" side="BOTTOM" tickUnit="64.0" upperBound="512.0" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis animated="false" forceZeroInRange="false" lowerBound="-1.0" side="LEFT" tickUnit="0.1" upperBound="1.0" />
+         </yAxis>
+      </LineChart>
+      <LineChart fx:id="guiAeChart" animated="false" createSymbols="false" layoutX="185.0" layoutY="10.0" legendVisible="false" title="Ae (M)" HBox.hgrow="ALWAYS">
+         <xAxis>
+            <NumberAxis animated="false" autoRanging="false" minorTickCount="4" side="BOTTOM" tickUnit="64.0" upperBound="512.0" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis animated="false" forceZeroInRange="false" lowerBound="-1.0" side="LEFT" tickUnit="0.1" upperBound="1.0" />
+         </yAxis>
+      </LineChart>
+   </children>
+</HBox>

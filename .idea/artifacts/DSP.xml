@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="DSP">
+    <output-path>$PROJECT_DIR$/build/artifacts/</output-path>
+    <root id="archive" name="DSP.jar">
+      <element id="module-output" name="DSP_Y16T1L0x" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

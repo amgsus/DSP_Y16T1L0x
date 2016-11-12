@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="480.0" prefWidth="640.0" spacing="3.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <children>
+            <LineChart fx:id="guiSignalChart" animated="false" createSymbols="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <xAxis>
+                  <NumberAxis side="BOTTOM" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis forceZeroInRange="false" lowerBound="-5.0" minorTickCount="10" side="LEFT" tickUnit="2.0" upperBound="5.0" />
+               </yAxis>
+            </LineChart>
+            <VBox alignment="TOP_CENTER" minWidth="130.0" spacing="8.0" style="-fx-background-color: rgba(50, 50, 50, 0.45); -fx-background-radius: 5 5 5 5; -fx-background-insets: 1; -fx-border-radius: 5 5 5 5; -fx-border-color: #888; -fx-border-width: 2;" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
+               <children>
+                  <Label text="FILTER" textFill="YELLOW">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <VBox spacing="6.0">
+                     <children>
+                        <RadioButton fx:id="guiSlidingRadioBtn" mnemonicParsing="false" selected="true" text="Sliding" textFill="WHITE">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="guiFilterRadioBtnGroup" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="guiMedianRadioBtn" mnemonicParsing="false" text="Median" textFill="WHITE" toggleGroup="$guiFilterRadioBtnGroup" />
+                        <RadioButton fx:id="guiParabolicRadioBtn" mnemonicParsing="false" text="Parabolic" textFill="WHITE" toggleGroup="$guiFilterRadioBtnGroup" />
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <HBox spacing="3.0" VBox.vgrow="ALWAYS">
+         <children>
+            <BarChart fx:id="guiAmplitudeSpectrumChart" animated="false" barGap="1.0" categoryGap="0.0" legendVisible="false" title="Amplitude Spectrum" verticalGridLinesVisible="false" HBox.hgrow="ALWAYS">
+              <xAxis>
+                <CategoryAxis animated="false" side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis animated="false" side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <BarChart fx:id="guiPhaseSpectrumChart" animated="false" barGap="1.0" categoryGap="0.0" legendVisible="false" title="Phase Spectrum" verticalGridLinesVisible="false" HBox.hgrow="ALWAYS">
+              <xAxis>
+                <CategoryAxis animated="false" side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis animated="false" side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+   </padding>
+</VBox>

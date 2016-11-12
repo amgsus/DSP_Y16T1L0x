@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+
+<fx:root fx:id="guiStackPane" type="StackPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane fx:id="guiContentPane" />
+      <Pane fx:id="guiOverlayPane" style="-fx-background-color: rgba(150, 150, 150, 0.65);" />
+      <BorderPane fx:id="guiOverlayContentPane" />
+   </children>
+</fx:root>

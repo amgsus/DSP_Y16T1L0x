@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox>
+         <children>
+            <HBox spacing="2.0">
+               <children>
+                  <Label text="Harmonic">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+         </children>
+      </VBox>
+      <VBox spacing="8.0">
+         <children>
+            <HBox spacing="8.0">
+               <children>
+                  <Label text="Form:" />
+                  <RadioButton fx:id="uiSineWaveformRadioBtn" mnemonicParsing="false" selected="true" text="Sine">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="waveformGroup" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="guiSineNoiseWaveformRadioBtn" layoutX="100.0" layoutY="10.0" mnemonicParsing="false" text="Sine (+Noise)" toggleGroup="$waveformGroup" />
+                  <RadioButton fx:id="uiCosineWaveformRadioBtn" mnemonicParsing="false" text="Cosine" toggleGroup="$waveformGroup" />
+               </children>
+            </HBox>
+            <VBox spacing="2.0">
+               <children>
+                  <Label text="Amplitude (A):" />
+                  <TextField fx:id="uiAmplitudeField" maxWidth="1.7976931348623157E308" />
+               </children>
+            </VBox>
+            <VBox spacing="2.0">
+               <children>
+                  <Label text="Phase (φ):" />
+                  <HBox alignment="CENTER_LEFT" spacing="6.0">
+                     <children>
+                        <TextField fx:id="uiPhaseField" HBox.hgrow="ALWAYS" />
+                        <Label prefWidth="25.0" text="Deg" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox spacing="2.0">
+               <children>
+                  <Label text="Frequency (f):" />
+                  <HBox alignment="CENTER_LEFT" spacing="6.0">
+                     <children>
+                        <TextField fx:id="uiFrequencyField" HBox.hgrow="ALWAYS" />
+                        <Label prefWidth="25.0" text="Hz" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets left="12.0" />
+         </padding>
+      </VBox>
+   </children>
+</VBox>

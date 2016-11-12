@@ -1,0 +1,7 @@
+<DSP>
+    <Signal name="Test" color="BLACK">
+        <Harmonic amplitude="1.0" phase="0" freq="50" waveform="Sine"/>
+        <Harmonic amplitude="11.0" phase="60" freq="150" waveform="Sine"/>
+        <Harmonic amplitude="-5.0" phase="120" freq="10" waveform="Sine"/>
+    </Signal>
+</DSP>

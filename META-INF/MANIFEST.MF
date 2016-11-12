@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: dsplab.startup.Startup
+Main-Class: dsplab.startup.Startup
+

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox spacing="6.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox spacing="6.0">
+               <children>
+                  <VBox spacing="2.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../images/Timeline/Ruler.24px.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Timeline">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                     </children>
+                  </VBox>
+                  <GridPane hgap="12.0" vgap="6.0">
+                    <columnConstraints>
+                      <ColumnConstraints />
+                      <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="25.0" />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Samples (N):" GridPane.valignment="TOP" />
+                        <VBox spacing="6.0" GridPane.columnIndex="1">
+                           <children>
+                              <RadioButton fx:id="guiAutoSampleCountRadioBtn" mnemonicParsing="false" selected="true" text="Auto">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="sampleModeBtnGroup" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <RadioButton fx:id="guiManualSampleCountRadioBtn" mnemonicParsing="false" text="Manual:" toggleGroup="$sampleModeBtnGroup" />
+                                    <ComboBox fx:id="guiSamplesCombo" maxWidth="1.7976931348623157E308" prefWidth="100.0">
+                                       <VBox.margin>
+                                          <Insets left="22.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        <CheckBox fx:id="guiPointsVisibleCheckBox" mnemonicParsing="false" text="Show each point on the chart" GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </CheckBox>
+                        <CheckBox fx:id="guiAnimationEnabledCheckBox" mnemonicParsing="false" text="Animated chart" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                        <Label text="Periods:" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="guiPeriodComboBox" maxWidth="1.7976931348623157E308" prefWidth="120.0" promptText="1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="3.0" top="3.0" />
+                           </GridPane.margin>
+                        </Separator>
+                        <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets bottom="3.0" top="3.0" />
+                           </GridPane.margin>
+                        </Separator>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="12.0" left="12.0" top="12.0" />
+                     </VBox.margin>
+                  </GridPane>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+         </padding>
+      </VBox>
+   </center>
+   <bottom>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <Separator />
+            <HBox alignment="CENTER_RIGHT" spacing="6.0">
+               <children>
+                  <Button fx:id="guiOKButton" defaultButton="true" minWidth="75.0" mnemonicParsing="false" text="OK" />
+                  <Button fx:id="guiCancelButton" cancelButton="true" minWidth="75.0" mnemonicParsing="false" text="Cancel" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="8.0" left="12.0" right="12.0" top="6.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </bottom>
+</BorderPane>
