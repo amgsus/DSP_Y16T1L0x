@@ -5,6 +5,10 @@ import dsplab.architecture.callback.DelegateWrapper;
 import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.algo.production.AlgorithmResultBuilder;
+import dsplab.logic.filter.SignalFilter;
+import dsplab.logic.filter.alg.FilterAlgorithm;
+import dsplab.logic.filter.fa.SignalFilterFactory;
+import dsplab.logic.filter.impl.SlidingFilter;
 import dsplab.logic.ft.FourierTransform;
 import dsplab.logic.ft.alg.FFTImpl;
 import dsplab.logic.ft.fa.FourierTransformFactory;
@@ -176,8 +180,13 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                     double[] noisySignal = g.run();
 
-                    ft.setSpectrum(noisySignal);
-                    ft.setRange(noisySignal.length);
+                    SignalFilter flt = SignalFilterFactory.getFactory()
+                        .newFilter(FilterAlgorithm.SLIDING);
+
+                    double[] sli = flt.apply(noisySignal);
+
+                    ft.setSpectrum(sli);
+                    ft.setRange(sli.length);
 
                     double[] sliAmplitudeSpectrum
                         = ft.calculateAmplitudeSpectrum();
@@ -197,6 +206,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setSampleCount(this.sampleCount)
                         .setFtAmplitudes(ftAmplitudes)
                         .setNoisySignal(noisySignal)
+                        .setSliSignal(sli)
                         .setSliSignalAmplitudeSpectrum(sliAmplitudeSpectrum)
                         .setSliSignalPhaseSpectrum(sliPhaseSpectrum)
                         .setAmplitudeSpectrum(ampSpectrum)

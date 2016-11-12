@@ -8,6 +8,7 @@ public interface SmoothChartController extends Controller
 {
     void setSignalSupplier(Supplier<double[]> supplier);
 
+    void setSliSignalSupplier(Supplier<double[]> supplier);
     void setSliAmplitudeSpectrumSupplier(Supplier<double[]> supplier);
     void setSliPhaseSpectrumSupplier(Supplier<double[]> supplier);
 

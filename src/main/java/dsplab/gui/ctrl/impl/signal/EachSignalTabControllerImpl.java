@@ -92,13 +92,13 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         rmsChartController2.setK(constK);
 
         smoothChartController.setSignalSupplier(algoResult::getIV_NoisySignal);
+        smoothChartController.setSliSignalSupplier(
+            algoResult::getIV_SlidingWindowSmoothedSignal);
         smoothChartController.setSliAmplitudeSpectrumSupplier(
             algoResult::getIV_SlidingWindowSmoothedSignalAmplitudeSpectrum);
         smoothChartController.setSliPhaseSpectrumSupplier(
             algoResult::getIV_SlidingWindowSmoothedSignalPhaseSpectrum);
-        smoothChartController.renderSignal();
-        smoothChartController.renderAmplitudeSpectrum();
-        smoothChartController.renderPhaseSpectrum();
+        smoothChartController.renderAll();
 
         spectrums.setAmplitudeSpectrumData(algoResult::getAmplitudeSpectrum);
         spectrums.setPhaseSpectrumData(algoResult::getPhaseSpectrum);

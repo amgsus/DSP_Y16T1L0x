@@ -103,6 +103,13 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
         return this;
     }
 
+    public
+    AlgorithmResultBuilder setSliSignal(double[] values)
+    {
+        obj.slidingWindowSmoothedSignal = values;
+        return this;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override

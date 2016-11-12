@@ -86,6 +86,12 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         this.sliSmoothSignalPhaseSpectrumDataSupplier = supplier;
     }
 
+    @Override
+    public void setSliSignalSupplier(Supplier<double[]> supplier)
+    {
+        this.sliSmoothSignalDataSupplier = supplier;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override
