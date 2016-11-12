@@ -573,6 +573,10 @@ public class MainCtrlImpl extends SimpleController implements
             statusBarController.setNumberOfSamples(timelineProperties
                 .getSamplesProperty().get()));
 
+        guiTimelineSetupButton.onActionProperty().bind(
+            guiTimelineSetupMenuItem.onActionProperty()
+        );
+
         // ...
     }
 
@@ -732,4 +736,7 @@ public class MainCtrlImpl extends SimpleController implements
 
     @FXML
     private ScrollBar guiChartHScrollBar;
+
+    @FXML
+    private Button guiTimelineSetupButton;
 }

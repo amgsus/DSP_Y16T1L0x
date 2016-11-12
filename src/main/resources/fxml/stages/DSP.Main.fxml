@@ -30,11 +30,7 @@
          <children>
             <MenuBar>
               <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Exit" />
-                  </items>
-                </Menu>
+                <Menu mnemonicParsing="false" text="File" />
                   <Menu mnemonicParsing="false" text="View" />
                   <Menu mnemonicParsing="false" text="Signal">
                     <items>
@@ -54,11 +50,7 @@
                         </MenuItem>
                      </items>
                   </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
+                <Menu mnemonicParsing="false" text="Help" />
               </menus>
             </MenuBar>
             <ToolBar>
@@ -72,10 +64,9 @@
                   <Region layoutX="397.0" layoutY="10.0" prefWidth="8.0" />
                   <MenuButton fx:id="guiGenSelectButton" mnemonicParsing="false" text="Gen.: %NAME%" />
                   <Button fx:id="guiGenSetupButton" mnemonicParsing="false" prefWidth="75.0" text="Setup" />
-              </items>
-            </ToolBar>
-            <ToolBar>
-              <items>
+                  <Region layoutX="417.0" layoutY="10.0" prefWidth="8.0" />
+                  <Button fx:id="guiTimelineSetupButton" mnemonicParsing="false" prefWidth="75.0" text="Timeline" />
+                  <Region layoutX="627.0" layoutY="10.0" prefWidth="8.0" />
                   <Label text="Scale:" />
                   <ComboBox fx:id="guiScaleComboBox" prefWidth="80.0" promptText="100%" />
                   <Region prefWidth="8.0" />
