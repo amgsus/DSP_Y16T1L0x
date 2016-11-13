@@ -19,7 +19,7 @@
          <children>
             <LineChart fx:id="guiSignalChart" animated="false" createSymbols="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <xAxis>
-                  <NumberAxis side="BOTTOM" />
+                  <NumberAxis autoRanging="false" minorTickCount="4" side="BOTTOM" tickUnit="32.0" upperBound="256.0" />
                </xAxis>
                <yAxis>
                   <NumberAxis forceZeroInRange="false" lowerBound="-5.0" minorTickCount="10" side="LEFT" tickUnit="2.0" upperBound="5.0" />
