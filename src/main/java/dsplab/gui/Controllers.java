@@ -11,6 +11,7 @@ import dsplab.gui.ctrl.impl.edit.field.HarmonicEditorControllerImpl;
 import dsplab.gui.ctrl.impl.edit.field.SignalEditorControllerImpl;
 import dsplab.gui.ctrl.impl.signal.RMSChartCtrlImpl;
 import dsplab.gui.ctrl.impl.signal.EachSignalTabControllerImpl;
+import dsplab.gui.ctrl.impl.signal.SignalRestoreCtrlImpl;
 import dsplab.gui.ctrl.impl.signal.SmoothChartCtrlImpl;
 import dsplab.gui.ctrl.impl.signal.SpectrumCtrlImpl;
 
@@ -63,6 +64,8 @@ public final class Controllers
                 return (T) SmoothChartCtrlImpl.createInstance();
             case SPECTRUMCHARTS:
                 return (T) SpectrumCtrlImpl.createInstance();
+            case RESTORATION:
+                return (T) SignalRestoreCtrlImpl.createInstance();
 
             default:
                 final String s = "'%s' is not supported by the factory";

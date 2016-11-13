@@ -166,6 +166,20 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
         return this;
     }
 
+    public
+    AlgorithmResultBuilder setRestoredSignal(double[] values)
+    {
+        obj.restoredSignal = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setRestoredWithPhaseSignal(double[] values)
+    {
+        obj.restoredWithPhaseSignal = values;
+        return this;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override

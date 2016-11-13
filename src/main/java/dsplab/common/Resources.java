@@ -115,4 +115,9 @@ public final class Resources
         = "/fxml/signal/DSP.Spectrum.fxml";
     public static final URL SPECTRUM_CHARTS_FXML
         = Resources.class.getResource(SPECTRUM_CHARTS_FXML_PATH);
+
+    public static final String SIGNAL_RESTORE_FXML_PATH
+        = "/fxml/signal/DSP.Restoration.fxml";
+    public static final URL SIGNAL_RESTORE_FXML
+        = Resources.class.getResource(SIGNAL_RESTORE_FXML_PATH);
 }

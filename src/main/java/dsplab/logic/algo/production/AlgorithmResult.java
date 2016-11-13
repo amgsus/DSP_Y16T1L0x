@@ -35,6 +35,24 @@ public class AlgorithmResult
         return this.phaseSpectrum;
     }
 
+    // -------------------------------------------------------------------- //
+
+    double[] restoredSignal;
+    double[] restoredWithPhaseSignal;
+
+    public
+    double[] getRestoredSignal()
+    {
+        return this.restoredSignal;
+    }
+
+    public
+    double[] getRestoredWithPhaseSignal()
+    {
+        return this.restoredWithPhaseSignal;
+    }
+
+    // -------------------------------------------------------------------- //
 
     Signal signal;
     double[] amplitudes;
@@ -63,8 +81,6 @@ public class AlgorithmResult
     public
     double[] getFtAmplitudes() { return ftAmplitudes; }
 
-    // -------------------------------------------------------------------- //
-    // ----- IV ----- //
     // -------------------------------------------------------------------- //
 
     double[] noisySignal;

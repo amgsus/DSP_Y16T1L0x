@@ -30,4 +30,5 @@ public final class Const
 
     public static final String SMOOTHCHART = "SMOOTHCHART";
     public static final String SPECTRUMCHARTS = "SPECTRUMCHARTS";
+    public static final String RESTORATION = "RESTORATION";
 }

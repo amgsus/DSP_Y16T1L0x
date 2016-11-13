@@ -6,9 +6,11 @@ import dsplab.common.Resources;
 import dsplab.gui.Controllers;
 import dsplab.gui.ctrl.EachSignalTabController;
 import dsplab.gui.ctrl.RMSChartController;
+import dsplab.gui.ctrl.SignalRestoreController;
 import dsplab.gui.ctrl.SmoothChartController;
 import dsplab.gui.ctrl.SpectrumController;
 import dsplab.logic.algo.production.AlgorithmResult;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -17,9 +19,7 @@ import javafx.scene.layout.VBox;
 
 import java.net.URL;
 
-import static dsplab.common.Const.RMSCHART;
-import static dsplab.common.Const.SMOOTHCHART;
-import static dsplab.common.Const.SPECTRUMCHARTS;
+import static dsplab.common.Const.*;
 
 public class EachSignalTabControllerImpl extends SimpleController implements
     EachSignalTabController
@@ -65,6 +65,12 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         spectrums = Controllers.getFactory()
             .giveMeSomethingLike(SPECTRUMCHARTS);
         guiSpectrumTab.setContent(spectrums.getFxRoot());
+
+        /* Restoration */
+
+        restoredSignalChartCtrl = Controllers.getFactory()
+            .giveMeSomethingLike(RESTORATION);
+        guiSignalRestoringTab.setContent(restoredSignalChartCtrl.getFxRoot());
     }
 
     public static EachSignalTabController createInstance()
@@ -131,8 +137,19 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         smoothChartController.setPblPhaseSpectrumSupplier(
             algoResult::getIV_ParabolicSmoothedSignalPhaseSpectrum
         );
-
         smoothChartController.renderAll();
+
+        restoredSignalChartCtrl.setSignalSupplier(
+            algoResult::getAmplitudes
+        );
+        restoredSignalChartCtrl.setRestoredSignalSupplier(
+            algoResult::getRestoredSignal
+        );
+        restoredSignalChartCtrl.setRestoredWithPhaseSignalSupplier(
+            algoResult::getRestoredWithPhaseSignal
+        );
+
+        Platform.runLater(restoredSignalChartCtrl::renderAll);
     }
 
     // -------------------------------------------------------------------- //
@@ -143,6 +160,8 @@ public class EachSignalTabControllerImpl extends SimpleController implements
     private SmoothChartController smoothChartController = null;
 
     private SpectrumController spectrums = null;
+
+    private SignalRestoreController restoredSignalChartCtrl = null;
 
     @FXML
     private TabPane guiTabPane;
@@ -158,4 +177,7 @@ public class EachSignalTabControllerImpl extends SimpleController implements
 
     @FXML
     private VBox guiRMSBox;
+
+    @FXML
+    private Tab guiSignalRestoringTab;
 }
