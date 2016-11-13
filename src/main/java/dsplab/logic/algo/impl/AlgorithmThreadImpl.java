@@ -8,7 +8,6 @@ import dsplab.logic.algo.production.AlgorithmResultBuilder;
 import dsplab.logic.filter.SignalFilter;
 import dsplab.logic.filter.alg.FilterAlgorithm;
 import dsplab.logic.filter.fa.SignalFilterFactory;
-import dsplab.logic.filter.impl.SlidingFilter;
 import dsplab.logic.ft.FourierTransform;
 import dsplab.logic.ft.alg.FFTImpl;
 import dsplab.logic.ft.fa.FourierTransformFactory;
@@ -241,8 +240,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setFtAmplitudes(ftAmplitudes)
                         .setNoisySignal(noisySignal)
                         .setSliSignal(sli)
-                        .setSliSignalAmplitudeSpectrum(sliAmplitudeSpectrum)
-                        .setSliSignalPhaseSpectrum(sliPhaseSpectrum)
+                        .setSliAmplitudeSpectrum(sliAmplitudeSpectrum)
+                        .setSliPhaseSpectrum(sliPhaseSpectrum)
                         .setMdnSignal(mdn)
                         .setMdnAmplitudeSpectrum(mdnAmplitudeSpectrum)
                         .setMdnPhaseSpectrum(mdnPhaseSpectrum)

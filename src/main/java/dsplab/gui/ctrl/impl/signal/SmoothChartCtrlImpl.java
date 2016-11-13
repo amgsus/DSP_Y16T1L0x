@@ -36,7 +36,7 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         signalSeries.setName("Signal");
 
         smoothedSignalSeries = new XYChart.Series<>();
-        smoothedSignalSeries.setName("Smoothed");
+        smoothedSignalSeries.setName("Filtered");
 
         srcAmplitudeSpectrumSeries = new XYChart.Series<>();
         srcPhaseSpectrumSeries = new XYChart.Series<>();

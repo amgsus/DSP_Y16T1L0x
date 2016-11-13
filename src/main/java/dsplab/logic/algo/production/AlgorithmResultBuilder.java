@@ -76,14 +76,14 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
     }
 
     public
-    AlgorithmResultBuilder setSliSignalAmplitudeSpectrum(double[] values)
+    AlgorithmResultBuilder setSliAmplitudeSpectrum(double[] values)
     {
         obj.slidingWindowSmoothedSignalAmplitudeSpectrum = values;
         return this;
     }
 
     public
-    AlgorithmResultBuilder setSliSignalPhaseSpectrum(double[] values)
+    AlgorithmResultBuilder setSliPhaseSpectrum(double[] values)
     {
         obj.slidingWindowSmoothedSignalPhaseSpectrum = values;
         return this;
