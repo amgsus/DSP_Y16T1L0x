@@ -4,12 +4,13 @@ import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
 import dsplab.common.Resources;
 import dsplab.gui.ctrl.HarmonicEditorController;
+import dsplab.gui.util.Hei;
 import dsplab.logic.signal.Harmonic;
+import dsplab.logic.signal.enums.Waveform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 
@@ -26,10 +27,13 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
         } catch (Throwable cause) {
             throw new ControllerInitException(CTRL_INIT_FAILED_MSG, cause);
         }
+
+        guiWaveformComboBox.getItems().addAll(Waveform.values());
     }
 
     private Harmonic harmonic;
 
+    @SuppressWarnings("unchecked")
     @Override
     public
     void bind(Harmonic data)
@@ -42,17 +46,19 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
                 data.getPhaseProperty(), cnv);
             Bindings.bindBidirectional(uiFrequencyField.textProperty(),
                 data.getFrequencyProperty(), cnv);
-            // ...
+            guiWaveformComboBox.valueProperty().bindBidirectional(
+                data.getWaveformProperty()
+            );
             this.harmonic = data;
         } else {
             if (harmonic != null) {
-                // ...
                 Bindings.unbindBidirectional(uiAmplitudeField.textProperty(),
                     harmonic.getAmplitudeProperty());
                 Bindings.unbindBidirectional(uiPhaseField.textProperty(),
                     harmonic.getPhaseProperty());
                 Bindings.unbindBidirectional(uiFrequencyField.textProperty(),
                     harmonic.getFrequencyProperty());
+                guiWaveformComboBox.valueProperty().unbind();
                 harmonic = null;
             }
         }
@@ -68,13 +74,7 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
     // -------------------------------------------------------------------- //
 
     @FXML
-    private RadioButton uiSineWaveformRadioBtn;
-
-    @FXML
-    private ToggleGroup waveformGroup;
-
-    @FXML
-    private RadioButton uiCosineWaveformRadioBtn;
+    private ComboBox<Waveform> guiWaveformComboBox;
 
     @FXML
     private TextField uiAmplitudeField;
@@ -84,7 +84,4 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
 
     @FXML
     private TextField uiFrequencyField;
-
-    @FXML
-    private RadioButton guiSineNoiseWaveformRadioBtn;
 }

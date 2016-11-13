@@ -2,8 +2,10 @@ package dsplab.logic.signal;
 
 import dsplab.logic.signal.enums.Waveform;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -19,8 +21,8 @@ public class Harmonic
         = new SimpleDoubleProperty(0);
     private final DoubleProperty frequencyProperty
         = new SimpleDoubleProperty(1.0);
-    private final StringProperty waveformProperty
-        = new SimpleStringProperty(Waveform.Sine.toString()); /* Raw String */
+    private final ObjectProperty<Waveform> waveformProperty
+        = new SimpleObjectProperty<>(Waveform.Sine);
 
     public Harmonic()
     {
@@ -38,7 +40,7 @@ public class Harmonic
         amplitudeProperty.set(amplitude);
         phaseProperty.set(phase);
         frequencyProperty.set(frequency);
-        waveformProperty.set(waveform.toString());
+        waveformProperty.set(waveform);
     }
 
     public
@@ -60,7 +62,7 @@ public class Harmonic
     }
 
     public
-    ReadOnlyStringProperty getWaveformProperty()
+    ObjectProperty getWaveformProperty()
     {
         return waveformProperty;
     }
@@ -83,9 +85,10 @@ public class Harmonic
         return frequencyProperty.get();
     }
 
-    public Waveform getWaveform()
+    public
+    Waveform getWaveform()
     {
-        return Waveform.valueOf(waveformProperty.get());
+        return waveformProperty.get();
     }
 
     /**
@@ -127,7 +130,7 @@ public class Harmonic
     public Waveform setWaveform(Waveform newValue)
     {
         Waveform o = getWaveform();
-        waveformProperty.set(newValue.toString());
+        waveformProperty.set(newValue);
         return o;
     }
 }

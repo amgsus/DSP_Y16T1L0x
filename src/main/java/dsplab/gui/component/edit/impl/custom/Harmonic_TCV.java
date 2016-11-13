@@ -49,8 +49,7 @@ public class Harmonic_TCV extends SimpleController implements
             this.guiFrequencyLabel.textProperty().bind(data
                 .getFrequencyProperty().asString("%.3f"));
             this.guiWaveformIndicatorImage.imageProperty().bind(Bindings
-                .when(data.getWaveformProperty()
-                    .isEqualTo(Waveform.Sine.toString()))
+                .when(data.getWaveformProperty().isEqualTo(Waveform.Sine))
                 .then(ICON_SINE).otherwise(ICON_COSINE));
 
         } else {
