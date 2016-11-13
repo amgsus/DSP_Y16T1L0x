@@ -30,7 +30,7 @@
                            <children>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../images/Timeline/Ruler.24px.png" />
+                                    <Image url="@../../images/Main.Timeline.24px.png" />
                                  </image>
                               </ImageView>
                               <Label text="Timeline">

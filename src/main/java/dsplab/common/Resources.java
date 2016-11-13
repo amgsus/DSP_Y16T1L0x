@@ -9,9 +9,9 @@ public final class Resources
     /* Window Scene Controllers */
 
     public static final String MAINCTRL_FXML_PATH
-        = "/fxml/stages/DSP.Main.fxml";
+        = "/fxml/window/main/DSP.Main.fxml";
     public static final String SIGNALEDITOR_FXML_PATH
-        = "/fxml/stages/DSP.SignalListEditor.fxml";
+        = "/fxml/window/editor/DSP.SignalListEditor.fxml";
 
     public static final URL MAINCTRL_FXML
         = Resources.class.getResource(MAINCTRL_FXML_PATH);
@@ -21,13 +21,13 @@ public final class Resources
     /* Main Components */
 
     public static final String OVERLAYPANE_FXML_PATH
-        = "/fxml/components/com/DSP.OverlayPane.fxml";
+        = "/fxml/components/DSP.OverlayPane.fxml";
 
     public static final URL OVERLAYPANE_FXML
         = Resources.class.getResource(OVERLAYPANE_FXML_PATH);
 
     public static final String WAITINDICATOR_FXML_PATH
-        = "/fxml/components/com/DSP.WaitIndicator.fxml";
+        = "/fxml/components/DSP.WaitIndicator.fxml";
 
     public static final URL WAITINDICATOR_FXML
         = Resources.class.getResource(WAITINDICATOR_FXML_PATH);
@@ -35,21 +35,21 @@ public final class Resources
     /* Signal Editor Components */
 
     public static final String HARMONICEDITOR_FIELDS_FXML_PATH
-        = "/fxml/components/edit/HarmonicEditorFields.fxml";
+        = "/fxml/window/editor/HarmonicEditorFields.fxml";
 
     public static final URL HARMONICEDITOR_FIELDS_FXML
         = Resources.class.getResource(HARMONICEDITOR_FIELDS_FXML_PATH);
 
     public static final String SIGNALEDITOR_FIELDS_FXML_PATH
-        = "/fxml/components/edit/SignalEditorFields.fxml";
+        = "/fxml/window/editor/SignalEditorFields.fxml";
 
     public static final URL SIGNALEDITOR_FIELDS_FXML
         = Resources.class.getResource(SIGNALEDITOR_FIELDS_FXML_PATH);
 
     public static final String STCV_FXML_PATH
-        = "/fxml/components/edit/li/DSP.SignalList.Item.fxml";
+        = "/fxml/window/editor/li/DSP.SignalList.Item.fxml";
     public static final String HTCV_FXML_PATH
-        = "/fxml/components/edit/li/DSP.SignalList.SubItem.fxml";
+        = "/fxml/window/editor/li/DSP.SignalList.SubItem.fxml";
 
     public static final URL STCV_FXML
         = Resources.class.getResource(STCV_FXML_PATH);
@@ -71,17 +71,17 @@ public final class Resources
     /* Tabs (Main Window) */
 
     public static final String EACH_SIGNAL_TAB_FXML_PATH
-        = "/fxml/stages/part/DSP.EachSignalTab.fxml";
+        = "/fxml/window/main/DSP.EachSignalTab.fxml";
     public static final URL EACH_SIGNAL_TAB_FXML
         = Resources.class.getResource(EACH_SIGNAL_TAB_FXML_PATH);
 
     public static final String TIMELINE_SETUP_SCENE_FXML_PATH
-        = "/fxml/stages/DSP.TimelineSetup.fxml";
+        = "/fxml/window/DSP.TimelineSetup.fxml";
     public static final URL TIMELINE_SETUP_SCENE_FXML
         = Resources.class.getResource(TIMELINE_SETUP_SCENE_FXML_PATH);
 
     public static final String MAIN_STATUS_BAR_FXML_PATH
-        = "/fxml/stages/main/DSP.Main.StatusBar.fxml";
+        = "/fxml/window/main/DSP.Main.StatusBar.fxml";
     public static final URL MAIN_STATUS_BAR_FXML
         = Resources.class.getResource(MAIN_STATUS_BAR_FXML_PATH);
 
@@ -97,12 +97,12 @@ public final class Resources
         = "/css/TabPaneBrighterHeader.css";
 
     public static final String GENERATOR_SETUP_FXML_PATH
-        = "/fxml/stages/DSP.GenSetup.fxml";
+        = "/fxml/window/gen/DSP.GenSetup.fxml";
     public static final URL GENERATOR_SETUP_FXML
         = Resources.class.getResource(GENERATOR_SETUP_FXML_PATH);
 
     public static final String GENERATOR_VALUE_SETUP_FXML_PATH
-        = "/fxml/stages/part/DSP.GenValueSetup.fxml";
+        = "/fxml/window/gen/DSP.GenValueSetup.fxml";
     public static final URL GENERATOR_VALUE_SETUP_FXML
         = Resources.class.getResource(GENERATOR_VALUE_SETUP_FXML_PATH);
 

@@ -62,7 +62,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.NewFile.24px.png" />
+                              <Image url="@../../../images/Main.NewFile.24px.png" />
                            </image>
                         </ImageView>
                      </graphic></Button>
@@ -70,7 +70,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.OpenFile.24px.png" />
+                              <Image url="@../../../images/Main.OpenFile.24px.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -79,7 +79,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.SaveFile.24px.png" />
+                              <Image url="@../../../images/Main.SaveFile.24px.png" />
                            </image>
                         </ImageView>
                      </graphic></Button>
@@ -88,7 +88,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.SignalEditor.24px.png" />
+                              <Image url="@../../../images/Main.SignalEditor.24px.png" />
                            </image>
                         </ImageView>
                      </graphic></Button>
@@ -96,7 +96,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.Refresh.24px.png" />
+                              <Image url="@../../../images/Main.Refresh.24px.png" />
                            </image>
                         </ImageView>
                      </graphic></Button>
@@ -105,7 +105,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.Generator.24px.png" />
+                              <Image url="@../../../images/Main.Generator.24px.png" />
                            </image>
                         </ImageView>
                      </graphic></MenuButton>
@@ -113,7 +113,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.GeneratorSetup.24px.png" />
+                              <Image url="@../../../images/Main.GeneratorSetup.24px.png" />
                            </image>
                         </ImageView>
                      </graphic></Button>
@@ -122,7 +122,7 @@
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/Main.Timeline.24px.png" />
+                              <Image url="@../../../images/Main.Timeline.24px.png" />
                            </image>
                         </ImageView>
                      </graphic>
