@@ -159,7 +159,7 @@
                            <children>
                               <LineChart fx:id="guiChart" animated="false" createSymbols="false" legendVisible="false" title="X: N/A  Y: N/A  n=N/A  x(n)=N/A" VBox.vgrow="ALWAYS">
                                  <xAxis>
-                                    <NumberAxis animated="false" autoRanging="false" forceZeroInRange="false" side="BOTTOM" tickUnit="64.0" upperBound="1024.0" />
+                                    <NumberAxis animated="false" autoRanging="false" forceZeroInRange="false" minorTickCount="8" side="BOTTOM" tickUnit="64.0" upperBound="1024.0" />
                                  </xAxis>
                                  <yAxis>
                                     <NumberAxis animated="false" label="x(n)" lowerBound="-5.0" side="LEFT" upperBound="5.0" />
