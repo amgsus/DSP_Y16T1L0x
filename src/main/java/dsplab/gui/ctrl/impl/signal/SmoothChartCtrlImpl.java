@@ -10,6 +10,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         srcAmplitudeSpectrumSeries = new XYChart.Series<>();
         srcPhaseSpectrumSeries = new XYChart.Series<>();
 
-        this.initDataSupplierSwitch();
+        this.initToggleGroupChangeListeners();
     }
 
     public static SmoothChartCtrlImpl createInstance() { return new
@@ -56,6 +57,8 @@ public class SmoothChartCtrlImpl extends SimpleController implements
     XYChart.Series<String , Double> srcPhaseSpectrumSeries;
 
     Supplier<double[]> signalDataSupplier = null;
+    Supplier<double[]> amplitudeSpectrumDataSupplier = null;
+    Supplier<double[]> phaseSpectrumDataSupplier = null;
 
     Supplier<double[]> sliSmoothSignalDataSupplier = null;
     Supplier<double[]> sliSmoothSignalAmplitudeSpectrumDataSupplier = null;
@@ -77,19 +80,34 @@ public class SmoothChartCtrlImpl extends SimpleController implements
     }
 
     @Override
-    public void setSliAmplitudeSpectrumSupplier(Supplier<double[]> supplier)
+    public void setAmplitudeSpectrumSupplier(Supplier<double[]> supplier)
+    {
+        this.amplitudeSpectrumDataSupplier = supplier;
+    }
+
+    @Override
+    public void setPhaseSpectrumSupplier(Supplier<double[]> supplier)
+    {
+        this.phaseSpectrumDataSupplier = supplier;
+    }
+
+    @Override
+    public
+    void setSliAmplitudeSpectrumSupplier(Supplier<double[]> supplier)
     {
         this.sliSmoothSignalAmplitudeSpectrumDataSupplier = supplier;
     }
 
     @Override
-    public void setSliPhaseSpectrumSupplier(Supplier<double[]> supplier)
+    public
+    void setSliPhaseSpectrumSupplier(Supplier<double[]> supplier)
     {
         this.sliSmoothSignalPhaseSpectrumDataSupplier = supplier;
     }
 
     @Override
-    public void setSliSignalSupplier(Supplier<double[]> supplier)
+    public
+    void setSliSignalSupplier(Supplier<double[]> supplier)
     {
         this.sliSmoothSignalDataSupplier = supplier;
     }
@@ -218,21 +236,26 @@ public class SmoothChartCtrlImpl extends SimpleController implements
     public
     void renderAmplitudeSpectrum()
     {
-        RadioButton rb = cast(guiFilterRadioBtnGroup.getSelectedToggle());
+        Toggle src = guiASDataSourceRadioBtnGroup.getSelectedToggle();
+        Toggle spl = guiFilterRadioBtnGroup.getSelectedToggle();
 
         Supplier<double[]> supplier = null;
 
-        if (rb == guiSlidingRadioBtn) {
-            supplier
-                = this.sliSmoothSignalAmplitudeSpectrumDataSupplier;
+        if (src == guiASSignalSourceRadioBtn) {
+            supplier = this.amplitudeSpectrumDataSupplier;
         } else {
-            if (rb == guiMedianRadioBtn) {
-                supplier
-                    = this.mdnSmoothSignalAmplitudeSpectrumDataSupplier;
+            if (spl == guiSlidingRadioBtn) {
+                supplier =
+                    this.sliSmoothSignalAmplitudeSpectrumDataSupplier;
             } else {
-                if (rb == guiParabolicRadioBtn) {
-                    supplier
-                        = this.pblSmoothSignalAmplitudeSpectrumDataSupplier;
+                if (spl == guiMedianRadioBtn) {
+                    supplier =
+                        this.mdnSmoothSignalAmplitudeSpectrumDataSupplier;
+                } else {
+                    if (spl == guiParabolicRadioBtn) {
+                        supplier =
+                            this.pblSmoothSignalAmplitudeSpectrumDataSupplier;
+                    }
                 }
             }
         }
@@ -241,11 +264,6 @@ public class SmoothChartCtrlImpl extends SimpleController implements
             throw new IllegalStateException("supplier:<null>");
 
         double[] data = supplier.get();
-
-        /*
-        NumberAxis axisX = cast(this.guiAmplitudeSpectrumChart.getXAxis());
-        axisX.setUpperBound(data.length);
-        */
 
         this.guiAmplitudeSpectrumChart.getData()
             .remove(srcAmplitudeSpectrumSeries);
@@ -265,21 +283,26 @@ public class SmoothChartCtrlImpl extends SimpleController implements
     public
     void renderPhaseSpectrum()
     {
-        RadioButton rb = cast(guiFilterRadioBtnGroup.getSelectedToggle());
+        Toggle src = guiPSDataSourceRadioBtnGroup.getSelectedToggle();
+        Toggle spl = guiFilterRadioBtnGroup.getSelectedToggle();
 
         Supplier<double[]> supplier = null;
 
-        if (rb == guiSlidingRadioBtn) {
-            supplier
-                = this.sliSmoothSignalPhaseSpectrumDataSupplier;
+        if (src == guiPSSignalSourceRadioBtn) {
+            supplier = this.phaseSpectrumDataSupplier;
         } else {
-            if (rb == guiMedianRadioBtn) {
-                supplier
-                    = this.mdnSmoothSignalPhaseSpectrumDataSupplier;
+            if (spl == guiSlidingRadioBtn) {
+                supplier =
+                    this.sliSmoothSignalPhaseSpectrumDataSupplier;
             } else {
-                if (rb == guiParabolicRadioBtn) {
-                    supplier
-                        = this.pblSmoothSignalPhaseSpectrumDataSupplier;
+                if (spl == guiMedianRadioBtn) {
+                    supplier =
+                        this.mdnSmoothSignalPhaseSpectrumDataSupplier;
+                } else {
+                    if (spl == guiParabolicRadioBtn) {
+                        supplier =
+                            this.pblSmoothSignalPhaseSpectrumDataSupplier;
+                    }
                 }
             }
         }
@@ -288,11 +311,6 @@ public class SmoothChartCtrlImpl extends SimpleController implements
             throw new IllegalStateException("supplier:<null>");
 
         double[] data = supplier.get();
-
-        /*
-        NumberAxis axisX = cast(this.guiPhaseSpectrumChart.getXAxis());
-        axisX.setUpperBound(data.length);
-        */
 
         this.guiPhaseSpectrumChart.getData()
             .remove(srcPhaseSpectrumSeries);
@@ -311,13 +329,31 @@ public class SmoothChartCtrlImpl extends SimpleController implements
     // -------------------------------------------------------------------- //
 
     protected
-    void initDataSupplierSwitch()
+    void initToggleGroupChangeListeners()
     {
         guiFilterRadioBtnGroup.selectedToggleProperty().addListener(o -> {
             this.renderSmoothedSignal();
-            this.renderAmplitudeSpectrum();
-            this.renderPhaseSpectrum();
+
+            if (guiASDataSourceRadioBtnGroup.getSelectedToggle() !=
+                guiASSignalSourceRadioBtn) {
+                this.renderAmplitudeSpectrum();
+            }
+
+            if (guiPSDataSourceRadioBtnGroup.getSelectedToggle() !=
+                guiPSSignalSourceRadioBtn) {
+                this.renderPhaseSpectrum();
+            }
         });
+
+        guiASDataSourceRadioBtnGroup.selectedToggleProperty()
+            .addListener(o -> {
+                this.renderAmplitudeSpectrum();
+            });
+
+        guiPSDataSourceRadioBtnGroup.selectedToggleProperty()
+            .addListener(o -> {
+                this.renderPhaseSpectrum();
+            });
     }
 
     // -------------------------------------------------------------------- //
@@ -342,4 +378,22 @@ public class SmoothChartCtrlImpl extends SimpleController implements
 
     @FXML
     private ToggleGroup guiFilterRadioBtnGroup;
+
+    @FXML
+    private RadioButton guiASSignalSourceRadioBtn;
+
+    @FXML
+    private ToggleGroup guiASDataSourceRadioBtnGroup;
+
+    @FXML
+    private RadioButton guiASFilteredSourceRadioBtn;
+
+    @FXML
+    private RadioButton guiPSSignalSourceRadioBtn;
+
+    @FXML
+    private ToggleGroup guiPSDataSourceRadioBtnGroup;
+
+    @FXML
+    private RadioButton guiPSFilteredSourceRadioBtn;
 }

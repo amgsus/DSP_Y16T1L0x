@@ -98,6 +98,12 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         smoothChartController.setSignalSupplier(
             algoResult::getIV_NoisySignal
         );
+        smoothChartController.setAmplitudeSpectrumSupplier(
+            algoResult::getIV_NoisyAmplitudeSpectrum
+        );
+        smoothChartController.setPhaseSpectrumSupplier(
+            algoResult::getIV_NoisyPhaseSpectrum
+        );
         smoothChartController.setSliSignalSupplier(
             algoResult::getIV_SlidingWindowSmoothedSignal
         );

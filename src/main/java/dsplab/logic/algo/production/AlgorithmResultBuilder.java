@@ -152,6 +152,20 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
         return this;
     }
 
+    public
+    AlgorithmResultBuilder setNoisyAmplitudeSpectrum(double[] values)
+    {
+        obj.noisyAmplitudeSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setNoisyPhaseSpectrum(double[] values)
+    {
+        obj.noisyPhaseSpectrum = values;
+        return this;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override

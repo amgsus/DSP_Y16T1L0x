@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="480.0" prefWidth="640.0" spacing="3.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane VBox.vgrow="ALWAYS">
          <children>
@@ -68,6 +68,40 @@
                 <NumberAxis animated="false" side="LEFT" />
               </yAxis>
             </BarChart>
+         </children>
+      </HBox>
+      <HBox spacing="3.0">
+         <children>
+            <HBox spacing="6.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="Show for:" />
+                  <HBox spacing="6.0">
+                     <children>
+                        <RadioButton fx:id="guiASSignalSourceRadioBtn" mnemonicParsing="false" selected="true" text="Signal">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="guiASDataSourceRadioBtnGroup" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="guiASFilteredSourceRadioBtn" mnemonicParsing="false" selected="true" text="Filtered Signal" toggleGroup="$guiASDataSourceRadioBtnGroup" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="10.0" spacing="6.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label text="Show for:" />
+                  <HBox spacing="6.0">
+                     <children>
+                        <RadioButton fx:id="guiPSSignalSourceRadioBtn" mnemonicParsing="false" selected="true" text="Signal">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="guiPSDataSourceRadioBtnGroup" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="guiPSFilteredSourceRadioBtn" mnemonicParsing="false" selected="true" text="Filtered Signal" toggleGroup="$guiPSDataSourceRadioBtnGroup" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
          </children>
       </HBox>
    </children>

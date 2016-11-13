@@ -68,6 +68,8 @@ public class AlgorithmResult
     // -------------------------------------------------------------------- //
 
     double[] noisySignal;
+    double[] noisyAmplitudeSpectrum;
+    double[] noisyPhaseSpectrum;
 
     double[] slidingWindowSmoothedSignal;
     double[] slidingWindowSmoothedSignalAmplitudeSpectrum;
@@ -85,6 +87,18 @@ public class AlgorithmResult
     double[] getIV_NoisySignal()
     {
         return noisySignal;
+    }
+
+    public
+    double[] getIV_NoisyAmplitudeSpectrum()
+    {
+        return noisyAmplitudeSpectrum;
+    }
+
+    public
+    double[] getIV_NoisyPhaseSpectrum()
+    {
+        return noisyPhaseSpectrum;
     }
 
     public

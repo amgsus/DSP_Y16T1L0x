@@ -179,6 +179,14 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                     double[] noisySignal = g.run();
 
+                    ft.setSpectrum(noisySignal);
+                    ft.setRange(noisySignal.length);
+
+                    double[] noisyAmplitudeSpectrum
+                        = ft.calculateAmplitudeSpectrum();
+                    double[] noisyPhaseSpectrum
+                        = ft.calculatePhaseSpectrum();
+
                     // Sliding
 
                     SignalFilter flt = SignalFilterFactory.getFactory()
@@ -239,6 +247,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setSampleCount(this.sampleCount)
                         .setFtAmplitudes(ftAmplitudes)
                         .setNoisySignal(noisySignal)
+                        .setNoisyAmplitudeSpectrum(noisyAmplitudeSpectrum)
+                        .setNoisyPhaseSpectrum(noisyPhaseSpectrum)
                         .setSliSignal(sli)
                         .setSliAmplitudeSpectrum(sliAmplitudeSpectrum)
                         .setSliPhaseSpectrum(sliPhaseSpectrum)
