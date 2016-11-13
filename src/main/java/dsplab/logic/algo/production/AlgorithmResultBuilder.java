@@ -110,6 +110,27 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
         return this;
     }
 
+    public
+    AlgorithmResultBuilder setMdnSignal(double[] values)
+    {
+        obj.medianSmoothedSignal = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setMdnAmplitudeSpectrum(double[] values)
+    {
+        obj.medianSmoothedSignalAmplitudeSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setMdnPhaseSpectrum(double[] values)
+    {
+        obj.medianSmoothedSignalPhaseSpectrum = values;
+        return this;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override

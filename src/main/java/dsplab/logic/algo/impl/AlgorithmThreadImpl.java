@@ -180,6 +180,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                     double[] noisySignal = g.run();
 
+                    // Sliding
+
                     SignalFilter flt = SignalFilterFactory.getFactory()
                         .newFilter(FilterAlgorithm.SLIDING);
 
@@ -193,6 +195,21 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                     double[] sliPhaseSpectrum
                         = ft.calculatePhaseSpectrum();
 
+                    // Median
+
+                    flt = SignalFilterFactory.getFactory()
+                        .newFilter(FilterAlgorithm.MEDIAN);
+
+                    double[] mdn = flt.apply(noisySignal);
+
+                    ft.setSpectrum(mdn);
+                    ft.setRange(mdn.length);
+
+                    double[] mdnAmplitudeSpectrum
+                        = ft.calculateAmplitudeSpectrum();
+                    double[] mdnPhaseSpectrum
+                        = ft.calculatePhaseSpectrum();
+
                     // * OK * //
 
                     AlgorithmResultBuilder resultBuilder =
@@ -201,6 +218,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                     AlgorithmResult result = resultBuilder
                         .setAmplitudes(srcSignalData)
                         .setSignal(signal)
+                        .setAmplitudeSpectrum(ampSpectrum)
+                        .setPhaseSpectrum(phsSpectrum)
                         .setRMSByFormulaA(rmsA)
                         .setRMSByFormulaB(rmsB)
                         .setSampleCount(this.sampleCount)
@@ -209,8 +228,9 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setSliSignal(sli)
                         .setSliSignalAmplitudeSpectrum(sliAmplitudeSpectrum)
                         .setSliSignalPhaseSpectrum(sliPhaseSpectrum)
-                        .setAmplitudeSpectrum(ampSpectrum)
-                        .setPhaseSpectrum(phsSpectrum)
+                        .setMdnSignal(mdn)
+                        .setMdnAmplitudeSpectrum(mdnAmplitudeSpectrum)
+                        .setMdnPhaseSpectrum(mdnPhaseSpectrum)
                         .build();
 
                     latch.countDown();

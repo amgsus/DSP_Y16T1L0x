@@ -83,6 +83,10 @@ public class EachSignalTabControllerImpl extends SimpleController implements
 
         int constK = algoResult.getSampleCount() / 4; // Variant
 
+        spectrums.setAmplitudeSpectrumData(algoResult::getAmplitudeSpectrum);
+        spectrums.setPhaseSpectrumData(algoResult::getPhaseSpectrum);
+        spectrums.renderAll();
+
         rmsChartController1.renderRMSValues(algoResult.getRMSByFormulaA());
         rmsChartController1.renderAmplitudeValues(algoResult.getFtAmplitudes());
         rmsChartController1.setK(constK);
@@ -91,18 +95,29 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         rmsChartController2.renderAmplitudeValues(algoResult.getFtAmplitudes());
         rmsChartController2.setK(constK);
 
-        smoothChartController.setSignalSupplier(algoResult::getIV_NoisySignal);
+        smoothChartController.setSignalSupplier(
+            algoResult::getIV_NoisySignal
+        );
         smoothChartController.setSliSignalSupplier(
-            algoResult::getIV_SlidingWindowSmoothedSignal);
+            algoResult::getIV_SlidingWindowSmoothedSignal
+        );
         smoothChartController.setSliAmplitudeSpectrumSupplier(
-            algoResult::getIV_SlidingWindowSmoothedSignalAmplitudeSpectrum);
+            algoResult::getIV_SlidingWindowSmoothedSignalAmplitudeSpectrum
+        );
         smoothChartController.setSliPhaseSpectrumSupplier(
-            algoResult::getIV_SlidingWindowSmoothedSignalPhaseSpectrum);
-        smoothChartController.renderAll();
+            algoResult::getIV_SlidingWindowSmoothedSignalPhaseSpectrum
+        );
+        smoothChartController.setMdnSignalSupplier(
+            algoResult::getIV_MedianSmoothedSignal
+        );
+        smoothChartController.setMdnAmplitudeSpectrumSupplier(
+            algoResult::getIV_MedianSmoothedSignalAmplitudeSpectrum
+        );
+        smoothChartController.setMdnPhaseSpectrumSupplier(
+            algoResult::getIV_MedianSmoothedSignalPhaseSpectrum
+        );
 
-        spectrums.setAmplitudeSpectrumData(algoResult::getAmplitudeSpectrum);
-        spectrums.setPhaseSpectrumData(algoResult::getPhaseSpectrum);
-        spectrums.renderAll();
+        smoothChartController.renderAll();
     }
 
     // -------------------------------------------------------------------- //

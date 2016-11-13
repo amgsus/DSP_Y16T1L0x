@@ -40,6 +40,8 @@ public class SmoothChartCtrlImpl extends SimpleController implements
 
         srcAmplitudeSpectrumSeries = new XYChart.Series<>();
         srcPhaseSpectrumSeries = new XYChart.Series<>();
+
+        this.initDataSupplierSwitch();
     }
 
     public static SmoothChartCtrlImpl createInstance() { return new
@@ -92,7 +94,28 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         this.sliSmoothSignalDataSupplier = supplier;
     }
 
-    // -------------------------------------------------------------------- //
+    @Override
+    public
+    void setMdnSignalSupplier(Supplier<double[]> supplier)
+    {
+        this.mdnSmoothSignalDataSupplier = supplier;
+    }
+
+    @Override
+    public
+    void setMdnAmplitudeSpectrumSupplier(Supplier<double[]> supplier)
+    {
+        this.mdnSmoothSignalAmplitudeSpectrumDataSupplier = supplier;
+    }
+
+    @Override
+    public
+    void setMdnPhaseSpectrumSupplier(Supplier<double[]> supplier)
+    {
+        this.mdnSmoothSignalPhaseSpectrumDataSupplier = supplier;
+    }
+
+// -------------------------------------------------------------------- //
 
     @Override
     public
@@ -262,6 +285,18 @@ public class SmoothChartCtrlImpl extends SimpleController implements
 
         this.guiPhaseSpectrumChart.getData()
             .add(srcPhaseSpectrumSeries);
+    }
+
+    // -------------------------------------------------------------------- //
+
+    protected
+    void initDataSupplierSwitch()
+    {
+        guiFilterRadioBtnGroup.selectedToggleProperty().addListener(o -> {
+            this.renderSmoothedSignal();
+            this.renderAmplitudeSpectrum();
+            this.renderPhaseSpectrum();
+        });
     }
 
     // -------------------------------------------------------------------- //
