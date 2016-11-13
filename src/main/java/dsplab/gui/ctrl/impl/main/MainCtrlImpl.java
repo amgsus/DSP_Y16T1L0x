@@ -42,6 +42,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -55,6 +56,7 @@ import javafx.scene.shape.Path;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static dsplab.common.Const.*;
@@ -484,7 +486,7 @@ public class MainCtrlImpl extends SimpleController implements
                     boolean okIssued = s.showModal(this.genWithVMProperties);
 
                     if (okIssued) {
-                        // ToDo: Do something...
+                        this.toggleOutdated();
                     }
 
                     break;
@@ -497,6 +499,26 @@ public class MainCtrlImpl extends SimpleController implements
     }
 
     // -------------------------------------------------------------------- //
+
+    private
+    void toggleOutdated()
+    {
+        this.guiOutdatedLabel.setVisible(true);
+
+        final String h = null;
+        final String c = "Would u like apply changes and refresh " +
+            "the chart?";
+
+        Alert a = new Alert(AlertType.CONFIRMATION);
+        a.setHeaderText(h);
+        a.setContentText(c);
+
+        Optional<ButtonType> result = a.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            this.refreshChart(true);
+        }
+    }
 
     private
     void initComponentsHandlers()
@@ -548,7 +570,7 @@ public class MainCtrlImpl extends SimpleController implements
                 = Stages.getFactory().giveMeSomethingLike(TIMELINESETUP);
 
             if (setup.showModal(this.timelineProperties)) {
-                // ToDo: Do something if "OK" issued?
+                toggleOutdated();
             }
         });
     }
