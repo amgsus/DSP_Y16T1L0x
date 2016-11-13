@@ -1,4 +1,4 @@
-package dsplab.logic.function.impl.noise;
+package dsplab.logic.function.impl.extended;
 
 import dsplab.logic.function.Function;
 import dsplab.logic.signal.Harmonic;
