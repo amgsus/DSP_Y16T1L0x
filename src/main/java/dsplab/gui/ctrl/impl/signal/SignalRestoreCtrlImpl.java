@@ -37,7 +37,7 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
         this.signalSeries.setName("Signal");
 
         this.restoredSignalSeries = new Series<>();
-        this.restoredSignalSeries.setName("Restored (without phase)");
+        this.restoredSignalSeries.setName("Restored");
 
         this.restoredWithPhaseSeries = new Series<>();
         this.restoredWithPhaseSeries.setName("Restored with phase");
@@ -88,14 +88,18 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
             throw new IllegalStateException("supplier:<null>");
 
         double[] data = signalSupplier.get();
+        int dataSize = data.length;
 
-        NumberAxis axisX = cast(guiSignalChart.getXAxis());
-        axisX.setUpperBound(data.length);
+        NumberAxis axisX = cast(guiRestoredSignalChart.getXAxis());
+        axisX.setUpperBound(dataSize);
+
+        axisX = cast(guiSignalChart.getXAxis());
+        axisX.setUpperBound(dataSize);
 
         guiSignalChart.getData().remove(signalSeries);
         signalSeries.getData().clear();
 
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < dataSize; i++) {
             signalSeries.getData().add(
                 new XYChart.Data<>(i, data[i])
             );
@@ -122,7 +126,8 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
             .getSelectedToggle() == guiSingleViewRadioBtn ? guiSignalChart :
             guiRestoredSignalChart);
 
-        chart.getData().remove(restoredSignalSeries);
+        guiSignalChart.getData().remove(restoredSignalSeries);
+        guiRestoredSignalChart.getData().remove(restoredSignalSeries);
 
         if (guiNormalModeCheckBox.isSelected()) {
 
@@ -134,12 +139,12 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
             chart.getData().remove(restoredSignalSeries);
             restoredSignalSeries.getData().clear();
 
-            NumberAxis axisX = cast(chart.getXAxis());
-            axisX.setUpperBound(Math.max(data.length, axisX.getUpperBound()));
-
             for (int i = 0; i < data.length; i++) {
                 restoredSignalSeries.getData().add(
-                    new XYChart.Data<>(i, data[i])
+                    new XYChart.Data<>(2 * i, data[i])
+                );
+                restoredSignalSeries.getData().add(
+                    new XYChart.Data<>(2 * i + 1, data[i])
                 );
             }
 
@@ -157,7 +162,8 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
             .getSelectedToggle() == guiSingleViewRadioBtn ? guiSignalChart :
             guiRestoredSignalChart);
 
-        chart.getData().remove(restoredWithPhaseSeries);
+        guiSignalChart.getData().remove(restoredWithPhaseSeries);
+        guiRestoredSignalChart.getData().remove(restoredWithPhaseSeries);
 
         if (guiModeWithPhaseCheckBox.isSelected()) {
 
@@ -169,12 +175,12 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
             chart.getData().remove(restoredWithPhaseSeries);
             restoredWithPhaseSeries.getData().clear();
 
-            NumberAxis axisX = cast(chart.getXAxis());
-            axisX.setUpperBound(Math.max(data.length, axisX.getUpperBound()));
-
             for (int i = 0; i < data.length; i++) {
                 restoredWithPhaseSeries.getData().add(
-                    new XYChart.Data<>(i, data[i])
+                    new XYChart.Data<>(2 * i, data[i])
+                );
+                restoredWithPhaseSeries.getData().add(
+                    new XYChart.Data<>(2 * i + 1, data[i])
                 );
             }
 
@@ -226,8 +232,14 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
                 renderRestoredSignal();
             });
 
-        guiSignalChart.legendVisibleProperty().bind(guiSeparatedViewRadioBtn
-                .selectedProperty());
+        guiSignalChart.legendVisibleProperty().bind(guiSingleViewRadioBtn
+            .selectedProperty());
+
+        guiRestoredSignalChart.legendVisibleProperty().bind(
+            guiNormalModeCheckBox.selectedProperty().and(
+                guiModeWithPhaseCheckBox.selectedProperty()
+            )
+        );
     }
 
     protected

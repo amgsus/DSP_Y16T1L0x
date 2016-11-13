@@ -9,6 +9,7 @@ import dsplab.logic.filter.SignalFilter;
 import dsplab.logic.filter.alg.FilterAlgorithm;
 import dsplab.logic.filter.fa.SignalFilterFactory;
 import dsplab.logic.ft.FourierTransform;
+import dsplab.logic.ft.SignalRestorer;
 import dsplab.logic.ft.alg.FFTImpl;
 import dsplab.logic.ft.fa.FourierTransformFactory;
 import dsplab.logic.gen.Generator;
@@ -155,17 +156,28 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                     ft.setSpectrum(srcSignalData);
 
-                    for (int i = 1; i < ftAmplitudes.length; i++) {
+                    for (int i = 1; i < ftAmplitudes.length; i++) { // ToDo
                         ft.setRange(i);
                         ftAmplitudes[i] = ft.calculateAmplitude();
                     }
 
-                    // Spectrums
+                    // Task 3
 
                     double[] ampSpectrum
                         = ft.calculateAmplitudeSpectrum();
                     double[] phsSpectrum
                         = ft.calculatePhaseSpectrum();
+
+                    SignalRestorer signalRestorer =
+                        new SignalRestorer(ampSpectrum, phsSpectrum);
+
+                    signalRestorer.setGain(0);
+                    signalRestorer.setSampleCount(ampSpectrum.length);
+
+                    double[] restoredSignal =
+                        signalRestorer.restoreWithoutPhase();
+                    double[] restoredWithPhaseSignal =
+                        signalRestorer.restore();
 
                     // Task IV
 
@@ -189,10 +201,10 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                     // Sliding
 
-                    SignalFilter flt = SignalFilterFactory.getFactory()
+                    SignalFilter filter = SignalFilterFactory.getFactory()
                         .newFilter(FilterAlgorithm.SLIDING);
 
-                    double[] sli = flt.apply(noisySignal);
+                    double[] sli = filter.apply(noisySignal);
 
                     ft.setSpectrum(sli);
                     ft.setRange(sli.length);
@@ -204,10 +216,10 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                     // Median
 
-                    flt = SignalFilterFactory.getFactory()
+                    filter = SignalFilterFactory.getFactory()
                         .newFilter(FilterAlgorithm.MEDIAN);
 
-                    double[] mdn = flt.apply(noisySignal);
+                    double[] mdn = filter.apply(noisySignal);
 
                     ft.setSpectrum(mdn);
                     ft.setRange(mdn.length);
@@ -219,10 +231,10 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                     // Parabolic
 
-                    flt = SignalFilterFactory.getFactory()
+                    filter = SignalFilterFactory.getFactory()
                         .newFilter(FilterAlgorithm.PARABOLIC);
 
-                    double[] pbl = flt.apply(noisySignal);
+                    double[] pbl = filter.apply(noisySignal);
 
                     ft.setSpectrum(pbl);
                     ft.setRange(pbl.length);
@@ -242,6 +254,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setSignal(signal)
                         .setAmplitudeSpectrum(ampSpectrum)
                         .setPhaseSpectrum(phsSpectrum)
+                        .setRestoredSignal(restoredSignal)
+                        .setRestoredWithPhaseSignal(restoredWithPhaseSignal)
                         .setRMSByFormulaA(rmsA)
                         .setRMSByFormulaB(rmsB)
                         .setSampleCount(this.sampleCount)
