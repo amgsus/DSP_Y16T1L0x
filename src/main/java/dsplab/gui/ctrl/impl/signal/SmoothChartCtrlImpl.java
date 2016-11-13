@@ -65,9 +65,9 @@ public class SmoothChartCtrlImpl extends SimpleController implements
     Supplier<double[]> mdnSmoothSignalAmplitudeSpectrumDataSupplier = null;
     Supplier<double[]> mdnSmoothSignalPhaseSpectrumDataSupplier = null;
 
-    Supplier<double[]> pbcSmoothSignalDataSupplier = null;
-    Supplier<double[]> pbcSmoothSignalAmplitudeSpectrumDataSupplier = null;
-    Supplier<double[]> pbcSmoothSignalPhaseSpectrumDataSupplier = null;
+    Supplier<double[]> pblSmoothSignalDataSupplier = null;
+    Supplier<double[]> pblSmoothSignalAmplitudeSpectrumDataSupplier = null;
+    Supplier<double[]> pblSmoothSignalPhaseSpectrumDataSupplier = null;
 
     @Override
     public
@@ -115,7 +115,28 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         this.mdnSmoothSignalPhaseSpectrumDataSupplier = supplier;
     }
 
-// -------------------------------------------------------------------- //
+    @Override
+    public
+    void setPblSignalSupplier(Supplier<double[]> supplier)
+    {
+        this.pblSmoothSignalDataSupplier = supplier;
+    }
+
+    @Override
+    public
+    void setPblAmplitudeSpectrumSupplier(Supplier<double[]> supplier)
+    {
+        this.pblSmoothSignalAmplitudeSpectrumDataSupplier = supplier;
+    }
+
+    @Override
+    public
+    void setPblPhaseSpectrumSupplier(Supplier<double[]> supplier)
+    {
+        this.pblSmoothSignalPhaseSpectrumDataSupplier = supplier;
+    }
+
+    // -------------------------------------------------------------------- //
 
     @Override
     public
@@ -169,7 +190,7 @@ public class SmoothChartCtrlImpl extends SimpleController implements
             } else {
                 if (rb == guiParabolicRadioBtn) {
                     supplier
-                        = this.pbcSmoothSignalDataSupplier;
+                        = this.pblSmoothSignalDataSupplier;
                 }
             }
         }
@@ -211,7 +232,7 @@ public class SmoothChartCtrlImpl extends SimpleController implements
             } else {
                 if (rb == guiParabolicRadioBtn) {
                     supplier
-                        = this.pbcSmoothSignalAmplitudeSpectrumDataSupplier;
+                        = this.pblSmoothSignalAmplitudeSpectrumDataSupplier;
                 }
             }
         }
@@ -258,7 +279,7 @@ public class SmoothChartCtrlImpl extends SimpleController implements
             } else {
                 if (rb == guiParabolicRadioBtn) {
                     supplier
-                        = this.pbcSmoothSignalPhaseSpectrumDataSupplier;
+                        = this.pblSmoothSignalPhaseSpectrumDataSupplier;
                 }
             }
         }

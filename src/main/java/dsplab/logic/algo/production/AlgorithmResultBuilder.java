@@ -131,6 +131,27 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
         return this;
     }
 
+    public
+    AlgorithmResultBuilder setPblSignal(double[] values)
+    {
+        obj.parabolicSmoothedSignal = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setPblAmplitudeSpectrum(double[] values)
+    {
+        obj.parabolicSmoothedSignalAmplitudeSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setPblPhaseSpectrum(double[] values)
+    {
+        obj.parabolicSmoothedSignalPhaseSpectrum = values;
+        return this;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override

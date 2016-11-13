@@ -116,6 +116,15 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         smoothChartController.setMdnPhaseSpectrumSupplier(
             algoResult::getIV_MedianSmoothedSignalPhaseSpectrum
         );
+        smoothChartController.setPblSignalSupplier(
+            algoResult::getIV_ParabolicSmoothedSignal
+        );
+        smoothChartController.setPblAmplitudeSpectrumSupplier(
+            algoResult::getIV_ParabolicSmoothedSignalAmplitudeSpectrum
+        );
+        smoothChartController.setPblPhaseSpectrumSupplier(
+            algoResult::getIV_ParabolicSmoothedSignalPhaseSpectrum
+        );
 
         smoothChartController.renderAll();
     }

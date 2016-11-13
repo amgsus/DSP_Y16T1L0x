@@ -16,6 +16,10 @@ public interface SmoothChartController extends Controller
     void setMdnAmplitudeSpectrumSupplier(Supplier<double[]> supplier);
     void setMdnPhaseSpectrumSupplier(Supplier<double[]> supplier);
 
+    void setPblSignalSupplier(Supplier<double[]> supplier);
+    void setPblAmplitudeSpectrumSupplier(Supplier<double[]> supplier);
+    void setPblPhaseSpectrumSupplier(Supplier<double[]> supplier);
+
     void renderAll();
     void renderSignal();
     void renderSmoothedSignal();

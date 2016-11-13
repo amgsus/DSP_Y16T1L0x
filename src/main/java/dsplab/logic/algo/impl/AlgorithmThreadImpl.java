@@ -210,6 +210,21 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                     double[] mdnPhaseSpectrum
                         = ft.calculatePhaseSpectrum();
 
+                    // Parabolic
+
+                    flt = SignalFilterFactory.getFactory()
+                        .newFilter(FilterAlgorithm.PARABOLIC);
+
+                    double[] pbl = flt.apply(noisySignal);
+
+                    ft.setSpectrum(pbl);
+                    ft.setRange(pbl.length);
+
+                    double[] pblAmplitudeSpectrum
+                        = ft.calculateAmplitudeSpectrum();
+                    double[] pblPhaseSpectrum
+                        = ft.calculatePhaseSpectrum();
+
                     // * OK * //
 
                     AlgorithmResultBuilder resultBuilder =
@@ -231,6 +246,9 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setMdnSignal(mdn)
                         .setMdnAmplitudeSpectrum(mdnAmplitudeSpectrum)
                         .setMdnPhaseSpectrum(mdnPhaseSpectrum)
+                        .setPblSignal(pbl)
+                        .setPblAmplitudeSpectrum(pblAmplitudeSpectrum)
+                        .setPblPhaseSpectrum(pblPhaseSpectrum)
                         .build();
 
                     latch.countDown();
