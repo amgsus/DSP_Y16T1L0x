@@ -5,11 +5,34 @@ import dsplab.logic.filter.SignalFilter;
 
 public class SlidingFilter implements SignalFilter
 {
-    private int windowSize = 16;
+    static final String MUST_ODD = "Value must be odd integer";
 
-    public void setWindowSize(int size)
+    public SlidingFilter()
     {
-        this.windowSize = size;
+        this.setK(15);
+    }
+
+    int windowSize;
+    int constK;
+
+    public
+    void setK(int value)
+    {
+        if (value % 2 != 1)
+            throw new IllegalArgumentException(MUST_ODD);
+
+        this.constK = value;
+        this.windowSize = (value - 1) / 2;
+    }
+
+    public
+    void setWindowSize(int value)
+    {
+        if (value % 2 != 1)
+            throw new IllegalArgumentException(MUST_ODD);
+
+        this.windowSize = value;
+        this.constK = value * 2 + 1;
     }
 
     @Override
@@ -25,7 +48,7 @@ public class SlidingFilter implements SignalFilter
 
         for (int i = 0; i < length - w; i++) {
             double sum = MathUtils.sum(i, i + w, j -> signal[j]);
-            fltSignal[i + w / 2] = sum / w;
+            fltSignal[i + w / 2] = sum / this.windowSize;
         }
 
         return fltSignal;
