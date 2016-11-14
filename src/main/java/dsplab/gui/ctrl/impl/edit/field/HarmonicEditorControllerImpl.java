@@ -60,7 +60,9 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
                     harmonic.getPhaseProperty());
                 Bindings.unbindBidirectional(guiFrequencyField.textProperty(),
                     harmonic.getFrequencyProperty());
-                guiWaveformComboBox.valueProperty().unbind();
+                guiWaveformComboBox.valueProperty().unbindBidirectional(
+                    harmonic.getWaveformProperty()
+                );
                 harmonic = null;
             }
         }
