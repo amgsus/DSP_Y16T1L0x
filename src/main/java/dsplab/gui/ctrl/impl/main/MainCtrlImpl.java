@@ -23,7 +23,9 @@ import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.AlgorithmThreadBuilder;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.gen.alg.GenID;
+import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
+import dsplab.logic.signal.enums.Waveform;
 import dsplab.logic.signal.util.SigUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -99,6 +101,7 @@ public class MainCtrlImpl extends SimpleController implements
 
         initCrossOverChart();
         initGenList();
+        initDefaultSignalListItems();
     }
 
     /**
@@ -659,6 +662,28 @@ public class MainCtrlImpl extends SimpleController implements
         guiTimelineSetupButton.onActionProperty().bind(
             guiTimelineSetupMenuItem.onActionProperty()
         );
+    }
+
+    protected
+    void initDefaultSignalListItems()
+    {
+        Signal sig;
+
+        sig = new Signal("Sine", Color.CORNFLOWERBLUE);
+        sig.getHarmonics().add(new Harmonic(5.0, 0, 10.0, Waveform.Sine));
+
+        signalList.add(sig);
+
+        sig = new Signal("Cosine", Color.LIGHTSTEELBLUE);
+        sig.getHarmonics().add(new Harmonic(5.0, 0, 10.0, Waveform.Cosine));
+
+        signalList.add(sig);
+
+        sig = new Signal("Polyharmonic", Color.YELLOWGREEN);
+        sig.getHarmonics().add(new Harmonic(2.5, 0, 20.0, Waveform.Digital));
+        sig.getHarmonics().add(new Harmonic(0.2, 120, 50.0, Waveform.Sine));
+
+        signalList.add(sig);
     }
 
     // -------------------------------------------------------------------- //
