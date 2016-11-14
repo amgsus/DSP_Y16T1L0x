@@ -44,6 +44,7 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -93,11 +94,11 @@ public class MainCtrlImpl extends SimpleController implements
         guiChart.getStylesheets().add(Resources.CHART_SYMBOL_STYLESHEET);
 
         guiScaleComboBox.getItems().addAll(
-            new Percentage(0.125), new Percentage(0.25), new Percentage(0.50),
-            new Percentage(0.750), new Percentage(1.00), new Percentage(1.50),
-            new Percentage(2.000), new Percentage(2.50), new Percentage(3.00)
+            new Percentage(0.125), new Percentage(0.250),
+            new Percentage(0.500), new Percentage(1.000),
+            new Percentage(2.000), new Percentage(4.000)
         );
-        guiScaleComboBox.getSelectionModel().select(4); // 1.0
+        guiScaleComboBox.getSelectionModel().select(3); // 100%
 
         initCrossOverChart();
         initGenList();
@@ -231,17 +232,15 @@ public class MainCtrlImpl extends SimpleController implements
         period = resultList.get(0).getSampleCount();
         totalSamples = sampleCount * resultList.get(0).getPeriodCount();
 
-        int chartSize = (int) (sampleCount *
-            this.guiScaleComboBox.getValue().getValue());
+        guiScaleComboBox.getSelectionModel().select(3); // 100%
 
         NumberAxis axisX = cast(this.guiChart.getXAxis());
         axisX.setLowerBound(0);
-        axisX.setUpperBound(chartSize);
+        axisX.setUpperBound(sampleCount);
 
         updateTickCount();
         updateHScrollProperties();
 
-//      animation.setDataCount(Math.min(chartSize, sampleCount * periodCount));
         animation.setDataCount(totalSamples);
         animation.setOffset(0); // Always
         animation.start();
@@ -253,25 +252,28 @@ public class MainCtrlImpl extends SimpleController implements
         NumberAxis axisX = cast(this.guiChart.getXAxis());
 
         int w = (int) axisX.getUpperBound() - (int) axisX.getLowerBound();
-        int tickUnit = w != 0 ? w / Math.min(8, w / 8) : 64;
+        int tickUnit = (w != 0 ? /*w /*/ Math.max(2, w / 8) : 4);
 
         axisX.setTickUnit(tickUnit);
     }
+
+    private int scrollAmount;
 
     private
     void updateHScrollProperties()
     {
         NumberAxis axisX = cast(this.guiChart.getXAxis());
 
-        int chartSize = (int) axisX.getUpperBound() -
-            (int) axisX.getLowerBound();
+        int viewportSize = (int) (axisX.getUpperBound() -
+            axisX.getLowerBound());
 
-        guiChartHScrollBar.setMax((totalSamples - chartSize) /
-            (int) axisX.getTickUnit());
-        guiChartHScrollBar.setBlockIncrement(chartSize /
-            (int) axisX.getTickUnit());
-        guiChartHScrollBar.setValue((int) axisX.getLowerBound() /
-            (int) axisX.getTickUnit());
+        scrollAmount = (int) axisX.getTickUnit();
+
+        guiChartHScrollBar.setMax((totalSamples - viewportSize) /
+            scrollAmount);
+        guiChartHScrollBar.setValue((int)
+            axisX.getLowerBound() / scrollAmount);
+        guiChartHScrollBar.setBlockIncrement((int) axisX.getTickUnit());
     }
 
     // -------------------------------------------------------------------- //
@@ -608,22 +610,29 @@ public class MainCtrlImpl extends SimpleController implements
 
         guiChartHScrollBar.valueProperty().addListener(o -> {
             int offset = (int) guiChartHScrollBar.getValue();
-            int window = (int) axisX.getUpperBound() -
-                (int) axisX.getLowerBound();
+            int viewportSize = (int)(axisX.getUpperBound() -
+                axisX.getLowerBound());
 
-            axisX.setLowerBound(offset * (int) axisX.getTickUnit());
-            axisX.setUpperBound(offset * (int) axisX.getTickUnit() + window);
+            axisX.setLowerBound(offset * scrollAmount);
+            axisX.setUpperBound(offset * scrollAmount + viewportSize);
         });
 
         guiScaleComboBox.valueProperty().addListener(o -> {
 
             double scale = guiScaleComboBox.getValue().getValue();
             int window = (int) (this.period * scale);
-            int up = (int) (axisX.getLowerBound() + window);
+            int prefBound = (int) (axisX.getLowerBound() + window);
 
-            axisX.setLowerBound(Math.min(totalSamples - window,
-                (int) axisX.getLowerBound()));
-            axisX.setUpperBound(Math.min(up, totalSamples));
+            if (window <= this.totalSamples) {
+                axisX.setLowerBound(Math.max(Math.min(totalSamples - window,
+                    (int) axisX.getLowerBound()), 0));
+                axisX.setUpperBound(Math.min(totalSamples, prefBound));
+            } else {
+                axisX.setUpperBound(prefBound);
+                axisX.setLowerBound(0);
+            }
+
+            statusBarController.setRenderedPercentage(scale);
 
             updateTickCount();
             updateHScrollProperties();
