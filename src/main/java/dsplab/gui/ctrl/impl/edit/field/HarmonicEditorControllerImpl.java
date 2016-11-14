@@ -7,6 +7,7 @@ import dsplab.gui.ctrl.HarmonicEditorController;
 import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.enums.Waveform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -77,8 +78,10 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
     protected
     void initBindings()
     {
+        ObjectProperty<Waveform> w = guiWaveformComboBox.valueProperty();
+
         guiPhaseField.disableProperty().bind(
-            guiWaveformComboBox.valueProperty().isEqualTo(Waveform.Sawtooth)
+            w.isEqualTo(Waveform.Sawtooth).or(w.isEqualTo(Waveform.Triangle))
         );
     }
 
