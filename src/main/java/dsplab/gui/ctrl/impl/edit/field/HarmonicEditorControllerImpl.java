@@ -82,6 +82,7 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
 
         guiPhaseField.disableProperty().bind(
             w.isEqualTo(Waveform.Sawtooth).or(w.isEqualTo(Waveform.Triangle))
+            .or(w.isEqualTo(Waveform.Digital))
         );
     }
 
