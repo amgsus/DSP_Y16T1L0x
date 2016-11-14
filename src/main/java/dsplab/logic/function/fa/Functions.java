@@ -5,6 +5,7 @@ import dsplab.logic.function.impl.CosineFunction;
 import dsplab.logic.function.impl.SineFunction;
 import dsplab.logic.function.impl.extended.SawtoothFunction;
 import dsplab.logic.function.impl.extended.NoiseFunction;
+import dsplab.logic.function.impl.extended.TriangleFunction;
 import dsplab.logic.signal.enums.Waveform;
 
 public final class Functions implements FunctionFactory
@@ -26,6 +27,8 @@ public final class Functions implements FunctionFactory
                 return NoiseFunction.getInstance();
             case Sawtooth:
                 return SawtoothFunction.newInstance();
+            case Triangle:
+                return TriangleFunction.newInstance();
 
             default:
                 final String s = "'%s' is not supported by the factory";
