@@ -27,6 +27,7 @@ public class MainStatusBarCtrlImpl extends SimpleController implements
         setStatusText("");
         setNumberOfSamples(NOT_AVAILABLE_VAL);
         setNumberOfSignals(NOT_AVAILABLE_VAL);
+        setPeriod(NOT_AVAILABLE_VAL);
     }
 
     public static MainStatusBarCtrlImpl createInstance() { return new
@@ -81,24 +82,31 @@ public class MainStatusBarCtrlImpl extends SimpleController implements
 
     @Override
     public
-    void setRenderedSamplesPercentage(double percentage)
+    void setRenderedPercentage(double percentage)
     {
         String s;
 
         if (Double.compare(percentage, 0) < 0) {
             s = NOT_AVAILABLE_STR;
         } else {
-            if (Double.compare(percentage, 0) >= 0 &&
-                Double.compare(percentage, 1) <= 0) {
-                s = String.format("%.0f", percentage * 100.0);
-            } else {
-                s = String.format("%.0f", percentage);
-            }
-
+            s = String.format("%.0f", percentage * 100.0);
             s += "% rendered";
         }
 
-        guiSamplePercentageLabel.setText("(" + s + ")");
+        guiRenderPercentageLabel.setText("(" + s + ")");
+    }
+
+    @Override
+    public void setPeriod(int period)
+    {
+        String s;
+
+        if (period == NOT_AVAILABLE_VAL)
+            s = NOT_AVAILABLE_STR;
+        else
+            s = Integer.toString(period);
+
+        guiPeriodLabel.setText(s);
     }
 
     // -------------------------------------------------------------------- //
@@ -107,11 +115,14 @@ public class MainStatusBarCtrlImpl extends SimpleController implements
     private Label guiStatusLabel;
 
     @FXML
-    private Label guiSampleCountLabel;
-
-    @FXML
     private Label guiSignalCountLabel;
 
     @FXML
-    private Label guiSamplePercentageLabel;
+    private Label guiPeriodLabel;
+
+    @FXML
+    private Label guiRenderPercentageLabel;
+
+    @FXML
+    private Label guiSampleCountLabel;
 }

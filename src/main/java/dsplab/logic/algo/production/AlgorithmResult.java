@@ -63,6 +63,7 @@ public class AlgorithmResult
     double[] ftAmplitudes;
 
     int sampleCount;
+    int periodCount;
 
     // -------------------------------------------------------------------- //
 
@@ -171,35 +172,6 @@ public class AlgorithmResult
         return medianSmoothedSignalPhaseSpectrum;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public
     double[] getAmplitudes()
     {
@@ -216,5 +188,11 @@ public class AlgorithmResult
     int getSampleCount()
     {
         return sampleCount;
+    }
+
+    public
+    int getPeriodCount()
+    {
+        return periodCount;
     }
 }

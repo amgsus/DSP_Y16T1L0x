@@ -23,10 +23,10 @@ public class Percentage
     public
     void setValue(double value)
     {
-        if (Double.compare(value, 0) >= 0 && Double.compare(value, 1) <= 0)
-            this.value = value;
-        else
-            throw new IllegalArgumentException("Value is not between 0 and 1");
+        if (Double.compare(value, 0) < 0)
+            throw new IllegalArgumentException("Percentage must be positive");
+
+        this.value = value;
     }
 
     @Override

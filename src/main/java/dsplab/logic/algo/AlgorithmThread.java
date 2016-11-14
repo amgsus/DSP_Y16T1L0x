@@ -17,6 +17,9 @@ public interface AlgorithmThread extends StartFinishDelegates
      * Input.
      */
 
+    int getSampleCount();
+    int getPeriodCount();
+
     void setSignalList(List<Signal> signalList);
     void setSampleCount(int samples);
     void setPeriodCount(int periods);

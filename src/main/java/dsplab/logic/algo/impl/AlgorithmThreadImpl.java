@@ -259,6 +259,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setRMSByFormulaA(rmsA)
                         .setRMSByFormulaB(rmsB)
                         .setSampleCount(this.sampleCount)
+                        .setPeriodCount(this.periodCount)
                         .setFtAmplitudes(ftAmplitudes)
                         .setNoisySignal(noisySignal)
                         .setNoisyAmplitudeSpectrum(noisyAmplitudeSpectrum)
@@ -394,6 +395,19 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     }
 
     // --------------------------------------------------------------------- //
+
+
+    @Override
+    public int getSampleCount()
+    {
+        return sampleCount;
+    }
+
+    @Override
+    public int getPeriodCount()
+    {
+        return periodCount;
+    }
 
     /**
      * <b>Note:</b> This method makes a "true"-copy of a {@code signalList}.

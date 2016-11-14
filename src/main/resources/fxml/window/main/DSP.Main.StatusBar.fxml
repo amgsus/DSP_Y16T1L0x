@@ -14,15 +14,22 @@
       <Region HBox.hgrow="ALWAYS" />
       <HBox spacing="2.0">
          <children>
-            <Label text="Signals:" textFill="#00b400" />
-            <Label fx:id="guiSignalCountLabel" layoutX="10.0" layoutY="10.0" text="\%SIGNALS%" textFill="#00b400" />
+            <Label text="Signals:" textFill="#009600" />
+            <Label fx:id="guiSignalCountLabel" layoutX="10.0" layoutY="10.0" text="\%SIGNALS%" textFill="#009600" />
+         </children>
+      </HBox>
+      <HBox layoutX="178.0" layoutY="10.0" spacing="2.0">
+         <children>
+            <Label text="Period:" textFill="#b45000" />
+            <Label fx:id="guiPeriodLabel" text="\%PERIOD%" textFill="#b45000" />
+            <Label fx:id="guiRenderPercentageLabel" text="(%PERCENTAGE%)" textFill="#b45000" />
          </children>
       </HBox>
       <HBox spacing="2.0">
          <children>
-            <Label text="Samples:" textFill="#b45000" />
-            <Label fx:id="guiSampleCountLabel" text="\%SAMPLES%" textFill="#b45000" />
-            <Label fx:id="guiSamplePercentageLabel" layoutX="59.0" layoutY="10.0" text="(%PERCENTAGE%)" textFill="#b45000" />
+            <Label text="Total:" textFill="#0032c8" />
+            <Label fx:id="guiSampleCountLabel" text="\%SAMPLES%" textFill="#0032c8" />
+            <Label layoutX="10.0" layoutY="10.0" text="samples" textFill="#0032c8" />
          </children>
       </HBox>
    </children>

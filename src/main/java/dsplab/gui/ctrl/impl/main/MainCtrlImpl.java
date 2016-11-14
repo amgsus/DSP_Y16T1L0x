@@ -23,10 +23,7 @@ import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.AlgorithmThreadBuilder;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.gen.alg.GenID;
-import dsplab.logic.gen.modifier.ValueModifier;
-import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
-import dsplab.logic.signal.enums.Waveform;
 import dsplab.logic.signal.util.SigUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -95,7 +92,8 @@ public class MainCtrlImpl extends SimpleController implements
 
         guiScaleComboBox.getItems().addAll(
             new Percentage(0.10), new Percentage(0.25), new Percentage(0.50),
-            new Percentage(0.75), new Percentage(1.00)
+            new Percentage(0.75), new Percentage(1.00), new Percentage(1.50),
+            new Percentage(2.00), new Percentage(2.50), new Percentage(3.00)
         );
         guiScaleComboBox.getSelectionModel().select(4); // 1.0
         guiScaleComboBox.valueProperty().addListener(o -> refreshChart(false));
@@ -224,14 +222,16 @@ public class MainCtrlImpl extends SimpleController implements
             resultList.get(seriesIndex).getAmplitudes()[dataIndex]);
         animation.setOnStop(onRenderAnimationDone);
 
-        int samplesToDraw = (int) (resultList.get(0).getAmplitudes().length *
+        int sampleCount = resultList.get(0).getSampleCount();
+        int periodCount = resultList.get(0).getPeriodCount();
+
+        int chartSize = (int) (sampleCount *
             this.guiScaleComboBox.getValue().getValue());
 
         NumberAxis xAxis = cast(this.guiChart.getXAxis());
-        xAxis.setUpperBound(samplesToDraw);
+        xAxis.setUpperBound(chartSize);
 
-        // animation.setOffset((int) guiChartHScrollBar.getValue());
-        animation.setDataCount(samplesToDraw);
+        animation.setDataCount(Math.min(chartSize, sampleCount * periodCount));
         animation.start();
     }
 
@@ -265,13 +265,8 @@ public class MainCtrlImpl extends SimpleController implements
                 (System.currentTimeMillis() - algoStartTime.get()) / 1000.0)
         );
 
-        this.statusBarController.setNumberOfSamples(
-            this.timelineProperties.getSamplesProperty().get()
-        );
-
-        this.statusBarController.setRenderedSamplesPercentage(
-            this.guiScaleComboBox.getValue().getValue()
-        );
+        this.statusBarController.setRenderedPercentage(this.guiScaleComboBox
+                .getValue().getValue());
     };
 
     /*
@@ -307,6 +302,11 @@ public class MainCtrlImpl extends SimpleController implements
             // * Fetch results * //
 
             List<AlgorithmResult> results = algoThread.getResults();
+
+            this.statusBarController.setPeriod(algoThread.getSampleCount());
+            this.statusBarController.setNumberOfSamples(
+                algoThread.getSampleCount() * algoThread.getPeriodCount()
+            );
 
             this.updateWaitOverlay("Starting the renderer...");
 
@@ -528,6 +528,12 @@ public class MainCtrlImpl extends SimpleController implements
             boolean success = stage.show(signalList);
 
             if (success) {
+
+                List<Signal> modlist = stage.getModifiedList();
+
+                this.signalList.clear();
+                SigUtils.cloneSignalList(modlist, this.signalList);
+
                 toggleOutdated();
             }
         });
@@ -667,7 +673,7 @@ public class MainCtrlImpl extends SimpleController implements
         HBox.setHgrow(statusBarNode, Priority.ALWAYS);
 
         statusBarController.setNumberOfSamples(NOT_AVAILABLE_VAL);
-        statusBarController.setRenderedSamplesPercentage(NOT_AVAILABLE_VAL);
+        statusBarController.setRenderedPercentage(NOT_AVAILABLE_VAL);
         statusBarController.setStatusText("Ready");
     }
 

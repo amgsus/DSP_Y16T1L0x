@@ -180,6 +180,13 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
         return this;
     }
 
+    public
+    AlgorithmResultBuilder setPeriodCount(int count)
+    {
+        obj.periodCount = count;
+        return this;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override

@@ -8,5 +8,6 @@ public interface MainStatusBarController extends Controller
 
     void setNumberOfSamples(int sampleCount);
     void setNumberOfSignals(int signalCount);
-    void setRenderedSamplesPercentage(double percentage);
+    void setRenderedPercentage(double percentage);
+    void setPeriod(int period);
 }
