@@ -93,13 +93,13 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         spectrums.setPhaseSpectrumData(algoResult::getPhaseSpectrum);
         spectrums.renderAll();
 
+        rmsChartController1.setK(constK);
         rmsChartController1.renderRMSValues(algoResult.getRMSByFormulaA());
         rmsChartController1.renderAmplitudeValues(algoResult.getFtAmplitudes());
-        rmsChartController1.setK(constK);
 
+        rmsChartController2.setK(constK);
         rmsChartController2.renderRMSValues(algoResult.getRMSByFormulaB());
         rmsChartController2.renderAmplitudeValues(algoResult.getFtAmplitudes());
-        rmsChartController2.setK(constK);
 
         smoothChartController.setSignalSupplier(
             algoResult::getIV_NoisySignal

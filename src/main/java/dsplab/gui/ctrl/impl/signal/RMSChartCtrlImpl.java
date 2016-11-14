@@ -41,7 +41,7 @@ public class RMSChartCtrlImpl extends SimpleController implements
 
     // -------------------------------------------------------------------- //
 
-    int K = 128; // Variant
+    int K; // Variant
 
     @Override
     public void setCaption(String s)
