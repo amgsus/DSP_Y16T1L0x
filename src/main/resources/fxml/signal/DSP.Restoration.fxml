@@ -58,7 +58,7 @@
                   <VBox spacing="6.0">
                      <children>
                         <CheckBox fx:id="guiNormalModeCheckBox" mnemonicParsing="false" selected="true" text="Normal" />
-                        <CheckBox fx:id="guiModeWithPhaseCheckBox" mnemonicParsing="false" selected="true" text="With Phase" />
+                        <CheckBox fx:id="guiModeWithoutPhaseCheckBox" mnemonicParsing="false" selected="true" text="Without Phase" />
                      </children>
                      <padding>
                         <Insets left="12.0" />

@@ -37,10 +37,10 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
         this.signalSeries.setName("Signal");
 
         this.restoredSignalSeries = new Series<>();
-        this.restoredSignalSeries.setName("Restored");
+        this.restoredSignalSeries.setName("Restored (without phase)");
 
         this.restoredWithPhaseSeries = new Series<>();
-        this.restoredWithPhaseSeries.setName("Restored with phase");
+        this.restoredWithPhaseSeries.setName("Restored");
 
         initToggleGroupListeners();
 
@@ -48,8 +48,8 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
 
         initEventHandlers();
 
+        guiModeWithoutPhaseCheckBox.setSelected(true);
         guiNormalModeCheckBox.setSelected(true);
-        guiModeWithPhaseCheckBox.setSelected(true);
 
         renderLock = false;
     }
@@ -133,7 +133,7 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
         guiSignalChart.getData().remove(restoredSignalSeries);
         guiRestoredSignalChart.getData().remove(restoredSignalSeries);
 
-        if (guiNormalModeCheckBox.isSelected()) {
+        if (guiModeWithoutPhaseCheckBox.isSelected()) {
 
             if (restoredSignalSupplier == null)
                 throw new IllegalStateException("supplier:<null>");
@@ -169,7 +169,7 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
         guiSignalChart.getData().remove(restoredWithPhaseSeries);
         guiRestoredSignalChart.getData().remove(restoredWithPhaseSeries);
 
-        if (guiModeWithPhaseCheckBox.isSelected()) {
+        if (guiNormalModeCheckBox.isSelected()) {
 
             if (restoredWithPhaseSignalSupplier == null)
                 throw new IllegalStateException("supplier:<null>");
@@ -240,8 +240,8 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
             .selectedProperty());
 
         guiRestoredSignalChart.legendVisibleProperty().bind(
-            guiNormalModeCheckBox.selectedProperty().and(
-                guiModeWithPhaseCheckBox.selectedProperty()
+            guiModeWithoutPhaseCheckBox.selectedProperty().and(
+                guiNormalModeCheckBox.selectedProperty()
             )
         );
     }
@@ -249,11 +249,11 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
     protected
     void initEventHandlers()
     {
-        guiNormalModeCheckBox.selectedProperty().addListener(o -> {
+        guiModeWithoutPhaseCheckBox.selectedProperty().addListener(o -> {
             impl_renderRestoredSignal();
         });
 
-        guiModeWithPhaseCheckBox.selectedProperty().addListener(o -> {
+        guiNormalModeCheckBox.selectedProperty().addListener(o -> {
             impl_renderRestoredWithPhaseSignal();
         });
     }
@@ -270,10 +270,10 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
     private RadioButton guiSeparatedViewRadioBtn;
 
     @FXML
-    private CheckBox guiNormalModeCheckBox;
+    private CheckBox guiModeWithoutPhaseCheckBox;
 
     @FXML
-    private CheckBox guiModeWithPhaseCheckBox;
+    private CheckBox guiNormalModeCheckBox;
 
     @FXML
     private LineChart<Integer, Double> guiSignalChart;
