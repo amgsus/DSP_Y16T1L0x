@@ -4,24 +4,43 @@ import dsplab.logic.MathUtils;
 import dsplab.logic.function.Function;
 import dsplab.logic.signal.Harmonic;
 
+import static dsplab.common.Const.ONE;
+import static java.lang.Math.sin;
+
 public class SawtoothFunction implements Function
 {
-    SawtoothFunction() {}
+    public SawtoothFunction()
+    {
+        setMaxK(32);
+        setModifier(2);
+    }
 
-    static Function instance = new SawtoothFunction();
-    public static Function getInstance() { return instance; }
+    public static Function newInstance() { return new SawtoothFunction(); }
 
-    public static final int N = 32;
+    protected int sumTo;
+    protected int ampModifier;
+
+    public
+    void setMaxK(int value)
+    {
+        this.sumTo = value;
+    }
+
+    public
+    void setModifier(int value)
+    {
+        this.ampModifier = value;
+    }
 
     @Override
-    public double calculate(Harmonic signHarm, double offset,
-        double resolution)
+    public double calculate(Harmonic h, double x, double period)
     {
-        double sum = MathUtils.sum(1, N, k -> Math.pow(-1, k) *
-            Math.sin(2 * Math.PI * k * signHarm.getFrequency() * offset /
-            resolution + Math.toRadians(signHarm.getPhase())) / k);
+        double a = h.getAmplitude();
+        double f = h.getFrequency();
+        double _2PiFxT = 2 * Math.PI * f * x / period;
 
-        return signHarm.getAmplitude() / 2 -
-            signHarm.getAmplitude() * sum / Math.PI;
+        double sum = MathUtils.sum(ONE, this.sumTo, k -> sin(_2PiFxT * k) / k);
+
+        return a / ampModifier - a * sum / Math.PI;
     }
 }

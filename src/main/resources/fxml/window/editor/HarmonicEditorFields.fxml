@@ -36,7 +36,7 @@
             <VBox spacing="2.0">
                <children>
                   <Label text="Amplitude (A):" />
-                  <TextField fx:id="uiAmplitudeField" maxWidth="1.7976931348623157E308" />
+                  <TextField fx:id="guiAmplitudeField" maxWidth="1.7976931348623157E308" />
                </children>
             </VBox>
             <VBox spacing="2.0">
@@ -44,7 +44,7 @@
                   <Label text="Phase (φ):" />
                   <HBox alignment="CENTER_LEFT" spacing="6.0">
                      <children>
-                        <TextField fx:id="uiPhaseField" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="guiPhaseField" HBox.hgrow="ALWAYS" />
                         <Label prefWidth="25.0" text="Deg" />
                      </children>
                   </HBox>
@@ -55,7 +55,7 @@
                   <Label text="Frequency (f):" />
                   <HBox alignment="CENTER_LEFT" spacing="6.0">
                      <children>
-                        <TextField fx:id="uiFrequencyField" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="guiFrequencyField" HBox.hgrow="ALWAYS" />
                         <Label prefWidth="25.0" text="Hz" />
                      </children>
                   </HBox>

@@ -25,7 +25,7 @@ public final class Functions implements FunctionFactory
             case Noise:
                 return NoiseFunction.getInstance();
             case Sawtooth:
-                return SawtoothFunction.getInstance();
+                return SawtoothFunction.newInstance();
 
             default:
                 final String s = "'%s' is not supported by the factory";

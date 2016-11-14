@@ -4,7 +4,6 @@ import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
 import dsplab.common.Resources;
 import dsplab.gui.ctrl.HarmonicEditorController;
-import dsplab.gui.util.Hei;
 import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.enums.Waveform;
 import javafx.beans.binding.Bindings;
@@ -28,6 +27,8 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
             throw new ControllerInitException(CTRL_INIT_FAILED_MSG, cause);
         }
 
+        initBindings();
+
         guiWaveformComboBox.getItems().addAll(Waveform.values());
     }
 
@@ -40,11 +41,11 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
     {
         if (data != null) {
             StringConverter<Number> cnv = new NumberStringConverter();
-            Bindings.bindBidirectional(uiAmplitudeField.textProperty(),
+            Bindings.bindBidirectional(guiAmplitudeField.textProperty(),
                 data.getAmplitudeProperty(), cnv);
-            Bindings.bindBidirectional(uiPhaseField.textProperty(),
+            Bindings.bindBidirectional(guiPhaseField.textProperty(),
                 data.getPhaseProperty(), cnv);
-            Bindings.bindBidirectional(uiFrequencyField.textProperty(),
+            Bindings.bindBidirectional(guiFrequencyField.textProperty(),
                 data.getFrequencyProperty(), cnv);
             guiWaveformComboBox.valueProperty().bindBidirectional(
                 data.getWaveformProperty()
@@ -52,11 +53,11 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
             this.harmonic = data;
         } else {
             if (harmonic != null) {
-                Bindings.unbindBidirectional(uiAmplitudeField.textProperty(),
+                Bindings.unbindBidirectional(guiAmplitudeField.textProperty(),
                     harmonic.getAmplitudeProperty());
-                Bindings.unbindBidirectional(uiPhaseField.textProperty(),
+                Bindings.unbindBidirectional(guiPhaseField.textProperty(),
                     harmonic.getPhaseProperty());
-                Bindings.unbindBidirectional(uiFrequencyField.textProperty(),
+                Bindings.unbindBidirectional(guiFrequencyField.textProperty(),
                     harmonic.getFrequencyProperty());
                 guiWaveformComboBox.valueProperty().unbind();
                 harmonic = null;
@@ -73,15 +74,25 @@ public class HarmonicEditorControllerImpl extends SimpleController implements
 
     // -------------------------------------------------------------------- //
 
+    protected
+    void initBindings()
+    {
+        guiPhaseField.disableProperty().bind(
+            guiWaveformComboBox.valueProperty().isEqualTo(Waveform.Sawtooth)
+        );
+    }
+
+    // -------------------------------------------------------------------- //
+
     @FXML
     private ComboBox<Waveform> guiWaveformComboBox;
 
     @FXML
-    private TextField uiAmplitudeField;
+    private TextField guiAmplitudeField;
 
     @FXML
-    private TextField uiPhaseField;
+    private TextField guiPhaseField;
 
     @FXML
-    private TextField uiFrequencyField;
+    private TextField guiFrequencyField;
 }
