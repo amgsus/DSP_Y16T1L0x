@@ -111,8 +111,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                 asyncResults.add(_pool_.submit(() -> {
 
-                    // * Make calculations for each 'n' * //
-
                     // Task I
 
                     Generator g = GeneratorFactory.getFactory()
@@ -129,7 +127,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                     g.setSampleCount(this.sampleCount);
                     g.setPeriodCount(this.periodCount);
 
-                    double[] srcSignalData = g.run(); // Generate all points
+                    double[] srcSignalData = g.run(); // Generate signal
 
                     if (!extended)
                     {
@@ -137,7 +135,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                             AlgorithmResultBuilder.newInstance().newObject();
 
                         AlgorithmResult result = resultBuilder
-                            .setAmplitudes(srcSignalData)
+                            .setData(srcSignalData)
                             .setSignal(signal)
                             .setSampleCount(this.sampleCount)
                             .setPeriodCount(this.periodCount)
@@ -147,7 +145,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         return result;
                     }
 
-                    // Task II
+                    // Task 2
 
                     RMSCalculator rmsACalc = RMSCalculatorFactory.getFactory()
                         .giveMeSomethingLike(RMSFormula.A);
@@ -167,16 +165,16 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         rmsB[i] = rmsBCalc.calculateRMS();
                     }
 
-                    double[] ftAmplitudes = new double[srcSignalData.length];
+                    double[] rmsAmplitudes = new double[srcSignalData.length];
 
                     FourierTransform ft = FourierTransformFactory.getFactory()
                         .newFFTImplementation(FFTImpl.DISCRETE);
 
                     ft.setSpectrum(srcSignalData);
 
-                    for (int i = 1; i < ftAmplitudes.length; i++) { // ToDo
+                    for (int i = 1; i < rmsAmplitudes.length; i++) { // ToDo
                         ft.setRange(i);
-                        ftAmplitudes[i] = ft.calculateAmplitude();
+                        rmsAmplitudes[i] = ft.calculateAmplitude();
                     }
 
                     // Task 3
@@ -197,7 +195,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                     double[] restoredWithPhaseSignal =
                         signalRestorer.restore();
 
-                    // Task IV
+                    // Task 4
 
                     Signal noisy = cloneSignal(signal);
 
@@ -262,23 +260,21 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                     double[] pblPhaseSpectrum
                         = ft.calculatePhaseSpectrum();
 
-                    // * OK * //
+                    // * The calculations are done * //
 
                     AlgorithmResultBuilder resultBuilder =
                         AlgorithmResultBuilder.newInstance().newObject();
 
                     AlgorithmResult result = resultBuilder
-                        .setAmplitudes(srcSignalData)
+                        .setSampleCount(sampleCount)
+                        .setPeriodCount(periodCount)
+                        .setData(srcSignalData)
                         .setSignal(signal)
                         .setAmplitudeSpectrum(ampSpectrum)
                         .setPhaseSpectrum(phsSpectrum)
-                        .setRestoredSignal(restoredSignal)
-                        .setRestoredWithPhaseSignal(restoredWithPhaseSignal)
                         .setRMSByFormulaA(rmsA)
                         .setRMSByFormulaB(rmsB)
-                        .setSampleCount(this.sampleCount)
-                        .setPeriodCount(this.periodCount)
-                        .setFtAmplitudes(ftAmplitudes)
+                        .setRMSAmplitudes(rmsAmplitudes)
                         .setNoisySignal(noisySignal)
                         .setNoisyAmplitudeSpectrum(noisyAmplitudeSpectrum)
                         .setNoisyPhaseSpectrum(noisyPhaseSpectrum)
@@ -291,6 +287,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                         .setPblSignal(pbl)
                         .setPblAmplitudeSpectrum(pblAmplitudeSpectrum)
                         .setPblPhaseSpectrum(pblPhaseSpectrum)
+                        .setRestoredSignal(restoredSignal)
+                        .setRestoredWithPhaseSignal(restoredWithPhaseSignal)
                         .build();
 
                     latch.countDown();
@@ -302,7 +300,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
             // * Wait until all calculations are done * //
 
-            latch.await(/* 5, TimeUnit.SECONDS */);
+            latch.await();
 
             // * Collect calculation results into a single list  * //
 
@@ -333,8 +331,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
             this.results = resultList;
 
-        } catch (InterruptedException intEx) {
-            // Ignore
         } catch (Exception e) {
             // ...
         } finally {
@@ -358,7 +354,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
         }
 
         final String msg = "Thread '%s' is being safely stopped...";
-//        LOG.d(msg, Thread.currentThread().getName());
     }
 
     @Override

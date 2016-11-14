@@ -27,9 +27,9 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
     // -------------------------------------------------------------------- //
 
     public
-    AlgorithmResultBuilder setAmplitudes(double[] amplitudes)
+    AlgorithmResultBuilder setData(double[] amplitudes)
     {
-        obj.amplitudes = amplitudes;
+        obj.data = amplitudes;
         return this;
     }
 
@@ -55,9 +55,9 @@ public class AlgorithmResultBuilder implements Builder<AlgorithmResult,
     }
 
     public
-    AlgorithmResultBuilder setFtAmplitudes(double[] values)
+    AlgorithmResultBuilder setRMSAmplitudes(double[] values)
     {
-        obj.ftAmplitudes = values;
+        obj.rmsAmplitudes = values;
         return this;
     }
 

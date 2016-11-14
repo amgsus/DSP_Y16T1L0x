@@ -19,7 +19,6 @@ public class MainStageImpl extends StageCommImpl<MainController> implements
                 = Controllers.getFactory().giveMeSomethingLike(MAIN);
             init(mainCtrl);
             setTitle(Const.APPTITLE);
-            setMaximized(true);
         } catch (Throwable cause) {
             throw new StageInitException(ERR_INIT_FAILED, cause);
         }

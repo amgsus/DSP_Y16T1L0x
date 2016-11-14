@@ -221,7 +221,7 @@ public class MainCtrlImpl extends SimpleController implements
             new LineChartRenderAnimation<>(guiChart);
 
         animation.setValueYSupplier((seriesIndex, dataIndex) ->
-            resultList.get(seriesIndex).getAmplitudes()[dataIndex]);
+            resultList.get(seriesIndex).getData()[dataIndex]);
         animation.setOnStop(onRenderAnimationDone);
 
         int sampleCount = resultList.get(0).getSampleCount();
@@ -446,12 +446,6 @@ public class MainCtrlImpl extends SimpleController implements
     }
 
     private
-    void lockControls(boolean lock)
-    {
-        // ...
-    }
-
-    private
     void impl_updateText(String text)
     {
         waitIndicator.setText(text);
@@ -665,8 +659,6 @@ public class MainCtrlImpl extends SimpleController implements
         guiTimelineSetupButton.onActionProperty().bind(
             guiTimelineSetupMenuItem.onActionProperty()
         );
-
-        // ...
     }
 
     // -------------------------------------------------------------------- //
@@ -720,7 +712,7 @@ public class MainCtrlImpl extends SimpleController implements
             crosslineVrt.setStartX(mouseInRegion.getX());
             crosslineVrt.setEndX(mouseInRegion.getX());
 
-            event.consume(); // ???
+            event.consume();
         });
 
         region.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {

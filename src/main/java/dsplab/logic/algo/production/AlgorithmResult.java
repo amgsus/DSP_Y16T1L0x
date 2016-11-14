@@ -1,7 +1,6 @@
 package dsplab.logic.algo.production;
 
 import dsplab.logic.signal.Signal;
-import javafx.geometry.Point2D;
 
 /**
  * The algorithm produces a result for each signal.
@@ -11,17 +10,47 @@ import javafx.geometry.Point2D;
  */
 public class AlgorithmResult
 {
-    public AlgorithmResult()
-    {
-    }
+    public AlgorithmResult() {}
 
     public static AlgorithmResult newInstance() { return new
         AlgorithmResult(); }
 
     // -------------------------------------------------------------------- //
 
+    int sampleCount;
+    int periodCount;
+
+    public
+    int getSampleCount()
+    {
+        return sampleCount;
+    }
+
+    public
+    int getPeriodCount()
+    {
+        return periodCount;
+    }
+
+    // -------------------------------------------------------------------- //
+
+    Signal signal;
+
+    double[] data;
     double[] amplitudeSpectrum;
     double[] phaseSpectrum;
+
+    public
+    Signal getSignal()
+    {
+        return signal;
+    }
+
+    public
+    double[] getData()
+    {
+        return data;
+    }
 
     public
     double[] getAmplitudeSpectrum()
@@ -33,6 +62,31 @@ public class AlgorithmResult
     double[] getPhaseSpectrum()
     {
         return this.phaseSpectrum;
+    }
+
+    // -------------------------------------------------------------------- //
+
+    double[] rmsA;
+    double[] rmsB;
+
+    double[] rmsAmplitudes;
+
+    public
+    double[] getRMSByFormulaA()
+    {
+        return rmsA;
+    }
+
+    public
+    double[] getRMSByFormulaB()
+    {
+        return rmsB;
+    }
+
+    public
+    double[] getRMSAmplitudes()
+    {
+        return rmsAmplitudes;
     }
 
     // -------------------------------------------------------------------- //
@@ -54,36 +108,6 @@ public class AlgorithmResult
 
     // -------------------------------------------------------------------- //
 
-    Signal signal;
-    double[] amplitudes;
-
-    double[] rmsA;      // 0..M
-    double[] rmsB;      // 0..M
-
-    double[] ftAmplitudes;
-
-    int sampleCount;
-    int periodCount;
-
-    // -------------------------------------------------------------------- //
-
-    public
-    double[] getRMSByFormulaA()
-    {
-        return rmsA;
-    }
-
-    public
-    double[] getRMSByFormulaB()
-    {
-        return rmsB;
-    }
-
-    public
-    double[] getFtAmplitudes() { return ftAmplitudes; }
-
-    // -------------------------------------------------------------------- //
-
     double[] noisySignal;
     double[] noisyAmplitudeSpectrum;
     double[] noisyPhaseSpectrum;
@@ -101,98 +125,74 @@ public class AlgorithmResult
     double[] parabolicSmoothedSignalPhaseSpectrum;
 
     public
-    double[] getIV_NoisySignal()
+    double[] getNoisySignal()
     {
         return noisySignal;
     }
 
     public
-    double[] getIV_NoisyAmplitudeSpectrum()
+    double[] getNoisyAmplitudeSpectrum()
     {
         return noisyAmplitudeSpectrum;
     }
 
     public
-    double[] getIV_NoisyPhaseSpectrum()
+    double[] getNoisyPhaseSpectrum()
     {
         return noisyPhaseSpectrum;
     }
 
     public
-    double[] getIV_SlidingWindowSmoothedSignal()
+    double[] getSlidingWindowSmoothedSignal()
     {
         return slidingWindowSmoothedSignal;
     }
 
     public
-    double[] getIV_SlidingWindowSmoothedSignalAmplitudeSpectrum()
+    double[] getSlidingWindowSmoothedSignalAmplitudeSpectrum()
     {
         return slidingWindowSmoothedSignalAmplitudeSpectrum;
     }
 
     public
-    double[] getIV_SlidingWindowSmoothedSignalPhaseSpectrum()
+    double[] getSlidingWindowSmoothedSignalPhaseSpectrum()
     {
         return slidingWindowSmoothedSignalPhaseSpectrum;
     }
 
     public
-    double[] getIV_ParabolicSmoothedSignal()
+    double[] getParabolicSmoothedSignal()
     {
         return parabolicSmoothedSignal;
     }
 
     public
-    double[] getIV_ParabolicSmoothedSignalAmplitudeSpectrum()
+    double[] getParabolicSmoothedSignalAmplitudeSpectrum()
     {
         return parabolicSmoothedSignalAmplitudeSpectrum;
     }
 
     public
-    double[] getIV_ParabolicSmoothedSignalPhaseSpectrum()
+    double[] getParabolicSmoothedSignalPhaseSpectrum()
     {
         return parabolicSmoothedSignalPhaseSpectrum;
     }
 
     public
-    double[] getIV_MedianSmoothedSignal()
+    double[] getMedianSmoothedSignal()
     {
         return medianSmoothedSignal;
     }
 
     public
-    double[] getIV_MedianSmoothedSignalAmplitudeSpectrum()
+    double[] getMedianSmoothedSignalAmplitudeSpectrum()
     {
         return medianSmoothedSignalAmplitudeSpectrum;
     }
 
     public
-    double[] getIV_MedianSmoothedSignalPhaseSpectrum()
+    double[] getMedianSmoothedSignalPhaseSpectrum()
     {
         return medianSmoothedSignalPhaseSpectrum;
-    }
-
-    public
-    double[] getAmplitudes()
-    {
-        return amplitudes;
-    }
-
-    public
-    Signal getSignal()
-    {
-        return signal;
-    }
-
-    public
-    int getSampleCount()
-    {
-        return sampleCount;
-    }
-
-    public
-    int getPeriodCount()
-    {
-        return periodCount;
     }
 }

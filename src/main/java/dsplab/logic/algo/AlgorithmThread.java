@@ -13,9 +13,7 @@ import java.util.List;
  */
 public interface AlgorithmThread extends StartFinishDelegates
 {
-    /*
-     * Input.
-     */
+    List<AlgorithmResult> getResults();
 
     int getSampleCount();
     int getPeriodCount();
@@ -29,16 +27,6 @@ public interface AlgorithmThread extends StartFinishDelegates
     void setPhaseModifier(ValueModifier modifier);
     void setFrequencyModifier(ValueModifier modifier);
 
-    /*
-     * Output.
-     */
-
-    //List<double[]> getAmplitudes();
-    List<AlgorithmResult> getResults();
-
-    void start();
-
-    //void setProcessingRegion(double fromX, double toX);
-
     void setExtendedCalculationEnabled(boolean enabled);
+    void start();
 }

@@ -89,58 +89,70 @@ public class EachSignalTabControllerImpl extends SimpleController implements
 
         int constK = algoResult.getSampleCount() / 4; // Variant
 
-        spectrums.setAmplitudeSpectrumData(algoResult::getAmplitudeSpectrum);
-        spectrums.setPhaseSpectrumData(algoResult::getPhaseSpectrum);
+        spectrums.setAmplitudeSpectrumData(
+            algoResult::getAmplitudeSpectrum
+        );
+        spectrums.setPhaseSpectrumData(
+            algoResult::getPhaseSpectrum
+        );
         spectrums.renderAll();
 
         rmsChartController1.setK(constK);
-        rmsChartController1.renderRMSValues(algoResult.getRMSByFormulaA());
-        rmsChartController1.renderAmplitudeValues(algoResult.getFtAmplitudes());
+        rmsChartController1.renderRMSValues(
+            algoResult.getRMSByFormulaA()
+        );
+        rmsChartController1.renderAmplitudeValues(
+            algoResult.getRMSAmplitudes()
+        );
 
         rmsChartController2.setK(constK);
-        rmsChartController2.renderRMSValues(algoResult.getRMSByFormulaB());
-        rmsChartController2.renderAmplitudeValues(algoResult.getFtAmplitudes());
+        rmsChartController2.renderRMSValues(
+            algoResult.getRMSByFormulaB()
+        );
+        rmsChartController2.renderAmplitudeValues(
+            algoResult.getRMSAmplitudes()
+        );
 
         smoothChartController.setSignalSupplier(
-            algoResult::getIV_NoisySignal
+            algoResult::getNoisySignal
         );
         smoothChartController.setAmplitudeSpectrumSupplier(
-            algoResult::getIV_NoisyAmplitudeSpectrum
+            algoResult::getNoisyAmplitudeSpectrum
         );
         smoothChartController.setPhaseSpectrumSupplier(
-            algoResult::getIV_NoisyPhaseSpectrum
+            algoResult::getNoisyPhaseSpectrum
         );
         smoothChartController.setSliSignalSupplier(
-            algoResult::getIV_SlidingWindowSmoothedSignal
+            algoResult::getSlidingWindowSmoothedSignal
         );
         smoothChartController.setSliAmplitudeSpectrumSupplier(
-            algoResult::getIV_SlidingWindowSmoothedSignalAmplitudeSpectrum
+            algoResult::getSlidingWindowSmoothedSignalAmplitudeSpectrum
         );
         smoothChartController.setSliPhaseSpectrumSupplier(
-            algoResult::getIV_SlidingWindowSmoothedSignalPhaseSpectrum
+            algoResult::getSlidingWindowSmoothedSignalPhaseSpectrum
         );
         smoothChartController.setMdnSignalSupplier(
-            algoResult::getIV_MedianSmoothedSignal
+            algoResult::getMedianSmoothedSignal
         );
         smoothChartController.setMdnAmplitudeSpectrumSupplier(
-            algoResult::getIV_MedianSmoothedSignalAmplitudeSpectrum
+            algoResult::getMedianSmoothedSignalAmplitudeSpectrum
         );
         smoothChartController.setMdnPhaseSpectrumSupplier(
-            algoResult::getIV_MedianSmoothedSignalPhaseSpectrum
+            algoResult::getMedianSmoothedSignalPhaseSpectrum
         );
         smoothChartController.setPblSignalSupplier(
-            algoResult::getIV_ParabolicSmoothedSignal
+            algoResult::getParabolicSmoothedSignal
         );
         smoothChartController.setPblAmplitudeSpectrumSupplier(
-            algoResult::getIV_ParabolicSmoothedSignalAmplitudeSpectrum
+            algoResult::getParabolicSmoothedSignalAmplitudeSpectrum
         );
         smoothChartController.setPblPhaseSpectrumSupplier(
-            algoResult::getIV_ParabolicSmoothedSignalPhaseSpectrum
+            algoResult::getParabolicSmoothedSignalPhaseSpectrum
         );
         smoothChartController.renderAll();
 
         restoredSignalChartCtrl.setSignalSupplier(
-            algoResult::getAmplitudes
+            algoResult::getData
         );
         restoredSignalChartCtrl.setRestoredSignalSupplier(
             algoResult::getRestoredSignal
