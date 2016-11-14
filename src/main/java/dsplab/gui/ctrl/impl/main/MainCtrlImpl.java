@@ -26,6 +26,7 @@ import dsplab.logic.gen.alg.GenID;
 import dsplab.logic.gen.modifier.ValueModifier;
 import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
+import dsplab.logic.signal.enums.Waveform;
 import dsplab.logic.signal.util.SigUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -101,19 +102,6 @@ public class MainCtrlImpl extends SimpleController implements
 
         initCrossOverChart();
         initGenList();
-
-        // Test
-
-        Signal s = new Signal("Signal #1", Color.RED);
-        s.getHarmonics().add(new Harmonic(4.0, 120, 5));
-        s.getHarmonics().add(new Harmonic(1.5, 0, 2));
-
-        signalList.add(s);
-
-        s = new Signal("Signal #2", Color.GREEN);
-        s.getHarmonics().add(new Harmonic(3.0, 0, 3));
-
-        signalList.add(s);
     }
 
     /**
@@ -299,7 +287,6 @@ public class MainCtrlImpl extends SimpleController implements
 
             showWaitOverlay();
             updateWaitOverlay("The calculations are in progress.");
-            this.guiOutdatedLabel.setVisible(false);
         });
     };
 
@@ -357,7 +344,7 @@ public class MainCtrlImpl extends SimpleController implements
         NumberAxis xAxis = cast(guiChart.getXAxis());
         xAxis.setUpperBound(samples);
 
-        guiChartHScrollBar.setMax(samples * periods);
+        guiOutdatedLabel.setVisible(false);
 
         if (this.signalList.size() == 0) {
             return; // Cleaned up. Exit if no signals are specified.
@@ -541,13 +528,7 @@ public class MainCtrlImpl extends SimpleController implements
             boolean success = stage.show(signalList);
 
             if (success) {
-
-                List<Signal> modlist = stage.getModifiedList();
-
-                this.signalList.clear();
-                SigUtils.cloneSignalList(modlist, this.signalList);
-
-                start();
+                toggleOutdated();
             }
         });
 
