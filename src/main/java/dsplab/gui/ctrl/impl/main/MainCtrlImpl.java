@@ -347,6 +347,12 @@ public class MainCtrlImpl extends SimpleController implements
         guiOutdatedLabel.setVisible(false);
 
         if (this.signalList.size() == 0) {
+
+            Alert a = new Alert(AlertType.INFORMATION);
+            a.setHeaderText(null);
+            a.setContentText("Hei! Signal list is empty...");
+            a.show();
+
             return; // Cleaned up. Exit if no signals are specified.
         }
 
