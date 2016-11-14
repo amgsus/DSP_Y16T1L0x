@@ -141,12 +141,6 @@ public class TimelineSetupControllerImpl extends SimpleController implements
     private ComboBox<Integer> guiSamplesCombo;
 
     @FXML
-    private CheckBox guiPointsVisibleCheckBox;
-
-    @FXML
-    private CheckBox guiAnimationEnabledCheckBox;
-
-    @FXML
     private Button guiOKButton;
 
     @FXML
