@@ -11,15 +11,14 @@ public class CosineFunction implements Function
     public static Function getInstance() { return instance; }
 
     @Override
-    public double calculate(Harmonic signHarm, double offset,
-        double resolution)
+    public double calculate(Harmonic h, double x, double period)
     {
-        double a = signHarm.getAmplitude();
-        double p = signHarm.getPhase();
-        double f = signHarm.getFrequency();
+        double a = h.getAmplitude();
+        double p = h.getPhase();
+        double f = h.getFrequency();
 
         p = Math.toRadians(p);
 
-        return a * Math.cos(2 * Math.PI * offset * f / resolution + p);
+        return a * Math.cos(2 * Math.PI * x * f / period + p);
     }
 }

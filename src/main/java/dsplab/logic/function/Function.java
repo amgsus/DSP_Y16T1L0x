@@ -4,5 +4,5 @@ import dsplab.logic.signal.Harmonic;
 
 public interface Function
 {
-    double calculate(Harmonic signHarm, double offset, double resolution);
+    double calculate(Harmonic h, double x, double period);
 }
