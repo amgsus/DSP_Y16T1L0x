@@ -39,4 +39,6 @@ public interface AlgorithmThread extends StartFinishDelegates
     void start();
 
     //void setProcessingRegion(double fromX, double toX);
+
+    void setExtendedCalculationEnabled(boolean enabled);
 }

@@ -23,9 +23,7 @@ import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.AlgorithmThreadBuilder;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.gen.alg.GenID;
-import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
-import dsplab.logic.signal.enums.Waveform;
 import dsplab.logic.signal.util.SigUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -44,7 +42,6 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -307,7 +304,7 @@ public class MainCtrlImpl extends SimpleController implements
         );
 
         this.statusBarController.setRenderedPercentage(this.guiScaleComboBox
-                .getValue().getValue());
+            .getValue().getValue());
     };
 
     /*
@@ -353,9 +350,10 @@ public class MainCtrlImpl extends SimpleController implements
 
             renderSeries(results);
 
-            this.updateWaitOverlay("Initializing tabs for each signal...");
-
-            createTabsForEachAlgoResult(results);
+            if (this.extended) {
+                this.updateWaitOverlay("Creating tabs...");
+                createTabsForEachAlgoResult(results);
+            }
 
             this.updateWaitOverlay("Rendering...");
 
@@ -365,6 +363,8 @@ public class MainCtrlImpl extends SimpleController implements
             this.algoThread = null;
         });
     };
+
+    private boolean extended;
 
     private
     void start()
@@ -397,6 +397,8 @@ public class MainCtrlImpl extends SimpleController implements
             return; // Cleaned up. Exit if no signals are specified.
         }
 
+        extended = guiExtendedCalculationsMenuItem.isSelected();
+
         statusBarController.setStatusText("Working...");
         updateWaitOverlay("Preparing!");
 
@@ -407,6 +409,7 @@ public class MainCtrlImpl extends SimpleController implements
             .setSampleCount(samples)
             .setPeriodCount(periods)
             .setGenerator(genAlgo)
+            .setExtendedCalculations(extended)
             .build();
 
         algoThread.start();
@@ -825,4 +828,7 @@ public class MainCtrlImpl extends SimpleController implements
 
     @FXML
     private Button guiTimelineSetupButton;
+
+    @FXML
+    private CheckMenuItem guiExtendedCalculationsMenuItem;
 }

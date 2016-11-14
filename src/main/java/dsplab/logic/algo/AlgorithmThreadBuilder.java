@@ -87,6 +87,13 @@ public final class AlgorithmThreadBuilder implements
         return this;
     }
 
+    public
+    AlgorithmThreadBuilder setExtendedCalculations(boolean enabled)
+    {
+        thread.setExtendedCalculationEnabled(enabled);
+        return this;
+    }
+
     // -------------------------------------------------------------------- //
 
     @Override

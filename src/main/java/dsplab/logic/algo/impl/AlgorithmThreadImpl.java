@@ -66,6 +66,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     private ValueModifier phaseModifier = null;
     private ValueModifier frequencyModifier = null;
 
+    private boolean extended = true;
+
     // --------------------------------------------------------------------- //
 
     @Override
@@ -128,6 +130,22 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
                     g.setPeriodCount(this.periodCount);
 
                     double[] srcSignalData = g.run(); // Generate all points
+
+                    if (!extended)
+                    {
+                        AlgorithmResultBuilder resultBuilder =
+                            AlgorithmResultBuilder.newInstance().newObject();
+
+                        AlgorithmResult result = resultBuilder
+                            .setAmplitudes(srcSignalData)
+                            .setSignal(signal)
+                            .setSampleCount(this.sampleCount)
+                            .setPeriodCount(this.periodCount)
+                            .build();
+
+                        latch.countDown();
+                        return result;
+                    }
 
                     // Task II
 
@@ -485,5 +503,12 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     void setFrequencyModifier(ValueModifier modifier)
     {
         this.frequencyModifier = modifier;
+    }
+
+    @Override
+    public
+    void setExtendedCalculationEnabled(boolean enabled)
+    {
+        this.extended = enabled;
     }
 }
