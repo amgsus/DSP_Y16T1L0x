@@ -23,7 +23,9 @@ import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.AlgorithmThreadBuilder;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.gen.alg.GenID;
+import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
+import dsplab.logic.signal.enums.Waveform;
 import dsplab.logic.signal.util.SigUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -91,12 +93,11 @@ public class MainCtrlImpl extends SimpleController implements
         guiChart.getStylesheets().add(Resources.CHART_SYMBOL_STYLESHEET);
 
         guiScaleComboBox.getItems().addAll(
-            new Percentage(0.10), new Percentage(0.25), new Percentage(0.50),
-            new Percentage(0.75), new Percentage(1.00), new Percentage(1.50),
-            new Percentage(2.00), new Percentage(2.50), new Percentage(3.00)
+            new Percentage(0.125), new Percentage(0.25), new Percentage(0.50),
+            new Percentage(0.750), new Percentage(1.00), new Percentage(1.50),
+            new Percentage(2.000), new Percentage(2.50), new Percentage(3.00)
         );
         guiScaleComboBox.getSelectionModel().select(4); // 1.0
-        guiScaleComboBox.valueProperty().addListener(o -> refreshChart(false));
 
         initCrossOverChart();
         initGenList();
@@ -197,6 +198,9 @@ public class MainCtrlImpl extends SimpleController implements
         return guiChart.getData();
     }
 
+    private int totalSamples = 0;
+    private int period = 0;
+
     /**
      * <b>Note:</b> This method returns immediately after the animation
      * has been started. {@code onRenderAnimationDone} is called after the
@@ -223,16 +227,51 @@ public class MainCtrlImpl extends SimpleController implements
         animation.setOnStop(onRenderAnimationDone);
 
         int sampleCount = resultList.get(0).getSampleCount();
-        int periodCount = resultList.get(0).getPeriodCount();
+
+        period = resultList.get(0).getSampleCount();
+        totalSamples = sampleCount * resultList.get(0).getPeriodCount();
 
         int chartSize = (int) (sampleCount *
             this.guiScaleComboBox.getValue().getValue());
 
-        NumberAxis xAxis = cast(this.guiChart.getXAxis());
-        xAxis.setUpperBound(chartSize);
+        NumberAxis axisX = cast(this.guiChart.getXAxis());
+        axisX.setLowerBound(0);
+        axisX.setUpperBound(chartSize);
 
-        animation.setDataCount(Math.min(chartSize, sampleCount * periodCount));
+        updateTickCount();
+        updateHScrollProperties();
+
+//      animation.setDataCount(Math.min(chartSize, sampleCount * periodCount));
+        animation.setDataCount(totalSamples);
+        animation.setOffset(0); // Always
         animation.start();
+    }
+
+    private
+    void updateTickCount()
+    {
+        NumberAxis axisX = cast(this.guiChart.getXAxis());
+
+        int w = (int) axisX.getUpperBound() - (int) axisX.getLowerBound();
+        int tickUnit = w != 0 ? w / Math.min(8, w / 8) : 64;
+
+        axisX.setTickUnit(tickUnit);
+    }
+
+    private
+    void updateHScrollProperties()
+    {
+        NumberAxis axisX = cast(this.guiChart.getXAxis());
+
+        int chartSize = (int) axisX.getUpperBound() -
+            (int) axisX.getLowerBound();
+
+        guiChartHScrollBar.setMax((totalSamples - chartSize) /
+            (int) axisX.getTickUnit());
+        guiChartHScrollBar.setBlockIncrement(chartSize /
+            (int) axisX.getTickUnit());
+        guiChartHScrollBar.setValue((int) axisX.getLowerBound() /
+            (int) axisX.getTickUnit());
     }
 
     // -------------------------------------------------------------------- //
@@ -519,9 +558,7 @@ public class MainCtrlImpl extends SimpleController implements
         /*
          * Recalculates values and renders the graphic.
          */
-        guiRefreshButton.setOnAction(event -> {
-            refreshChart(true);
-        });
+        guiRefreshButton.setOnAction(event -> refreshChart(true));
 
         /*
          * Shows a Signal List Editor stage.
@@ -565,6 +602,31 @@ public class MainCtrlImpl extends SimpleController implements
             if (setup.showModal(this.timelineProperties)) {
                 toggleOutdated();
             }
+        });
+
+        NumberAxis axisX = cast(guiChart.getXAxis());
+
+        guiChartHScrollBar.valueProperty().addListener(o -> {
+            int offset = (int) guiChartHScrollBar.getValue();
+            int window = (int) axisX.getUpperBound() -
+                (int) axisX.getLowerBound();
+
+            axisX.setLowerBound(offset * (int) axisX.getTickUnit());
+            axisX.setUpperBound(offset * (int) axisX.getTickUnit() + window);
+        });
+
+        guiScaleComboBox.valueProperty().addListener(o -> {
+
+            double scale = guiScaleComboBox.getValue().getValue();
+            int window = (int) (this.period * scale);
+            int up = (int) (axisX.getLowerBound() + window);
+
+            axisX.setLowerBound(Math.min(totalSamples - window,
+                (int) axisX.getLowerBound()));
+            axisX.setUpperBound(Math.min(up, totalSamples));
+
+            updateTickCount();
+            updateHScrollProperties();
         });
     }
 

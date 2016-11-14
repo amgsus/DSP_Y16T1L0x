@@ -163,7 +163,7 @@
                                           <NumberAxis animated="false" forceZeroInRange="false" label="x(n)" lowerBound="-5.0" side="LEFT" upperBound="5.0" />
                                        </yAxis>
                                     </LineChart>
-                                    <ScrollBar fx:id="guiChartHScrollBar" />
+                                    <ScrollBar fx:id="guiChartHScrollBar" blockIncrement="5.0" max="15.0" visibleAmount="1.0" />
                                  </children>
                               </VBox>
                               <Label fx:id="guiOutdatedLabel" alignment="CENTER" rotate="-30.0" text="OUTDATED" textFill="#e68c8c99" visible="false" StackPane.alignment="CENTER">
