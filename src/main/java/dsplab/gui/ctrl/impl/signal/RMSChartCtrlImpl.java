@@ -66,6 +66,11 @@ public class RMSChartCtrlImpl extends SimpleController implements
         axisX.setUpperBound(values.length);
         axisX.setLowerBound(this.K);
 
+        int tickUnit = values.length - this.K;
+        tickUnit = tickUnit / Math.min(8, tickUnit / 8);
+
+        axisX.setTickUnit(tickUnit);
+
         List<XYChart.Series<Integer, Double>> data
             = this.guiRMSeChart.getData();
 
@@ -91,6 +96,11 @@ public class RMSChartCtrlImpl extends SimpleController implements
         NumberAxis axisX = Hei.cast(this.guiAeChart.getXAxis());
         axisX.setUpperBound(values.length);
         axisX.setLowerBound(this.K);
+
+        int tickUnit = values.length - this.K;
+        tickUnit = tickUnit / Math.min(8, tickUnit / 8);
+
+        axisX.setTickUnit(tickUnit);
 
         List<XYChart.Series<Integer, Double>> data
             = this.guiAeChart.getData();

@@ -64,7 +64,7 @@
       </VBox>
       <LineChart fx:id="guiRMSeChart" animated="false" createSymbols="false" legendVisible="false" title="RMSe (M)" HBox.hgrow="ALWAYS">
          <xAxis>
-            <NumberAxis animated="false" autoRanging="false" minorTickCount="4" side="BOTTOM" tickUnit="64.0" upperBound="512.0" />
+            <NumberAxis animated="false" autoRanging="false" minorTickCount="8" side="BOTTOM" tickUnit="128.0" upperBound="512.0" />
          </xAxis>
          <yAxis>
             <NumberAxis animated="false" forceZeroInRange="false" lowerBound="-1.0" side="LEFT" tickUnit="0.1" upperBound="1.0" />
@@ -72,7 +72,7 @@
       </LineChart>
       <LineChart fx:id="guiAeChart" animated="false" createSymbols="false" layoutX="185.0" layoutY="10.0" legendVisible="false" title="Ae (M)" HBox.hgrow="ALWAYS">
          <xAxis>
-            <NumberAxis animated="false" autoRanging="false" minorTickCount="4" side="BOTTOM" tickUnit="64.0" upperBound="512.0" />
+            <NumberAxis animated="false" autoRanging="false" minorTickCount="8" side="BOTTOM" tickUnit="128.0" upperBound="512.0" />
          </xAxis>
          <yAxis>
             <NumberAxis animated="false" forceZeroInRange="false" lowerBound="-1.0" side="LEFT" tickUnit="0.1" upperBound="1.0" />

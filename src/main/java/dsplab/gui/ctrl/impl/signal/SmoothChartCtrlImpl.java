@@ -178,6 +178,9 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         NumberAxis axisX = cast(this.guiSignalChart.getXAxis());
         axisX.setUpperBound(data.length);
 
+        int tickUnit = data.length / Math.min(8, data.length / 8);
+        axisX.setTickUnit(tickUnit);
+
         this.guiSignalChart.getData().remove(signalSeries);
         signalSeries.getData().clear();
 

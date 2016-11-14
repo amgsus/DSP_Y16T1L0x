@@ -93,8 +93,12 @@ public class SignalRestoreCtrlImpl extends SimpleController implements
         NumberAxis axisX = cast(guiRestoredSignalChart.getXAxis());
         axisX.setUpperBound(dataSize);
 
+        int tickUnit = dataSize / Math.min(8, dataSize / 8);
+        axisX.setTickUnit(tickUnit);
+
         axisX = cast(guiSignalChart.getXAxis());
         axisX.setUpperBound(dataSize);
+        axisX.setTickUnit(tickUnit);
 
         guiSignalChart.getData().remove(signalSeries);
         signalSeries.getData().clear();
