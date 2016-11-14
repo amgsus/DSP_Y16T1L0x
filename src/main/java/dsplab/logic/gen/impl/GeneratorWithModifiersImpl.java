@@ -1,5 +1,7 @@
 package dsplab.logic.gen.impl;
 
+import dsplab.logic.function.fa.CompositeFunctionFactory;
+import dsplab.logic.function.fa.FunctionFactory;
 import dsplab.logic.gen.Generator;
 import dsplab.logic.gen.modifier.ValueModifier;
 import dsplab.logic.signal.Harmonic;
@@ -35,6 +37,8 @@ public class GeneratorWithModifiersImpl extends GeneratorImpl implements
     public double[] run()
     {
         double[] a = new double[this.sampleCount * this.periodCount];
+
+        FunctionFactory ff = new CompositeFunctionFactory(this.sampleCount);
 
         Signal srcSignal = this.signal;
         Signal modifiedSignal = SigUtils.cloneSignal(this.signal);
@@ -91,7 +95,7 @@ public class GeneratorWithModifiersImpl extends GeneratorImpl implements
             /* Calculate */
 
             a[offset] = Generator.calculateMomentaryAmplitude(modifiedSignal,
-                offset, this.sampleCount);
+                offset, this.sampleCount, ff);
         }
 
         return a;

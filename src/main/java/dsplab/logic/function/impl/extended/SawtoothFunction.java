@@ -2,28 +2,30 @@ package dsplab.logic.function.impl.extended;
 
 import dsplab.logic.MathUtils;
 import dsplab.logic.function.Function;
+import dsplab.logic.function.CompositeFunction;
 import dsplab.logic.signal.Harmonic;
 
 import static dsplab.common.Const.ONE;
 import static java.lang.Math.sin;
 
-public class SawtoothFunction implements Function
+public class SawtoothFunction implements CompositeFunction
 {
     public SawtoothFunction()
     {
-        setMaxK(32);
+        setHarmonicCount(32);
         setModifier(2);
     }
 
     public static Function newInstance() { return new SawtoothFunction(); }
 
-    protected int sumTo;
+    protected int harmonicCount;
     protected int ampModifier;
 
+    @Override
     public
-    void setMaxK(int value)
+    void setHarmonicCount(int value)
     {
-        this.sumTo = value;
+        harmonicCount = value;
     }
 
     public
@@ -39,7 +41,8 @@ public class SawtoothFunction implements Function
         double f = h.getFrequency();
         double _2PiFxT = 2 * Math.PI * f * x / period;
 
-        double sum = MathUtils.sum(ONE, this.sumTo, k -> sin(_2PiFxT * k) / k);
+        double sum = MathUtils.sum(ONE, this.harmonicCount,
+            k -> sin(_2PiFxT * k) / k);
 
         return a / ampModifier - a * sum / Math.PI;
     }

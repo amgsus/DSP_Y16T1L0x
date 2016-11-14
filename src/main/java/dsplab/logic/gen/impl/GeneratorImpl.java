@@ -1,5 +1,7 @@
 package dsplab.logic.gen.impl;
 
+import dsplab.logic.function.fa.CompositeFunctionFactory;
+import dsplab.logic.function.fa.FunctionFactory;
 import dsplab.logic.gen.Generator;
 import dsplab.logic.signal.Signal;
 import sun.plugin2.liveconnect.ArgumentHelper;
@@ -25,9 +27,11 @@ public class GeneratorImpl implements Generator
     {
         double[] a = new double[this.sampleCount * this.periodCount];
 
+        FunctionFactory ff = new CompositeFunctionFactory(this.sampleCount);
+
         for (int offsetX = 0; offsetX < a.length; offsetX++) {
             a[offsetX] = Generator.calculateMomentaryAmplitude(signal, offsetX,
-                this.sampleCount);
+                this.sampleCount, ff);
         }
 
         return a;

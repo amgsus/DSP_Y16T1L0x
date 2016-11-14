@@ -2,27 +2,29 @@ package dsplab.logic.function.impl.extended;
 
 import dsplab.logic.MathUtils;
 import dsplab.logic.function.Function;
+import dsplab.logic.function.CompositeFunction;
 import dsplab.logic.signal.Harmonic;
 
 import static dsplab.common.Const.ONE;
 import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 
-public class DigitalFunction implements Function
+public class DigitalFunction implements CompositeFunction
 {
     public DigitalFunction()
     {
-        setMaxK(512);
+        setHarmonicCount(32);
     }
 
     public static Function newInstance() { return new DigitalFunction(); }
 
-    protected int sumTo;
+    protected int harmonicCount;
 
+    @Override
     public
-    void setMaxK(int value)
+    void setHarmonicCount(int value)
     {
-        this.sumTo = value;
+        harmonicCount = value;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class DigitalFunction implements Function
         double f = h.getFrequency();
         double _2PiFxT = 2 * Math.PI * f * x / period;
 
-        double sum = MathUtils.sum(ONE, this.sumTo, 2,
+        double sum = MathUtils.sum(ONE, this.harmonicCount, 2,
             k -> sin(_2PiFxT * k) / k);
 
         return 4 * a * sum / PI;
