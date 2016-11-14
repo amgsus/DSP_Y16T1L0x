@@ -191,7 +191,9 @@ public class MainCtrlImpl extends SimpleController implements
 
                 for (int i = 0; i < results.size(); i++) {
                     Path p = (Path) paths.get(i);
-                    p.setStroke(results.get(i).getSignal().getBrushColor());
+                    Color color = results.get(i).getSignal().getBrushColor();
+                    p.setStroke(new Color(color.getRed(), color.getGreen(),
+                        color.getBlue(), 0.50));
                 }
             }
         }
