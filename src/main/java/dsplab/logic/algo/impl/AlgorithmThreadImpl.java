@@ -3,11 +3,14 @@ package dsplab.logic.algo.impl;
 import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.callback.DelegateWrapper;
 import dsplab.logic.algo.AlgorithmThread;
+import dsplab.logic.algo.e.MathInvocationException;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.algo.production.AlgorithmResultBuilder;
 import dsplab.logic.filter.SignalFilter;
 import dsplab.logic.filter.alg.FilterAlgorithm;
 import dsplab.logic.filter.fa.SignalFilterFactory;
+import dsplab.logic.filter.impl.MedianFilter;
+import dsplab.logic.filter.impl.SlidingFilter;
 import dsplab.logic.ft.FourierTransform;
 import dsplab.logic.ft.SignalRestorer;
 import dsplab.logic.ft.alg.FFTImpl;
@@ -111,188 +114,24 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
                 asyncResults.add(_pool_.submit(() -> {
 
-                    // Task I
+                    AlgorithmResult result = null;
 
-                    Generator g = GeneratorFactory.getFactory()
-                        .giveMeSomethingLike(generatorID);
+                    try {
 
-                    if (generatorID == GenID.WITH_VALUE_MODIFIERS) {
-                        GeneratorWithModifiers gEx = cast(g);
-                        gEx.setAmplitudeModifier(this.amplitudeModifier);
-                        gEx.setPhaseModifier(this.phaseModifier);
-                        gEx.setFrequnecyModifier(this.frequencyModifier);
+                        if (extended)
+                            result = impl_DoExtendedMath(signal);
+                        else
+                            result = impl_DoMath(signal);
+
+                    } catch (Exception cause) {
+
+                        // ToDo: Handle the exception...
+                        cause.printStackTrace();
+                        throw cause; // ToDo: ???
+
                     }
-
-                    g.setSignal(signal);
-                    g.setSampleCount(this.sampleCount);
-                    g.setPeriodCount(this.periodCount);
-
-                    double[] srcSignalData = g.run(); // Generate signal
-
-                    if (!extended)
-                    {
-                        AlgorithmResultBuilder resultBuilder =
-                            AlgorithmResultBuilder.newInstance().newObject();
-
-                        AlgorithmResult result = resultBuilder
-                            .setData(srcSignalData)
-                            .setSignal(signal)
-                            .setSampleCount(this.sampleCount)
-                            .setPeriodCount(this.periodCount)
-                            .build();
-
-                        latch.countDown();
-                        return result;
-                    }
-
-                    // Task 2
-
-                    RMSCalculator rmsACalc = RMSCalculatorFactory.getFactory()
-                        .giveMeSomethingLike(RMSFormula.A);
-                    RMSCalculator rmsBCalc = RMSCalculatorFactory.getFactory()
-                        .giveMeSomethingLike(RMSFormula.B);
-
-                    rmsACalc.setSpectrum(srcSignalData);
-                    rmsBCalc.setSpectrum(srcSignalData);
-
-                    double[] rmsA = new double[srcSignalData.length];
-                    double[] rmsB = new double[srcSignalData.length];
-
-                    for (int i = 0; i < rmsA.length; i++) {
-                        rmsACalc.setRange(i);
-                        rmsA[i] = rmsACalc.calculateRMS();
-                        rmsBCalc.setRange(i);
-                        rmsB[i] = rmsBCalc.calculateRMS();
-                    }
-
-                    double[] rmsAmplitudes = new double[srcSignalData.length];
-
-                    FourierTransform ft = FourierTransformFactory.getFactory()
-                        .newFFTImplementation(FFTImpl.DISCRETE);
-
-                    ft.setSpectrum(srcSignalData);
-
-                    for (int i = 1; i < rmsAmplitudes.length; i++) { // ToDo
-                        ft.setRange(i);
-                        rmsAmplitudes[i] = ft.calculateAmplitude();
-                    }
-
-                    // Task 3
-
-                    double[] ampSpectrum
-                        = ft.calculateAmplitudeSpectrum();
-                    double[] phsSpectrum
-                        = ft.calculatePhaseSpectrum();
-
-                    SignalRestorer signalRestorer =
-                        new SignalRestorer(ampSpectrum, phsSpectrum);
-
-                    signalRestorer.setGain(0);
-                    signalRestorer.setSampleCount(ampSpectrum.length);
-
-                    double[] restoredSignal =
-                        signalRestorer.restoreWithoutPhase();
-                    double[] restoredWithPhaseSignal =
-                        signalRestorer.restore();
-
-                    // Task 4
-
-                    Signal noisy = cloneSignal(signal);
-
-                    for (Harmonic h : noisy.getHarmonics()) {
-                        h.setWaveform(Waveform.Noise);
-                    }
-
-                    g.setSignal(noisy);
-
-                    double[] noisySignal = g.run();
-
-                    ft.setSpectrum(noisySignal);
-                    ft.setRange(noisySignal.length);
-
-                    double[] noisyAmplitudeSpectrum
-                        = ft.calculateAmplitudeSpectrum();
-                    double[] noisyPhaseSpectrum
-                        = ft.calculatePhaseSpectrum();
-
-                    // Sliding
-
-                    SignalFilter filter = SignalFilterFactory.getFactory()
-                        .newFilter(FilterAlgorithm.SLIDING);
-
-                    double[] sli = filter.apply(noisySignal);
-
-                    ft.setSpectrum(sli);
-                    ft.setRange(sli.length);
-
-                    double[] sliAmplitudeSpectrum
-                        = ft.calculateAmplitudeSpectrum();
-                    double[] sliPhaseSpectrum
-                        = ft.calculatePhaseSpectrum();
-
-                    // Median
-
-                    filter = SignalFilterFactory.getFactory()
-                        .newFilter(FilterAlgorithm.MEDIAN);
-
-                    double[] mdn = filter.apply(noisySignal);
-
-                    ft.setSpectrum(mdn);
-                    ft.setRange(mdn.length);
-
-                    double[] mdnAmplitudeSpectrum
-                        = ft.calculateAmplitudeSpectrum();
-                    double[] mdnPhaseSpectrum
-                        = ft.calculatePhaseSpectrum();
-
-                    // Parabolic
-
-                    filter = SignalFilterFactory.getFactory()
-                        .newFilter(FilterAlgorithm.PARABOLIC);
-
-                    double[] pbl = filter.apply(noisySignal);
-
-                    ft.setSpectrum(pbl);
-                    ft.setRange(pbl.length);
-
-                    double[] pblAmplitudeSpectrum
-                        = ft.calculateAmplitudeSpectrum();
-                    double[] pblPhaseSpectrum
-                        = ft.calculatePhaseSpectrum();
-
-                    // * The calculations are done * //
-
-                    AlgorithmResultBuilder resultBuilder =
-                        AlgorithmResultBuilder.newInstance().newObject();
-
-                    AlgorithmResult result = resultBuilder
-                        .setSampleCount(sampleCount)
-                        .setPeriodCount(periodCount)
-                        .setData(srcSignalData)
-                        .setSignal(signal)
-                        .setAmplitudeSpectrum(ampSpectrum)
-                        .setPhaseSpectrum(phsSpectrum)
-                        .setRMSByFormulaA(rmsA)
-                        .setRMSByFormulaB(rmsB)
-                        .setRMSAmplitudes(rmsAmplitudes)
-                        .setNoisySignal(noisySignal)
-                        .setNoisyAmplitudeSpectrum(noisyAmplitudeSpectrum)
-                        .setNoisyPhaseSpectrum(noisyPhaseSpectrum)
-                        .setSliSignal(sli)
-                        .setSliAmplitudeSpectrum(sliAmplitudeSpectrum)
-                        .setSliPhaseSpectrum(sliPhaseSpectrum)
-                        .setMdnSignal(mdn)
-                        .setMdnAmplitudeSpectrum(mdnAmplitudeSpectrum)
-                        .setMdnPhaseSpectrum(mdnPhaseSpectrum)
-                        .setPblSignal(pbl)
-                        .setPblAmplitudeSpectrum(pblAmplitudeSpectrum)
-                        .setPblPhaseSpectrum(pblPhaseSpectrum)
-                        .setRestoredSignal(restoredSignal)
-                        .setRestoredWithPhaseSignal(restoredWithPhaseSignal)
-                        .build();
 
                     latch.countDown();
-
                     return result;
                 }));
 
@@ -361,6 +200,295 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     {
         ensureFieldsValid(); // Allows to fail on a calling thread...
         super.start();
+    }
+
+    // --------------------------------------------------------------------- //
+
+    private Generator prefGenrt;
+    private final Object prefGenrtLock = new Object();
+
+    /**
+     * Does mathematical calculations. This method does tasks in the current
+     * thread, so it should be called in a separate thread.
+     * <p>
+     * <b>Tasks:</b>
+     * <ol>
+     * <li>Generate a signal using apropriate generator implementation.</li>
+     * </ol>
+     */
+    protected
+    AlgorithmResult impl_DoMath(Signal signal)
+        throws MathInvocationException
+    {
+        synchronized (prefGenrtLock) {
+            prefGenrt = GeneratorFactory.getFactory()
+                .giveMeSomethingLike(generatorID);
+
+            if (generatorID == GenID.WITH_VALUE_MODIFIERS) {
+                GeneratorWithModifiers gMod = cast(prefGenrt);
+                gMod.setAmplitudeModifier(amplitudeModifier);
+                gMod.setPhaseModifier(phaseModifier);
+                gMod.setFrequnecyModifier(frequencyModifier);
+            }
+
+            prefGenrt.setSignal(signal);
+            prefGenrt.setSampleCount(sampleCount); // T
+            prefGenrt.setPeriodCount(periodCount); // n
+
+            double[] signalData = prefGenrt.run(); // Generate (length=T*n)
+
+            return AlgorithmResultBuilder.newInstance()
+                .setSignal(signal)
+                .setData(signalData)
+                .setSampleCount(sampleCount)
+                .setPeriodCount(periodCount)
+                .build();
+        }
+    }
+
+    /**
+     * Does mathematical calculations. This method does tasks in the current
+     * thread, so it should be called in a separate thread.
+     * <p>
+     * <b>Tasks:</b>
+     * <ol>
+     * <li>Calculate the amplitude and the phase spectrums of a signal.</li>
+     * </ol>
+     */
+    protected
+    AlgorithmResult impl_DoExtendedMath(Signal signal)
+        throws MathInvocationException
+    {
+        AlgorithmResult result = impl_DoMath(signal);
+
+        task_SignalSpectrum(result);
+        task_RMSe(result);
+        task_Ae(result);
+        task_RestoreSignal(result);
+        task_NoisySignal(result);
+        task_SliFilterForNoisySignal(result);
+        task_MdnFilterForNoisySignal(result);
+        task_PblFilterForNoisySignal(result);
+
+        return result;
+    }
+
+    // May be invocated in a separate thread.
+    protected
+    void task_SignalSpectrum(AlgorithmResult algoResult)
+    {
+        FourierTransform ft = FourierTransformFactory.getFactory()
+            .newFFTImplementation(FFTImpl.DISCRETE);
+
+        double[] signal = algoResult.getData();
+
+        ft.setSpectrum(signal);
+        ft.setRange(signal.length);
+
+        double[] ampSpectrum = ft.calculateAmplitudeSpectrum();
+        double[] phsSpectrum = ft.calculatePhaseSpectrum();
+
+        AlgorithmResultBuilder.instanceFor(algoResult)
+            .setAmplitudeSpectrum(ampSpectrum)
+            .setPhaseSpectrum(phsSpectrum)
+            .build();
+    }
+
+    // May be invocated in a separate thread.
+    protected
+    void task_RMSe(AlgorithmResult algoResult)
+    {
+        double[] signalData = algoResult.getData();
+
+        RMSCalculator rmsACalc = RMSCalculatorFactory.getFactory()
+            .giveMeSomethingLike(RMSFormula.A);
+        RMSCalculator rmsBCalc = RMSCalculatorFactory.getFactory()
+            .giveMeSomethingLike(RMSFormula.B);
+
+        rmsACalc.setSpectrum(signalData);
+        rmsBCalc.setSpectrum(signalData);
+
+        double[] rmsA = new double[signalData.length];
+        double[] rmsB = new double[signalData.length];
+
+        // ToDo: Iterate i -> 1..length?
+        for (int i = 0; i < rmsA.length; i++) {
+            rmsACalc.setRange(i);
+            rmsA[i] = rmsACalc.calculateRMS();
+            rmsBCalc.setRange(i);
+            rmsB[i] = rmsBCalc.calculateRMS();
+        }
+
+        AlgorithmResultBuilder.instanceFor(algoResult)
+            .setRMSByFormulaA(rmsA)
+            .setRMSByFormulaB(rmsB)
+            .build();
+    }
+
+    // May be invocated in a separate thread.
+    protected
+    void task_Ae(AlgorithmResult algoResult)
+    {
+        double[] signalData = algoResult.getData();
+
+        double[] aeData = new double[signalData.length];
+
+        FourierTransform ft = FourierTransformFactory.getFactory()
+            .newFFTImplementation(FFTImpl.DISCRETE);
+
+        ft.setSpectrum(signalData);
+
+        // ToDo: Iterate i -> 1..length?
+        for (int i = 1; i < aeData.length; i++) {
+            ft.setRange(i);
+            aeData[i] = ft.calculateAmplitude();
+        }
+
+        AlgorithmResultBuilder.instanceFor(algoResult)
+            .setAeData(aeData)
+            .build();
+    }
+
+    // Must be invocated [in a separate thread] ONLY after
+    // task_SignalSpectrum() is done.
+    protected
+    void task_RestoreSignal(AlgorithmResult result)
+    {
+        double[] ampSpectrum = result.getAmplitudeSpectrum();
+        double[] phsSpectrum = result.getPhaseSpectrum();
+
+        SignalRestorer signalRestorer =
+            new SignalRestorer(ampSpectrum, phsSpectrum);
+
+        signalRestorer.setGain(0);
+        signalRestorer.setSampleCount(ampSpectrum.length);
+
+        double[] restored =
+            signalRestorer.restore();
+        double[] restWithoutPhase =
+            signalRestorer.restoreWithoutPhase();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setRestoredSignal(restored)
+            .setRestoredWithoutPhaseSignal(restWithoutPhase)
+            .build();
+    }
+
+    // Must be invocated [in a separate thread] ONLY after
+    // impl_DoMath() is done. Locks the generator instance.
+    protected
+    void task_NoisySignal(AlgorithmResult result)
+    {
+        Signal signal = cloneSignal(result.getSignal());
+
+        // ToDo: This should be refactored (not using noise harmonic)
+        for (Harmonic h : signal.getHarmonics()) {
+            h.setWaveform(Waveform.Noise);
+        }
+
+        double[] data;
+
+        synchronized (prefGenrtLock) {
+
+            prefGenrt.setSignal(signal);
+            prefGenrt.setSampleCount(result.getSampleCount());
+            prefGenrt.setPeriodCount(result.getPeriodCount());
+
+            data = prefGenrt.run();
+        }
+
+        FourierTransform ft = FourierTransformFactory.getFactory()
+            .newFFTImplementation(FFTImpl.DISCRETE);
+
+        ft.setSpectrum(data);
+        ft.setRange(data.length);
+
+        double[] ampSpectrum = ft.calculateAmplitudeSpectrum();
+        double[] phsSpectrum = ft.calculatePhaseSpectrum();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setNoisySignal(data)
+            .setNoisyAmplitudeSpectrum(ampSpectrum)
+            .setNoisyPhaseSpectrum(phsSpectrum)
+            .build();
+    }
+
+    // Must be invocated [in a separate thread] ONLY after task_NoisySignal()
+    // is done.
+    protected
+    void task_SliFilterForNoisySignal(AlgorithmResult result)
+    {
+        SignalFilter flt = SignalFilterFactory.getFactory()
+            .newFilter(FilterAlgorithm.SLIDING);
+
+        double[] data = flt.apply(result.getNoisySignal());
+
+        FourierTransform ft = FourierTransformFactory.getFactory()
+            .newFFTImplementation(FFTImpl.DISCRETE);
+
+        ft.setSpectrum(data);
+        ft.setRange(data.length);
+
+        double[] ampSpectrum = ft.calculateAmplitudeSpectrum();
+        double[] phsSpectrum = ft.calculatePhaseSpectrum();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setSliSignal(data)
+            .setSliAmplitudeSpectrum(ampSpectrum)
+            .setSliPhaseSpectrum(phsSpectrum)
+            .build();
+    }
+
+    // Must be invocated [in a separate thread] ONLY after task_NoisySignal()
+    // is done.
+    protected
+    void task_MdnFilterForNoisySignal(AlgorithmResult result)
+    {
+        SignalFilter flt = SignalFilterFactory.getFactory()
+            .newFilter(FilterAlgorithm.MEDIAN);
+
+        double[] data = flt.apply(result.getNoisySignal());
+
+        FourierTransform ft = FourierTransformFactory.getFactory()
+            .newFFTImplementation(FFTImpl.DISCRETE);
+
+        ft.setSpectrum(data);
+        ft.setRange(data.length);
+
+        double[] ampSpectrum = ft.calculateAmplitudeSpectrum();
+        double[] phsSpectrum = ft.calculatePhaseSpectrum();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setMdnSignal(data)
+            .setMdnAmplitudeSpectrum(ampSpectrum)
+            .setMdnPhaseSpectrum(phsSpectrum)
+            .build();
+    }
+
+    // Must be invocated [in a separate thread] ONLY after task_NoisySignal()
+    // is done.
+    protected
+    void task_PblFilterForNoisySignal(AlgorithmResult result)
+    {
+        SignalFilter flt = SignalFilterFactory.getFactory()
+            .newFilter(FilterAlgorithm.PARABOLIC);
+
+        double[] data = flt.apply(result.getNoisySignal());
+
+        FourierTransform ft = FourierTransformFactory.getFactory()
+            .newFFTImplementation(FFTImpl.DISCRETE);
+
+        ft.setSpectrum(data);
+        ft.setRange(data.length);
+
+        double[] ampSpectrum = ft.calculateAmplitudeSpectrum();
+        double[] phsSpectrum = ft.calculatePhaseSpectrum();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setPblSignal(data)
+            .setPblAmplitudeSpectrum(ampSpectrum)
+            .setPblPhaseSpectrum(phsSpectrum)
+            .build();
     }
 
     // --------------------------------------------------------------------- //
@@ -474,9 +602,9 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     @Override
     public
-    void setGenerator(GenID id)
+    void setGeneratorID(GenID id)
     {
-
+        generatorID = id;
     }
 
     @Override

@@ -21,7 +21,7 @@ public interface AlgorithmThread extends StartFinishDelegates
     void setSignalList(List<Signal> signalList);
     void setSampleCount(int samples);
     void setPeriodCount(int periods);
-    void setGenerator(GenID id);
+    void setGeneratorID(GenID id);
 
     void setAmplitudeModifier(ValueModifier modifier);
     void setPhaseModifier(ValueModifier modifier);

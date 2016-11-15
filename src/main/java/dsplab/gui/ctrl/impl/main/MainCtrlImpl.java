@@ -1,9 +1,9 @@
 package dsplab.gui.ctrl.impl.main;
 
-import dsplab.architecture.util.MessageBox;
 import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
+import dsplab.architecture.util.MessageBox;
 import dsplab.common.Resources;
 import dsplab.gui.Controllers;
 import dsplab.gui.Stages;
@@ -23,6 +23,9 @@ import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.AlgorithmThreadBuilder;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.gen.alg.GenID;
+import dsplab.logic.gen.modifier.ValueModifier;
+import dsplab.logic.gen.modifier.ValueModifierFactory;
+import dsplab.logic.gen.modifier.alg.ValueModifierAlgorithm;
 import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
 import dsplab.logic.signal.enums.Waveform;
@@ -59,6 +62,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static dsplab.architecture.util.MessageBox.getCnfmBox;
+import static dsplab.architecture.util.MessageBox.getInfoBox;
+import static dsplab.architecture.util.MessageBox.getWarnBox;
 import static dsplab.common.Const.*;
 import static dsplab.gui.util.Hei.cast;
 
@@ -372,49 +378,74 @@ public class MainCtrlImpl extends SimpleController implements
     private boolean extended;
 
     private
-    void start()
+    void clearChart()
     {
-        if (algoThread != null)
-            throw new IllegalStateException("Algorithm is still running");
-
-        removeAllAlgoResultTabs();
         guiChart.getData().clear();
-        this.resultList = null;
-
-        final int samples = timelineProperties.getSamplesProperty().get();
-        final int periods = timelineProperties.getPeriodsProperty().get();
-
-        final GenID genAlgo = cast(genRadioBtnGroup.getSelectedToggle()
-            .getUserData());
 
         NumberAxis xAxis = cast(guiChart.getXAxis());
-        xAxis.setUpperBound(samples);
+        xAxis.setTickUnit(64);
+        xAxis.setUpperBound(0);
+        xAxis.setUpperBound(1024);
+    }
+
+    private static final String MSG_THREAD_INSTANCE =
+        "Another task is not finished yet! Please, wait until it done.";
+    private static final String MSG_EMPTY_SIGNAL_LIST =
+        "The signal list is empty. Do you want to open the editor?";
+
+    private
+    void start()
+    {
+        if (algoThread != null) {
+            getWarnBox(MSG_THREAD_INSTANCE).show();
+            return;
+        }
+
+        removeAllAlgoResultTabs();
+        clearChart();
+        resultList = null;
 
         guiOutdatedLabel.setVisible(false);
 
         if (this.signalList.size() == 0) {
+            Alert a = getCnfmBox(MSG_EMPTY_SIGNAL_LIST);
+            Optional<ButtonType> clicked = a.showAndWait();
 
-            Alert a = new Alert(AlertType.INFORMATION);
-            a.setHeaderText(null);
-            a.setContentText("Hei! Signal list is empty...");
-            a.show();
+            if (clicked.get() == ButtonType.OK) {
+                guiSignalListEditButton.fire();
+            }
 
-            return; // Cleaned up. Exit if no signals are specified.
+            return;
         }
 
         extended = guiExtendedCalculationsMenuItem.isSelected();
 
-        statusBarController.setStatusText("Working...");
-        updateWaitOverlay("Preparing!");
+        int samples = timelineProperties.getSamplesProperty().get();
+        int periods = timelineProperties.getPeriodsProperty().get();
 
-        algoThread = AlgorithmThreadBuilder.newInstance().newObject()
+        GenID genAlgo
+            = cast(genRadioBtnGroup.getSelectedToggle().getUserData());
+
+        System.out.println(genAlgo.toString());
+        System.out.println(genAlgo == GenID.WITH_VALUE_MODIFIERS);
+
+        statusBarController.setStatusText("Working...");
+        updateWaitOverlay("Preparing...");
+
+        ValueModifier vm = ValueModifierFactory.getFactory()
+            .newValueModifier(ValueModifierAlgorithm.LINEAR);
+
+        vm.setCoefficientBounds(0.0, 1.0);
+
+        algoThread = AlgorithmThreadBuilder.newInstance()
             .setSignalList(signalList)
-            .setOnStart(algoStartDelegate)
-            .setOnSuccess(algoSuccessDelegate)
+            .setOnBeforeStart(algoStartDelegate)
+            .setOnDone(algoSuccessDelegate)
             .setSampleCount(samples)
             .setPeriodCount(periods)
-            .setGenerator(genAlgo)
-            .setExtendedCalculations(extended)
+            .setGeneratorID(genAlgo)
+            .setMathEx(extended)
+            .setAmpModifier(vm)
             .build();
 
         algoThread.start();
@@ -470,34 +501,29 @@ public class MainCtrlImpl extends SimpleController implements
     private
     void initGenList()
     {
-        if (genRadioBtnGroup != null)
-            throw new IllegalStateException("Already initialized");
-
         genRadioBtnGroup = new ToggleGroup();
-        genRadioBtnGroup.selectedToggleProperty().addListener(
-            (o, oldValue, newValue) -> {
+        guiGenSelectButton.getItems().clear();
 
-                if (newValue instanceof RadioMenuItem) {
+        genRadioBtnGroup.selectedToggleProperty().addListener(o -> {
+            Toggle toggle = genRadioBtnGroup.getSelectedToggle();
 
-                    RadioMenuItem rmi = cast(newValue);
-                    String btnText = "Gen.: %s";
-                    this.guiGenSelectButton.setText(
-                        String.format(btnText, rmi.getText())
-                    );
-                }
-            }
-        );
+            if (toggle == null)
+                return;
 
-        for (GenID id : GenID.values()) {
+            RadioMenuItem rmi = cast(toggle);
+            String btnText = "Gen.: %s";
+            guiGenSelectButton.setText(String.format(btnText,
+                rmi.getText()));
+        });
 
-            RadioMenuItem mi = new RadioMenuItem(id.toString());
-            mi.setUserData(id);
+        for (GenID gid : GenID.values()) {
+
+            RadioMenuItem mi = new RadioMenuItem(gid.toString());
+            mi.setUserData(gid);
             mi.setToggleGroup(genRadioBtnGroup);
 
             guiGenSelectButton.getItems().add(mi);
         }
-
-        // Select the first item in the list...
 
         RadioMenuItem first = cast(guiGenSelectButton.getItems().get(0));
         first.setSelected(true);
@@ -529,7 +555,7 @@ public class MainCtrlImpl extends SimpleController implements
 
                 default:
                     String msg = "No configuration available for '%s'.";
-                    MessageBox.showInformation(String.format(msg, genID));
+                    MessageBox.getInfoBox(String.format(msg, genID)).show();
             }
         }
     }
