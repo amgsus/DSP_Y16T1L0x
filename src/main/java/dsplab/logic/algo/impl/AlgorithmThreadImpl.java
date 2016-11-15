@@ -9,8 +9,6 @@ import dsplab.logic.algo.production.AlgorithmResultBuilder;
 import dsplab.logic.filter.SignalFilter;
 import dsplab.logic.filter.alg.FilterAlgorithm;
 import dsplab.logic.filter.fa.SignalFilterFactory;
-import dsplab.logic.filter.impl.MedianFilter;
-import dsplab.logic.filter.impl.SlidingFilter;
 import dsplab.logic.ft.FourierTransform;
 import dsplab.logic.ft.SignalRestorer;
 import dsplab.logic.ft.alg.FFTImpl;
@@ -26,6 +24,7 @@ import dsplab.logic.rms.fa.RMSCalculatorFactory;
 import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
 import dsplab.logic.signal.enums.Waveform;
+import javafx.application.Platform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
         setDaemon(true);
     }
 
-    public static AlgorithmThread newInstance() { return
+    public static AlgorithmThreadImpl newInstance() { return
         new AlgorithmThreadImpl(); }
 
     // --------------------------------------------------------------------- //
@@ -71,36 +70,22 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     private boolean extended = true;
 
+    /*
+     * The lifecycle of a thread pool is equal to run() lifecycle.
+     */
+    private volatile ExecutorService threadPool = null;
+
     // --------------------------------------------------------------------- //
 
     @Override
     public void run()
     {
-        ensureFieldsValid(); // Will never fail if start() called before...
-
-        // * Call a delegate on the thread started * //
+        threadPool = null;
 
         try {
 
-            this.onStart.execute();
-
-        } catch (Exception e) {
-
-            // Log about fail and continue...
-
-            if (stopOnDelegateException) {
-                return;
-            }
-        }
-
-        // * Main * //
-
-        ExecutorService pool = null;
-
-        try {
-
-            pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-            final ExecutorService _pool_ = pool;
+            threadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+            final ExecutorService _pool_ = threadPool;
 
             List<Future<AlgorithmResult>> asyncResults =
                 new ArrayList<>(signalList.size());
@@ -171,40 +156,30 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
             this.results = resultList;
 
         } catch (Exception e) {
-            // ...
+            e.printStackTrace();
         } finally {
-            if (pool != null)
-                pool.shutdown();
+            if (threadPool != null)
+                threadPool.shutdown();
         }
 
-        // * Execute the delegate before stopping the thread * //
-
-        try {
-
-            this.onFinish.execute();
-
-        } catch (Exception e) {
-
-            // Log about fail and continue...
-
-            if (stopOnDelegateException) {
-                return;
-            }
-        }
-
-        final String msg = "Thread '%s' is being safely stopped...";
+        Platform.runLater(onDone::execute);
     }
 
     @Override
     public synchronized void start()
     {
-        ensureFieldsValid(); // Allows to fail on a calling thread...
+        if (signalList == null)
+            throw new IllegalArgumentException("signalList:<null>");
+
+        onBeforeStart.execute();
         super.start();
     }
 
     // --------------------------------------------------------------------- //
 
-    private Generator prefGenrt;
+    /* LOGIC */
+
+    private Generator prefGenrt;                        // THE ONLY INSTANCE
     private final Object prefGenrtLock = new Object();
 
     /**
@@ -253,6 +228,13 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
      * <b>Tasks:</b>
      * <ol>
      * <li>Calculate the amplitude and the phase spectrums of a signal.</li>
+     * <li>Calculate RMS error.</li>
+     * <li>Calculate amplitude error.</li>
+     * <li>Restore a signal from the amplitude and the phase spectrums.</li>
+     * <li>Apply a noise to the signal.</li>
+     * <li>Apply a sliding filter to the noisy signal.</li>
+     * <li>Apply a median filter to the noisy signal.</li>
+     * <li>Apply a parabolic filter to the noisy signal.</li>
      * </ol>
      */
     protected
@@ -493,34 +475,17 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     // --------------------------------------------------------------------- //
 
-    private
-    void ensureFieldsValid()
-    {
-        if (signalList == null)
-            throw new IllegalArgumentException("Signal list is not set");
-    }
+    private final DelegateWrapper onBeforeStart = new DelegateWrapper();
+    private final DelegateWrapper onDone = new DelegateWrapper();
 
-    // --------------------------------------------------------------------- //
-
-    private final DelegateWrapper onStart = new DelegateWrapper();
-    private final DelegateWrapper onFinish = new DelegateWrapper();
-
-    // --------------------------------------------------------------------- //
-
-    /**
-     * <b>Note:</b> This delegate will be run on different thread, not on
-     * the calling.
-     *
-     * @param delegate A delegate to call on the algorithm has been started.
-     */
     @Override
     public
-    void setOnStart(Delegate delegate)
+    void setOnBeforeStart(Delegate delegate)
     {
         if (delegate != null) {
-            onStart.wrapDelegate(delegate);
+            onBeforeStart.wrapDelegate(delegate);
         } else {
-            onStart.removeDelegate();
+            onBeforeStart.removeDelegate();
         }
     }
 
@@ -529,14 +494,13 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     void setOnSuccess(Delegate delegate)
     {
         if (delegate != null) {
-            onFinish.wrapDelegate(delegate);
+            onDone.wrapDelegate(delegate);
         } else {
-            onFinish.removeDelegate();
+            onDone.removeDelegate();
         }
     }
 
     // --------------------------------------------------------------------- //
-
 
     @Override
     public int getSampleCount()

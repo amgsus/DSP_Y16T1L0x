@@ -85,7 +85,7 @@ public final class AlgorithmThreadBuilder extends BuilderEx<AlgorithmThread>
     public
     AlgorithmThreadBuilder setOnBeforeStart(Delegate delegate)
     {
-        getObject().setOnStart(delegate);
+        getObject().setOnBeforeStart(delegate);
         return this;
     }
 
