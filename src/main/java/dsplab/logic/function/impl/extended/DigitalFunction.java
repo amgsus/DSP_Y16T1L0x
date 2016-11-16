@@ -1,8 +1,8 @@
 package dsplab.logic.function.impl.extended;
 
 import dsplab.logic.MathUtils;
-import dsplab.logic.function.Function;
 import dsplab.logic.function.CompositeFunction;
+import dsplab.logic.function.Function;
 import dsplab.logic.signal.Harmonic;
 
 import static dsplab.common.Const.ONE;

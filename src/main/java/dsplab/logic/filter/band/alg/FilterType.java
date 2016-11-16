@@ -1,4 +1,4 @@
-package dsplab.logic.eq.alg;
+package dsplab.logic.filter.band.alg;
 
 public enum FilterType
 {

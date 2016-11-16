@@ -1,10 +1,9 @@
 package dsplab.logic.algo.fa;
 
-import dsplab.architecture.Factory;
 import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.impl.AlgorithmThreadImpl;
 
-public final class AlgorithmThreadFactory implements Factory<AlgorithmThread>
+public final class AlgorithmThreadFactory
 {
     AlgorithmThreadFactory() {}
     static final AlgorithmThreadFactory factory
@@ -12,8 +11,7 @@ public final class AlgorithmThreadFactory implements Factory<AlgorithmThread>
 
     public static AlgorithmThreadFactory getFactory() { return factory; }
 
-    @Override
-    public AlgorithmThread giveMeDefault()
+    public AlgorithmThread newThread()
     {
         return AlgorithmThreadImpl.newInstance();
     }

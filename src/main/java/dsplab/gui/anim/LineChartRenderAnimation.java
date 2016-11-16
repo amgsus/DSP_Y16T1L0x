@@ -4,7 +4,6 @@ import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.callback.DelegateWrapper;
 import javafx.animation.AnimationTimer;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
 public class LineChartRenderAnimation<X extends Number, Y extends Number>

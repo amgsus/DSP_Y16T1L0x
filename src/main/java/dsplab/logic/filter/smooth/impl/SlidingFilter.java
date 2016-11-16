@@ -1,7 +1,7 @@
-package dsplab.logic.filter.impl;
+package dsplab.logic.filter.smooth.impl;
 
 import dsplab.logic.MathUtils;
-import dsplab.logic.filter.SignalFilter;
+import dsplab.logic.filter.smooth.SignalFilter;
 
 public class SlidingFilter implements SignalFilter
 {

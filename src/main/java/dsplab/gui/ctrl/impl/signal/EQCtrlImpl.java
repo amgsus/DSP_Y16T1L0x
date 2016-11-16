@@ -3,10 +3,10 @@ package dsplab.gui.ctrl.impl.signal;
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
 import dsplab.common.Resources;
-import dsplab.gui.util.Percentage;
-import dsplab.gui.util.SpectrumRender;
 import dsplab.gui.component.common.OverlayPane;
 import dsplab.gui.ctrl.EQController;
+import dsplab.gui.util.Percentage;
+import dsplab.gui.util.SpectrumRender;
 import dsplab.logic.ft.FourierTransform;
 import dsplab.logic.ft.alg.FFTImpl;
 import dsplab.logic.ft.fa.FourierTransformFactory;
@@ -42,8 +42,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 
-import static dsplab.gui.util.SpectrumRender.SPECTRUM_RENDER_SIZE;
 import static dsplab.gui.util.Hei.cast;
+import static dsplab.gui.util.SpectrumRender.SPECTRUM_RENDER_SIZE;
 
 public class EQCtrlImpl extends SimpleController implements EQController
 {

@@ -9,17 +9,13 @@ import dsplab.gui.util.Hei;
 import dsplab.logic.ft.FourierTransform;
 import dsplab.logic.rms.RMSCalculator;
 import javafx.fxml.FXML;
-import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 
-import javax.xml.crypto.Data;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.function.Function;
 
 public class RMSChartCtrlImpl extends SimpleController implements
     RMSChartController

@@ -4,7 +4,6 @@ import dsplab.logic.function.fa.CompositeFunctionFactory;
 import dsplab.logic.function.fa.FunctionFactory;
 import dsplab.logic.gen.Generator;
 import dsplab.logic.signal.Signal;
-import sun.plugin2.liveconnect.ArgumentHelper;
 
 public class GeneratorImpl implements Generator
 {

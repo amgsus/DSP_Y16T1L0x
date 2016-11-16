@@ -1,7 +1,5 @@
 package dsplab.architecture.ex;
 
-import dsplab.architecture.ex.UIException;
-
 public class StageInitException extends UIException
 {
     public StageInitException()

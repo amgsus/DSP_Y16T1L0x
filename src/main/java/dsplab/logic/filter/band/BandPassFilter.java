@@ -1,4 +1,4 @@
-package dsplab.logic.eq;
+package dsplab.logic.filter.band;
 
 import java.util.Arrays;
 

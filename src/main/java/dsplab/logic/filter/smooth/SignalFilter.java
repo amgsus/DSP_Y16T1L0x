@@ -1,4 +1,4 @@
-package dsplab.logic.filter;
+package dsplab.logic.filter.smooth;
 
 public interface SignalFilter
 {

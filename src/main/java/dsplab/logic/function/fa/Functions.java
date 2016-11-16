@@ -4,8 +4,8 @@ import dsplab.logic.function.Function;
 import dsplab.logic.function.impl.CosineFunction;
 import dsplab.logic.function.impl.SineFunction;
 import dsplab.logic.function.impl.extended.DigitalFunction;
-import dsplab.logic.function.impl.extended.SawtoothFunction;
 import dsplab.logic.function.impl.extended.NoiseFunction;
+import dsplab.logic.function.impl.extended.SawtoothFunction;
 import dsplab.logic.function.impl.extended.TriangleFunction;
 import dsplab.logic.signal.enums.Waveform;
 

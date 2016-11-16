@@ -1,6 +1,6 @@
-package dsplab.logic.eq.impl;
+package dsplab.logic.filter.band.impl;
 
-import dsplab.logic.eq.BandPassFilter;
+import dsplab.logic.filter.band.BandPassFilter;
 
 public class HighPassFreqFilter implements BandPassFilter
 {

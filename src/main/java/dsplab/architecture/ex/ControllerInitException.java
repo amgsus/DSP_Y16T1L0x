@@ -1,7 +1,5 @@
 package dsplab.architecture.ex;
 
-import dsplab.architecture.ex.UIException;
-
 public class ControllerInitException extends UIException
 {
     public ControllerInitException()

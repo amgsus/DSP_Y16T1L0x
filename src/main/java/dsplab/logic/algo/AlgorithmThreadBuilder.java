@@ -14,7 +14,7 @@ public final class AlgorithmThreadBuilder extends BuilderEx<AlgorithmThread>
 {
     public AlgorithmThreadBuilder()
     {
-        super(AlgorithmThreadFactory.getFactory().giveMeDefault());
+        super(AlgorithmThreadFactory.getFactory().newThread());
     }
 
     public static AlgorithmThreadBuilder newInstance() { return

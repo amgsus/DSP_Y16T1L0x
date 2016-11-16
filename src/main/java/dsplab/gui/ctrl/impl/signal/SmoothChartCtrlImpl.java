@@ -3,8 +3,8 @@ package dsplab.gui.ctrl.impl.signal;
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
 import dsplab.common.Resources;
-import dsplab.gui.util.SpectrumRender;
 import dsplab.gui.ctrl.SmoothChartController;
+import dsplab.gui.util.SpectrumRender;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.function.Supplier;
 
-import static dsplab.gui.util.SpectrumRender.SPECTRUM_RENDER_SIZE;
 import static dsplab.gui.util.Hei.cast;
+import static dsplab.gui.util.SpectrumRender.SPECTRUM_RENDER_SIZE;
 
 public class SmoothChartCtrlImpl extends SimpleController implements
     SmoothChartController

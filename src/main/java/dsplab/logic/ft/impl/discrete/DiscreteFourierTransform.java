@@ -1,7 +1,6 @@
 package dsplab.logic.ft.impl.discrete;
 
 import dsplab.logic.MathUtils;
-import dsplab.logic.ft.SinTable;
 import dsplab.logic.ft.impl.AbstractFourierTransform;
 
 public class DiscreteFourierTransform extends AbstractFourierTransform

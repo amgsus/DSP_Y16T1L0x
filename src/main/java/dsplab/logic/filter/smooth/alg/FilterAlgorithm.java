@@ -1,4 +1,4 @@
-package dsplab.logic.filter.alg;
+package dsplab.logic.filter.smooth.alg;
 
 public enum FilterAlgorithm
 {

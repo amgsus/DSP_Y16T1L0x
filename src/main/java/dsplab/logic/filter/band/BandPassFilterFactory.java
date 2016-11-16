@@ -1,9 +1,9 @@
-package dsplab.logic.eq;
+package dsplab.logic.filter.band;
 
-import dsplab.logic.eq.alg.FilterType;
-import dsplab.logic.eq.impl.HighPassFreqFilter;
-import dsplab.logic.eq.impl.LowPassFreqFilter;
-import dsplab.logic.eq.impl.MiddlePassFreqFilter;
+import dsplab.logic.filter.band.alg.FilterType;
+import dsplab.logic.filter.band.impl.HighPassFreqFilter;
+import dsplab.logic.filter.band.impl.LowPassFreqFilter;
+import dsplab.logic.filter.band.impl.MiddlePassFreqFilter;
 
 import static dsplab.common.Const.MSG_FACTORY_UNSUPPORTED;
 

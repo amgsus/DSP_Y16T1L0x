@@ -1,14 +1,12 @@
 package dsplab.logic.function.impl.extended;
 
 import dsplab.logic.MathUtils;
-import dsplab.logic.function.Function;
 import dsplab.logic.function.CompositeFunction;
+import dsplab.logic.function.Function;
 import dsplab.logic.signal.Harmonic;
 
 import static dsplab.common.Const.ONE;
-import static java.lang.Math.PI;
-import static java.lang.Math.pow;
-import static java.lang.Math.sin;
+import static java.lang.Math.*;
 
 public class TriangleFunction implements CompositeFunction
 {

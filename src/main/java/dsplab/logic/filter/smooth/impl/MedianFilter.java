@@ -1,6 +1,6 @@
-package dsplab.logic.filter.impl;
+package dsplab.logic.filter.smooth.impl;
 
-import dsplab.logic.filter.SignalFilter;
+import dsplab.logic.filter.smooth.SignalFilter;
 
 import java.util.stream.DoubleStream;
 

@@ -3,7 +3,6 @@ package dsplab.gui;
 import dsplab.architecture.stage.StageComm;
 import dsplab.gui.stage.main.impl.MainStageImpl;
 import dsplab.gui.stage.main.impl.SignalListEditorStageImpl;
-import dsplab.gui.stage.settings.TimelineSetupStage;
 import dsplab.gui.stage.settings.impl.GeneratorSetupStageImpl;
 import dsplab.gui.stage.settings.impl.TimelineSetupStageImpl;
 

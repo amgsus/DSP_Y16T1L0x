@@ -1,10 +1,10 @@
-package dsplab.logic.filter.fa;
+package dsplab.logic.filter.smooth.fa;
 
-import dsplab.logic.filter.SignalFilter;
-import dsplab.logic.filter.alg.FilterAlgorithm;
-import dsplab.logic.filter.impl.MedianFilter;
-import dsplab.logic.filter.impl.ParabolicFilter;
-import dsplab.logic.filter.impl.SlidingFilter;
+import dsplab.logic.filter.smooth.SignalFilter;
+import dsplab.logic.filter.smooth.alg.FilterAlgorithm;
+import dsplab.logic.filter.smooth.impl.MedianFilter;
+import dsplab.logic.filter.smooth.impl.ParabolicFilter;
+import dsplab.logic.filter.smooth.impl.SlidingFilter;
 
 public final class SignalFilterFactory
 {

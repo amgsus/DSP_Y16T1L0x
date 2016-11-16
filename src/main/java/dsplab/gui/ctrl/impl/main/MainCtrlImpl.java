@@ -7,14 +7,14 @@ import dsplab.architecture.util.MessageBox;
 import dsplab.common.Resources;
 import dsplab.gui.Controllers;
 import dsplab.gui.Stages;
-import dsplab.gui.prop.GeneratorWithValueModifiersProperties;
-import dsplab.gui.prop.TimelineProperties;
 import dsplab.gui.anim.LineChartRenderAnimation;
 import dsplab.gui.component.common.OverlayPane;
 import dsplab.gui.component.common.WaitIndicatorBox;
 import dsplab.gui.ctrl.EachSignalTabController;
 import dsplab.gui.ctrl.MainController;
 import dsplab.gui.ctrl.MainStatusBarController;
+import dsplab.gui.prop.GeneratorWithValueModifiersProperties;
+import dsplab.gui.prop.TimelineProperties;
 import dsplab.gui.stage.main.SignalListEditorStage;
 import dsplab.gui.stage.settings.GeneratorSetupStage;
 import dsplab.gui.stage.settings.TimelineSetupStage;
@@ -63,7 +63,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static dsplab.architecture.util.MessageBox.getCnfmBox;
-import static dsplab.architecture.util.MessageBox.getInfoBox;
 import static dsplab.architecture.util.MessageBox.getWarnBox;
 import static dsplab.common.Const.*;
 import static dsplab.gui.util.Hei.cast;
@@ -425,9 +424,6 @@ public class MainCtrlImpl extends SimpleController implements
 
         GenID genAlgo
             = cast(genRadioBtnGroup.getSelectedToggle().getUserData());
-
-        System.out.println(genAlgo.toString());
-        System.out.println(genAlgo == GenID.WITH_VALUE_MODIFIERS);
 
         statusBarController.setStatusText("Working...");
         updateWaitOverlay("Preparing...");
