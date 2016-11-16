@@ -15,6 +15,15 @@ public class SignalRestorer
     {
         setAmplitudes(amplitudeSpectrum);
         setPhases(phaseSpectrum);
+
+        if (amplitudeSpectrum != null) {
+            if (phaseSpectrum != null) {
+                samples = Math.min(amplitudeSpectrum.length,
+                    phaseSpectrum.length);
+            } else {
+                samples = amplitudeSpectrum.length;
+            }
+        }
     }
 
     public static SignalRestorer newInstance() { return new SignalRestorer(); }
