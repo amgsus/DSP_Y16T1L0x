@@ -2,8 +2,8 @@ package dsplab.gui.ctrl.impl.signal;
 
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
-import dsplab.architecture.stage.StageCommImpl;
 import dsplab.common.Resources;
+import dsplab.gui.util.SpectrumRender;
 import dsplab.gui.ctrl.SpectrumController;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.function.Supplier;
 
 import static dsplab.architecture.stage.StageCommImpl.ERR_INIT_FAILED;
+import static dsplab.gui.util.SpectrumRender.SPECTRUM_RENDER_SIZE;
 
 public class SpectrumCtrlImpl extends SimpleController implements
     SpectrumController
@@ -64,18 +65,13 @@ public class SpectrumCtrlImpl extends SimpleController implements
 
         double[] data = ampSpectrumSupplier.get();
 
-        this.guiAmplitudeSpectrumChart.getData()
-            .remove(amplitudeSpectrumSeries);
-        amplitudeSpectrumSeries.getData().clear();
+        guiAmplitudeSpectrumChart.getData().remove(ampSpectrumSeries);
+        ampSpectrumSeries.getData().clear();
 
-        for (int i = 0; i < data.length; i++) {
-            amplitudeSpectrumSeries.getData().add(
-                new XYChart.Data<>(Integer.toString(i), data[i])
-            );
-        }
+        SpectrumRender.renderByMaxValue(data, SPECTRUM_RENDER_SIZE * 2, obj ->
+            ampSpectrumSeries.getData().add(obj));
 
-        this.guiAmplitudeSpectrumChart.getData()
-            .add(amplitudeSpectrumSeries);
+        guiAmplitudeSpectrumChart.getData().add(ampSpectrumSeries);
     }
 
     @Override
@@ -86,29 +82,24 @@ public class SpectrumCtrlImpl extends SimpleController implements
 
         double[] data = phsSpectrumSupplier.get();
 
-        this.guiPhaseSpectrumChart.getData()
-            .remove(phaseSpectrumSeries);
-        phaseSpectrumSeries.getData().clear();
+        guiPhaseSpectrumChart.getData().remove(phsSpectrumSeries);
+        phsSpectrumSeries.getData().clear();
 
-        for (int i = 0; i < data.length; i++) {
-            phaseSpectrumSeries.getData().add(
-                new XYChart.Data<>(Integer.toString(i), data[i])
-            );
-        }
+        SpectrumRender.renderByAvgValue(data, SPECTRUM_RENDER_SIZE * 2, obj ->
+            phsSpectrumSeries.getData().add(obj));
 
-        this.guiPhaseSpectrumChart.getData()
-            .add(phaseSpectrumSeries);
+        guiPhaseSpectrumChart.getData().add(phsSpectrumSeries);
     }
 
     // -------------------------------------------------------------------- //
 
     @FXML
     private BarChart<String, Double> guiAmplitudeSpectrumChart;
-    private XYChart.Series<String, Double> amplitudeSpectrumSeries =
+    private XYChart.Series<String, Double> ampSpectrumSeries =
         new XYChart.Series<>();
 
     @FXML
     private BarChart<String, Double> guiPhaseSpectrumChart;
-    private XYChart.Series<String, Double> phaseSpectrumSeries =
+    private XYChart.Series<String, Double> phsSpectrumSeries =
         new XYChart.Series<>();
 }

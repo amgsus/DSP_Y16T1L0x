@@ -3,6 +3,7 @@ package dsplab.gui.ctrl.impl.signal;
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
 import dsplab.common.Resources;
+import dsplab.gui.util.SpectrumRender;
 import dsplab.gui.ctrl.SmoothChartController;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.function.Supplier;
 
+import static dsplab.gui.util.SpectrumRender.SPECTRUM_RENDER_SIZE;
 import static dsplab.gui.util.Hei.cast;
 
 public class SmoothChartCtrlImpl extends SimpleController implements
@@ -39,8 +41,8 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         smoothedSignalSeries = new XYChart.Series<>();
         smoothedSignalSeries.setName("Filtered");
 
-        srcAmplitudeSpectrumSeries = new XYChart.Series<>();
-        srcPhaseSpectrumSeries = new XYChart.Series<>();
+        srcAmpSpectrumSeries = new XYChart.Series<>();
+        srcPhsSpectrumSeries = new XYChart.Series<>();
 
         this.initToggleGroupChangeListeners();
     }
@@ -53,8 +55,8 @@ public class SmoothChartCtrlImpl extends SimpleController implements
     XYChart.Series<Integer, Double> signalSeries;
     XYChart.Series<Integer, Double> smoothedSignalSeries;
 
-    XYChart.Series<String , Double> srcAmplitudeSpectrumSeries;
-    XYChart.Series<String , Double> srcPhaseSpectrumSeries;
+    XYChart.Series<String , Double> srcAmpSpectrumSeries;
+    XYChart.Series<String , Double> srcPhsSpectrumSeries;
 
     Supplier<double[]> signalDataSupplier = null;
     Supplier<double[]> amplitudeSpectrumDataSupplier = null;
@@ -268,18 +270,13 @@ public class SmoothChartCtrlImpl extends SimpleController implements
 
         double[] data = supplier.get();
 
-        this.guiAmplitudeSpectrumChart.getData()
-            .remove(srcAmplitudeSpectrumSeries);
-        srcAmplitudeSpectrumSeries.getData().clear();
+        guiAmplitudeSpectrumChart.getData().remove(srcAmpSpectrumSeries);
+        srcAmpSpectrumSeries.getData().clear();
 
-        for (int i = 0; i < data.length; i++) {
-            srcAmplitudeSpectrumSeries.getData().add(
-                new XYChart.Data<>(Integer.toString(i), data[i])
-            );
-        }
+        SpectrumRender.renderByMaxValue(data, SPECTRUM_RENDER_SIZE, obj ->
+            srcAmpSpectrumSeries.getData().add(obj));
 
-        this.guiAmplitudeSpectrumChart.getData()
-            .add(srcAmplitudeSpectrumSeries);
+        guiAmplitudeSpectrumChart.getData().add(srcAmpSpectrumSeries);
     }
 
     @Override
@@ -315,18 +312,14 @@ public class SmoothChartCtrlImpl extends SimpleController implements
 
         double[] data = supplier.get();
 
-        this.guiPhaseSpectrumChart.getData()
-            .remove(srcPhaseSpectrumSeries);
-        srcPhaseSpectrumSeries.getData().clear();
+        guiPhaseSpectrumChart.getData().remove(srcPhsSpectrumSeries);
+        srcPhsSpectrumSeries.getData().clear();
 
-        for (int i = 0; i < data.length; i++) {
-            srcPhaseSpectrumSeries.getData().add(
-                new XYChart.Data<>(Integer.toString(i), data[i])
-            );
-        }
+        SpectrumRender.renderByAvgValue(data, SPECTRUM_RENDER_SIZE, obj ->
+            srcPhsSpectrumSeries.getData().add(obj));
 
-        this.guiPhaseSpectrumChart.getData()
-            .add(srcPhaseSpectrumSeries);
+        guiPhaseSpectrumChart.getData()
+            .add(srcPhsSpectrumSeries);
     }
 
     // -------------------------------------------------------------------- //
