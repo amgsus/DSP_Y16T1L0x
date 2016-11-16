@@ -3,9 +3,11 @@ package dsplab.logic.algo.impl;
 import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.callback.DelegateWrapper;
 import dsplab.logic.algo.AlgorithmThread;
-import dsplab.logic.algo.e.MathInvocationException;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.algo.production.AlgorithmResultBuilder;
+import dsplab.logic.eq.BandPassFilter;
+import dsplab.logic.eq.BandPassFilterFactory;
+import dsplab.logic.eq.alg.FilterType;
 import dsplab.logic.filter.SignalFilter;
 import dsplab.logic.filter.alg.FilterAlgorithm;
 import dsplab.logic.filter.fa.SignalFilterFactory;
@@ -193,7 +195,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
      */
     protected
     AlgorithmResult impl_DoMath(Signal signal)
-        throws MathInvocationException
     {
         synchronized (prefGenrtLock) {
             prefGenrt = GeneratorFactory.getFactory()
@@ -239,18 +240,20 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
      */
     protected
     AlgorithmResult impl_DoExtendedMath(Signal signal)
-        throws MathInvocationException
     {
         AlgorithmResult result = impl_DoMath(signal);
 
-        task_SignalSpectrum(result);
-        task_RMSe(result);
-        task_Ae(result);
-        task_RestoreSignal(result);
-        task_NoisySignal(result);
-        task_SliFilterForNoisySignal(result);
-        task_MdnFilterForNoisySignal(result);
-        task_PblFilterForNoisySignal(result);
+        task_SignalSpectrum(result);            // Parallel
+        task_RMSe(result);                      // Parallel
+        task_Ae(result);                        // Parallel
+        task_RestoreSignal(result);             // After task_SignalSpectrum
+        task_NoisySignal(result);               // Parallel
+        task_SliFilterForNoisySignal(result);   // After task_NoisySignal
+        task_MdnFilterForNoisySignal(result);   // After task_NoisySignal
+        task_PblFilterForNoisySignal(result);   // After task_NoisySignal
+        task_LPSignal(result);                  // Parallel
+        task_HPSignal(result);                  // Parallel
+        task_BPSignal(result);                  // Parallel
 
         return result;
     }
@@ -341,9 +344,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
         SignalRestorer signalRestorer =
             new SignalRestorer(ampSpectrum, phsSpectrum);
-
-        signalRestorer.setGain(0);
-        signalRestorer.setSampleCount(ampSpectrum.length);
 
         double[] restored =
             signalRestorer.restore();
@@ -470,6 +470,66 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
             .setPblSignal(data)
             .setPblAmplitudeSpectrum(ampSpectrum)
             .setPblPhaseSpectrum(phsSpectrum)
+            .build();
+    }
+
+    // May be invocated in a separate thread.
+    protected
+    void task_LPSignal(AlgorithmResult result)
+    {
+        BandPassFilter flt = BandPassFilterFactory.getFactory()
+            .giveMe(FilterType.LOWPASS);
+
+        double[] ampSpectrum = flt.apply(result.getAmplitudeSpectrum());
+        double[] phsSpectrum = result.getPhaseSpectrum();
+
+        SignalRestorer sigRest = new SignalRestorer(ampSpectrum, phsSpectrum);
+        double[] signal = sigRest.restore();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setLPFSignal(signal)
+            .setLPFAmplitudeSpectrum(ampSpectrum)
+            .setLPFPhaseSpectrum(phsSpectrum)
+            .build();
+    }
+
+    // May be invocated in a separate thread.
+    protected
+    void task_HPSignal(AlgorithmResult result)
+    {
+        BandPassFilter flt = BandPassFilterFactory.getFactory()
+            .giveMe(FilterType.HIGHPASS);
+
+        double[] ampSpectrum = flt.apply(result.getAmplitudeSpectrum());
+        double[] phsSpectrum = result.getPhaseSpectrum();
+
+        SignalRestorer sigRest = new SignalRestorer(ampSpectrum, phsSpectrum);
+        double[] signal = sigRest.restore();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setHPFSignal(signal)
+            .setHPFAmplitudeSpectrum(ampSpectrum)
+            .setHPFPhaseSpectrum(phsSpectrum)
+            .build();
+    }
+
+    // May be invocated in a separate thread.
+    protected
+    void task_BPSignal(AlgorithmResult result)
+    {
+        BandPassFilter flt = BandPassFilterFactory.getFactory()
+            .giveMe(FilterType.BAND);
+
+        double[] ampSpectrum = flt.apply(result.getAmplitudeSpectrum());
+        double[] phsSpectrum = result.getPhaseSpectrum();
+
+        SignalRestorer sigRest = new SignalRestorer(ampSpectrum, phsSpectrum);
+        double[] signal = sigRest.restore();
+
+        AlgorithmResultBuilder.instanceFor(result)
+            .setBPFSignal(signal)
+            .setBPFAmplitudeSpectrum(ampSpectrum)
+            .setBPFPhaseSpectrum(phsSpectrum)
             .build();
     }
 

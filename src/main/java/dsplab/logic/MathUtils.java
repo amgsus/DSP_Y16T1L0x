@@ -22,4 +22,10 @@ public final class MathUtils
     {
         return sum(from, countTo, 1, f);
     }
+
+    public static double avg(double[] numbers, int from, int count)
+    {
+        double sum = sum(from, from + count - 1, i -> numbers[i]);
+        return sum / count;
+    }
 }

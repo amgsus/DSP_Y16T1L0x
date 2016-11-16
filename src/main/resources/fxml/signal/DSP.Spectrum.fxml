@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="480.0" prefWidth="640.0" spacing="6.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BarChart fx:id="guiAmplitudeSpectrumChart" animated="false" barGap="2.0" legendVisible="false" title="Amplitude Spectrum" verticalGridLinesVisible="false">
          <xAxis>
@@ -15,7 +16,7 @@
             <NumberAxis animated="false" side="LEFT" />
          </yAxis>
       </BarChart>
-      <BarChart fx:id="guiPhaseSpectrumChart" animated="false" barGap="2.0" legendVisible="false" title="Phase Spectrum" verticalGridLinesVisible="false">
+      <BarChart fx:id="guiPhaseSpectrumChart" animated="false" barGap="2.0" legendVisible="false" title="Phase Spectrum" titleSide="BOTTOM" verticalGridLinesVisible="false">
          <xAxis>
             <CategoryAxis animated="false" side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
          </xAxis>
@@ -24,4 +25,7 @@
          </yAxis>
       </BarChart>
    </children>
+   <padding>
+      <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+   </padding>
 </VBox>

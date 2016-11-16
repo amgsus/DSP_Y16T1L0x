@@ -195,4 +195,63 @@ public class AlgorithmResult
     {
         return medianSmoothedSignalPhaseSpectrum;
     }
+
+    // -------------------------------------------------------------------- //
+
+    double[] lpSignal;
+    double[] lpAmpSpectrum;
+    double[] lpPhsSpectrum;
+
+    double[] hpSignal;
+    double[] hpAmpSpectrum;
+    double[] hpPhsSpectrum;
+
+    double[] bpSignal;
+    double[] bpAmpSpectrum;
+    double[] bpPhsSpectrum;
+
+    public double[] getLPFSignal()
+    {
+        return lpSignal;
+    }
+
+    public double[] getLPFAmplitudeSpectrum()
+    {
+        return lpAmpSpectrum;
+    }
+
+    public double[] getLPFPhaseSpectrum()
+    {
+        return lpPhsSpectrum;
+    }
+
+    public double[] getHPFSignal()
+    {
+        return hpSignal;
+    }
+
+    public double[] getHPFAmplitudeSpectrum()
+    {
+        return hpAmpSpectrum;
+    }
+
+    public double[] getHPFPhaseSpectrum()
+    {
+        return hpPhsSpectrum;
+    }
+
+    public double[] getBPFSignal()
+    {
+        return bpSignal;
+    }
+
+    public double[] getBPFAmplitudeSpectrum()
+    {
+        return bpAmpSpectrum;
+    }
+
+    public double[] getBPFPhaseSpectrum()
+    {
+        return bpPhsSpectrum;
+    }
 }

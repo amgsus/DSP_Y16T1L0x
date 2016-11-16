@@ -77,6 +77,32 @@ public class SignalRestorer
         if (phases.length != amps.length)
             throw new IllegalArgumentException(ERR_LENGTH_NOT_EQUAL);
 
+        /*
+        double[] signal = new double[sampleCount * 2];
+        Arrays.fill(signal, 0);
+
+        final int sumTo = sampleCount / 2 - 1;
+        final double const2PiN = 2 * Math.PI / sampleCount;
+
+        gain /= 2;
+
+        for (int i = 0; i < signal.length; i++) {
+            double _2PiNi = const2PiN * i;
+            final int _i_ = i;
+
+            signal[i] = gain + MathUtils.sum(1, sumTo, j -> {
+                if (_i_ < signal.length) {
+                    return amps[j] * Math.cos(_2PiNi * j - phases[j]);
+                } else {
+                    int newJ = signal.length - (j % signal.length);
+                    return amps[newJ] * Math.cos(_2PiNi * newJ - phases[newJ]);
+                }
+            });
+        }
+
+        return signal;
+        */
+
         double[] signal = new double[sampleCount];
         Arrays.fill(signal, 0);
 

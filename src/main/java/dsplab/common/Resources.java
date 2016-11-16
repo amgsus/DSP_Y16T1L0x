@@ -120,4 +120,9 @@ public final class Resources
         = "/fxml/signal/DSP.Restoration.fxml";
     public static final URL SIGNAL_RESTORE_FXML
         = Resources.class.getResource(SIGNAL_RESTORE_FXML_PATH);
+
+    public static final String EQ_CONTROLLER_FXML_PATH
+        = "/fxml/signal/DSP.EQ.fxml";
+    public static final URL EQ_CONTROLLER_FXML
+        = Resources.class.getResource(EQ_CONTROLLER_FXML_PATH);
 }

@@ -9,6 +9,7 @@ import dsplab.gui.ctrl.impl.main.MainStatusBarCtrlImpl;
 import dsplab.gui.ctrl.impl.edit.SignalListEditorControllerImpl;
 import dsplab.gui.ctrl.impl.edit.field.HarmonicEditorControllerImpl;
 import dsplab.gui.ctrl.impl.edit.field.SignalEditorControllerImpl;
+import dsplab.gui.ctrl.impl.signal.EQCtrlImpl;
 import dsplab.gui.ctrl.impl.signal.RMSChartCtrlImpl;
 import dsplab.gui.ctrl.impl.signal.EachSignalTabControllerImpl;
 import dsplab.gui.ctrl.impl.signal.SignalRestoreCtrlImpl;
@@ -66,6 +67,8 @@ public final class Controllers
                 return (T) SpectrumCtrlImpl.createInstance();
             case RESTORATION:
                 return (T) SignalRestoreCtrlImpl.createInstance();
+            case EQ:
+                return (T) EQCtrlImpl.newInstance();
 
             default:
                 final String s = "'%s' is not supported by the factory";

@@ -183,4 +183,67 @@ public class AlgorithmResultBuilder extends BuilderEx<AlgorithmResult>
         getObject().periodCount = count;
         return this;
     }
+
+    public
+    AlgorithmResultBuilder setLPFSignal(double[] values)
+    {
+        getObject().lpSignal = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setLPFAmplitudeSpectrum(double[] values)
+    {
+        getObject().lpAmpSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setLPFPhaseSpectrum(double[] values)
+    {
+        getObject().lpPhsSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setHPFSignal(double[] values)
+    {
+        getObject().hpSignal = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setHPFAmplitudeSpectrum(double[] values)
+    {
+        getObject().hpAmpSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setHPFPhaseSpectrum(double[] values)
+    {
+        getObject().hpPhsSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setBPFSignal(double[] values)
+    {
+        getObject().bpSignal = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setBPFAmplitudeSpectrum(double[] values)
+    {
+        getObject().bpAmpSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setBPFPhaseSpectrum(double[] values)
+    {
+        getObject().bpPhsSpectrum = values;
+        return this;
+    }
 }

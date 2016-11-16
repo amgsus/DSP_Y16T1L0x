@@ -4,16 +4,20 @@ import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
 import dsplab.common.Resources;
 import dsplab.gui.Controllers;
+import dsplab.gui.ctrl.EQController;
 import dsplab.gui.ctrl.EachSignalTabController;
 import dsplab.gui.ctrl.RMSChartController;
 import dsplab.gui.ctrl.SignalRestoreController;
 import dsplab.gui.ctrl.SmoothChartController;
 import dsplab.gui.ctrl.SpectrumController;
+import dsplab.gui.util.Hei;
 import dsplab.logic.algo.production.AlgorithmResult;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -33,11 +37,9 @@ public class EachSignalTabControllerImpl extends SimpleController implements
             throw new ControllerInitException(CTRL_INIT_FAILED_MSG, cause);
         }
 
-        guiTabPane.getStylesheets().add(
-            Resources.TAB_PANE_BRIGHTER_HEADER_STYLESHEET);
+        initTabStyles();
 
-
-        /* RMS Chart */
+        /* *** */
 
         rmsChartController1 = Controllers.getFactory()
             .giveMeSomethingLike(RMSCHART);
@@ -53,24 +55,59 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         rmsChartController1.setCaption("A (2.21):");
         rmsChartController2.setCaption("B (2.22):");
 
-        /* Smoothed Signal Chart */
+        /* *** */
 
-        smoothChartController = Controllers.getFactory()
+        signalSpectrumCtrl = Controllers.getFactory()
+            .giveMeSomethingLike(SPECTRUMCHARTS);
+
+        guiSpectrumTab.setContent(signalSpectrumCtrl.getFxRoot());
+        guiSpectrumTab.setOnSelectionChanged(event -> {
+            Tab tab = Hei.cast(event.getTarget());
+            if (spectrumRenderPostponed && tab.isSelected()) {
+                signalSpectrumCtrl.renderAll();
+                spectrumRenderPostponed = false;
+            }
+        });
+
+        /* *** */
+
+        smoothSignalChartCtrl = Controllers.getFactory()
             .giveMeSomethingLike(SMOOTHCHART);
 
-        guiSmoothChartTab.setContent(smoothChartController.getFxRoot());
+        guiSmoothChartTab.setContent(smoothSignalChartCtrl.getFxRoot());
+        guiSmoothChartTab.setOnSelectionChanged(event -> {
+            Tab tab = Hei.cast(event.getTarget());
+            if (smoothSignalRenderPostponed && tab.isSelected()) {
+                smoothSignalChartCtrl.renderAll();
+                smoothSignalRenderPostponed = false;
+            }
+        });
 
-        /* Source Signal Spectrums */
-
-        spectrums = Controllers.getFactory()
-            .giveMeSomethingLike(SPECTRUMCHARTS);
-        guiSpectrumTab.setContent(spectrums.getFxRoot());
-
-        /* Restoration */
+        /* *** */
 
         restoredSignalChartCtrl = Controllers.getFactory()
             .giveMeSomethingLike(RESTORATION);
         guiSignalRestoringTab.setContent(restoredSignalChartCtrl.getFxRoot());
+        guiSignalRestoringTab.setOnSelectionChanged(event -> {
+            Tab tab = Hei.cast(event.getTarget());
+            if (restoredRenderPostponed && tab.isSelected()) {
+                restoredSignalChartCtrl.renderAll();
+                restoredRenderPostponed = false;
+            }
+        });
+
+        /* *** */
+
+        freqFilterCtrl = Controllers.getFactory()
+            .giveMeSomethingLike(EQ);
+        guiEQTab.setContent(freqFilterCtrl.getFxRoot());
+        guiEQTab.setOnSelectionChanged(event -> {
+            Tab tab = Hei.cast(event.getTarget());
+            if (eqSignalRenderPostponed && tab.isSelected()) {
+                freqFilterCtrl.renderAll();
+                eqSignalRenderPostponed = false;
+            }
+        });
     }
 
     public static EachSignalTabController createInstance()
@@ -87,15 +124,9 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         if (algoResult == null)
             throw new IllegalArgumentException("null");
 
-        int constK = algoResult.getSampleCount() / 4; // Variant
+        // ----- //
 
-        spectrums.setAmplitudeSpectrumData(
-            algoResult::getAmplitudeSpectrum
-        );
-        spectrums.setPhaseSpectrumData(
-            algoResult::getPhaseSpectrum
-        );
-        spectrums.renderAll();
+        int constK = algoResult.getSampleCount() / 4; // Variant
 
         rmsChartController1.setK(constK);
         rmsChartController1.renderRMSValues(
@@ -113,43 +144,59 @@ public class EachSignalTabControllerImpl extends SimpleController implements
             algoResult.getRMSAmplitudes()
         );
 
-        smoothChartController.setSignalSupplier(
+        // ----- //
+
+        signalSpectrumCtrl.setAmplitudeSpectrumData(
+            algoResult::getAmplitudeSpectrum
+        );
+        signalSpectrumCtrl.setPhaseSpectrumData(
+            algoResult::getPhaseSpectrum
+        );
+
+        spectrumRenderPostponed = true;
+
+        // ----- //
+
+        smoothSignalChartCtrl.setSignalSupplier(
             algoResult::getNoisySignal
         );
-        smoothChartController.setAmplitudeSpectrumSupplier(
+        smoothSignalChartCtrl.setAmplitudeSpectrumSupplier(
             algoResult::getNoisyAmplitudeSpectrum
         );
-        smoothChartController.setPhaseSpectrumSupplier(
+        smoothSignalChartCtrl.setPhaseSpectrumSupplier(
             algoResult::getNoisyPhaseSpectrum
         );
-        smoothChartController.setSliSignalSupplier(
+        smoothSignalChartCtrl.setSliSignalSupplier(
             algoResult::getSlidingWindowSmoothedSignal
         );
-        smoothChartController.setSliAmplitudeSpectrumSupplier(
+        smoothSignalChartCtrl.setSliAmplitudeSpectrumSupplier(
             algoResult::getSlidingWindowSmoothedSignalAmplitudeSpectrum
         );
-        smoothChartController.setSliPhaseSpectrumSupplier(
+        smoothSignalChartCtrl.setSliPhaseSpectrumSupplier(
             algoResult::getSlidingWindowSmoothedSignalPhaseSpectrum
         );
-        smoothChartController.setMdnSignalSupplier(
+        smoothSignalChartCtrl.setMdnSignalSupplier(
             algoResult::getMedianSmoothedSignal
         );
-        smoothChartController.setMdnAmplitudeSpectrumSupplier(
+        smoothSignalChartCtrl.setMdnAmplitudeSpectrumSupplier(
             algoResult::getMedianSmoothedSignalAmplitudeSpectrum
         );
-        smoothChartController.setMdnPhaseSpectrumSupplier(
+        smoothSignalChartCtrl.setMdnPhaseSpectrumSupplier(
             algoResult::getMedianSmoothedSignalPhaseSpectrum
         );
-        smoothChartController.setPblSignalSupplier(
+        smoothSignalChartCtrl.setPblSignalSupplier(
             algoResult::getParabolicSmoothedSignal
         );
-        smoothChartController.setPblAmplitudeSpectrumSupplier(
+        smoothSignalChartCtrl.setPblAmplitudeSpectrumSupplier(
             algoResult::getParabolicSmoothedSignalAmplitudeSpectrum
         );
-        smoothChartController.setPblPhaseSpectrumSupplier(
+        smoothSignalChartCtrl.setPblPhaseSpectrumSupplier(
             algoResult::getParabolicSmoothedSignalPhaseSpectrum
         );
-        smoothChartController.renderAll();
+
+        smoothSignalRenderPostponed = true;
+
+        // ----- //
 
         restoredSignalChartCtrl.setSignalSupplier(
             algoResult::getData
@@ -161,19 +208,69 @@ public class EachSignalTabControllerImpl extends SimpleController implements
             algoResult::getRestoredWithPhaseSignal
         );
 
-        Platform.runLater(restoredSignalChartCtrl::renderAll);
+        restoredRenderPostponed = true;
+
+        // ----- //
+
+        freqFilterCtrl.setSignal(algoResult::getData);
+        freqFilterCtrl.setSrcAmplitudeSpectrum(algoResult::getAmplitudeSpectrum);
+        freqFilterCtrl.setSrcPhaseSpectrum(algoResult::getPhaseSpectrum);
+        freqFilterCtrl.setLPFilteredSignal(algoResult::getLPFSignal);
+        freqFilterCtrl.setLPFAmplitudeSpectrum(algoResult::getLPFAmplitudeSpectrum);
+        freqFilterCtrl.setLPFPhaseSpectrum(algoResult::getLPFPhaseSpectrum);
+        freqFilterCtrl.setHPFilteredSignal(algoResult::getHPFSignal);
+        freqFilterCtrl.setHPFAmplitudeSpectrum(algoResult::getHPFAmplitudeSpectrum);
+        freqFilterCtrl.setHPFPhaseSpectrum(algoResult::getHPFPhaseSpectrum);
+        freqFilterCtrl.setBPFilteredSignal(algoResult::getBPFSignal);
+        freqFilterCtrl.setBPFAmplitudeSpectrum(algoResult::getBPFAmplitudeSpectrum);
+        freqFilterCtrl.setBPFPhaseSpectrum(algoResult::getBPFPhaseSpectrum);
+
+        eqSignalRenderPostponed = true;
     }
 
     // -------------------------------------------------------------------- //
 
+    private boolean spectrumRenderPostponed     = false; // Render lock...
+    private boolean smoothSignalRenderPostponed = false;
+    private boolean restoredRenderPostponed     = false;
+    private boolean eqSignalRenderPostponed     = false;
+
     private RMSChartController rmsChartController1 = null;
     private RMSChartController rmsChartController2 = null;
-
-    private SmoothChartController smoothChartController = null;
-
-    private SpectrumController spectrums = null;
-
+    private SmoothChartController smoothSignalChartCtrl = null;
+    private SpectrumController signalSpectrumCtrl = null;
     private SignalRestoreController restoredSignalChartCtrl = null;
+    private EQController freqFilterCtrl = null;
+
+    // -------------------------------------------------------------------- //
+
+    private
+    void initTabStyles()
+    {
+        guiTabPane.getStylesheets().add(
+            Resources.TAB_PANE_BRIGHTER_HEADER_STYLESHEET);
+        guiTabPane.getStylesheets().add(
+            "/css/SignalTab.css"
+        );
+
+        guiSpectrumTab.setGraphic(
+            new ImageView("/images/Tab/Tab.Spectrum.png")
+        );
+        guiRMSTab.setGraphic(
+            new ImageView("/images/Tab/Tab.RMSe.png")
+        );
+        guiSmoothChartTab.setGraphic(
+            new ImageView("/images/Tab/Tab.Noise.png")
+        );
+        guiSignalRestoringTab.setGraphic(
+            new ImageView("/images/Tab/Tab.Restoring.png")
+        );
+        guiEQTab.setGraphic(
+            new ImageView("/images/Tab/Tab.EQ.png")
+        );
+    }
+
+    // -------------------------------------------------------------------- //
 
     @FXML
     private TabPane guiTabPane;
@@ -192,4 +289,7 @@ public class EachSignalTabControllerImpl extends SimpleController implements
 
     @FXML
     private Tab guiSignalRestoringTab;
+
+    @FXML
+    private Tab guiEQTab;
 }

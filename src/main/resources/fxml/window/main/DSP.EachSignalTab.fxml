@@ -19,5 +19,6 @@
       </Tab>
       <Tab fx:id="guiSmoothChartTab" text="Noise Filtering" />
       <Tab fx:id="guiSignalRestoringTab" text="Signal Restoring" />
+      <Tab fx:id="guiEQTab" text="EQ" />
    </tabs>
 </TabPane>
