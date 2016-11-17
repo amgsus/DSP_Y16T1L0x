@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 
 import java.net.URL;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class RMSChartCtrlImpl extends SimpleController implements
     RMSChartController
@@ -37,27 +38,20 @@ public class RMSChartCtrlImpl extends SimpleController implements
 
     // -------------------------------------------------------------------- //
 
-    int K; // Variant
-
     @Override
-    public void setCaption(String s)
+    public
+    void renderAll()
     {
-        if (s != null)
-            this.guiCaptionLabel.setText(s);
-        else
-            this.guiCaptionLabel.setText(Const.NOT_AVAILABLE_STR);
+        this.renderAmplitudeValues();
+        this.renderRMSValues();
     }
 
     @Override
-    public void setK(int value)
+    public
+    void renderRMSValues()
     {
-        this.guiKConstValueLabel.setText(String.valueOf(value));
-        this.K = value;
-    }
+        double[] values = rmsValuesSupplier.get();
 
-    @Override
-    public void renderRMSValues(double[] values)
-    {
         NumberAxis axisX = Hei.cast(this.guiRMSeChart.getXAxis());
         axisX.setUpperBound(values.length);
         axisX.setLowerBound(this.K);
@@ -87,8 +81,11 @@ public class RMSChartCtrlImpl extends SimpleController implements
     }
 
     @Override
-    public void renderAmplitudeValues(double[] values)
+    public
+    void renderAmplitudeValues()
     {
+        double[] values = amplitudeValuesSupplier.get();
+
         NumberAxis axisX = Hei.cast(this.guiAeChart.getXAxis());
         axisX.setUpperBound(values.length);
         axisX.setLowerBound(this.K);
@@ -110,6 +107,45 @@ public class RMSChartCtrlImpl extends SimpleController implements
 
         data.clear();
         data.add(s);
+    }
+
+    // -------------------------------------------------------------------- //
+
+    private int K; // Variant
+
+    private Supplier<double[]> rmsValuesSupplier = null;
+    private Supplier<double[]> amplitudeValuesSupplier = null;
+
+    @Override
+    public
+    void setCaption(String s)
+    {
+        if (s != null)
+            this.guiCaptionLabel.setText(s);
+        else
+            this.guiCaptionLabel.setText(Const.NOT_AVAILABLE_STR);
+    }
+
+    @Override
+    public
+    void setK(int value)
+    {
+        this.K = value;
+        this.guiKConstValueLabel.setText(String.valueOf(value));
+    }
+
+    @Override
+    public
+    void setRMSValues(Supplier<double[]> supplier)
+    {
+        rmsValuesSupplier = supplier;
+    }
+
+    @Override
+    public
+    void setAmplitudeValues(Supplier<double[]> supplier)
+    {
+        amplitudeValuesSupplier = supplier;
     }
 
     // -------------------------------------------------------------------- //

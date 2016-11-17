@@ -12,6 +12,8 @@ import dsplab.gui.ctrl.SmoothChartController;
 import dsplab.gui.ctrl.SpectrumController;
 import dsplab.gui.util.Hei;
 import dsplab.logic.algo.production.AlgorithmResult;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -52,6 +54,15 @@ public class EachSignalTabControllerImpl extends SimpleController implements
 
         rmsChartController1.setCaption("A (2.21):");
         rmsChartController2.setCaption("B (2.22):");
+
+        guiRMSTab.setOnSelectionChanged(event -> {
+            Tab tab = Hei.cast(event.getTarget());
+            if (rmsRenderPostponed && tab.isSelected()) {
+                rmsChartController1.renderAll();
+                rmsChartController2.renderAll();
+                rmsRenderPostponed = false;
+            }
+        });
 
         /* *** */
 
@@ -117,7 +128,7 @@ public class EachSignalTabControllerImpl extends SimpleController implements
     // -------------------------------------------------------------------- //
 
     @Override
-    public void renderAlgoResult(AlgorithmResult algoResult)
+    public void setRenderingData(AlgorithmResult algoResult)
     {
         if (algoResult == null)
             throw new IllegalArgumentException("null");
@@ -127,20 +138,14 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         int constK = algoResult.getSampleCount() / 4; // Variant
 
         rmsChartController1.setK(constK);
-        rmsChartController1.renderRMSValues(
-            algoResult.getRMSByFormulaA()
-        );
-        rmsChartController1.renderAmplitudeValues(
-            algoResult.getRMSAmplitudes()
-        );
+        rmsChartController1.setRMSValues(algoResult::getRMSByFormulaA);
+        rmsChartController1.setAmplitudeValues(algoResult::getRMSAmplitudes);
 
         rmsChartController2.setK(constK);
-        rmsChartController2.renderRMSValues(
-            algoResult.getRMSByFormulaB()
-        );
-        rmsChartController2.renderAmplitudeValues(
-            algoResult.getRMSAmplitudes()
-        );
+        rmsChartController2.setRMSValues(algoResult::getRMSByFormulaB);
+        rmsChartController2.setAmplitudeValues(algoResult::getRMSAmplitudes);
+
+        rmsRenderPostponed = true;
 
         // ----- //
 
@@ -226,8 +231,16 @@ public class EachSignalTabControllerImpl extends SimpleController implements
         eqSignalRenderPostponed = true;
     }
 
+    @Override
+    public void renderAll()
+    {
+        guiSpectrumTab.getOnSelectionChanged().handle(new Event(null,
+            guiSpectrumTab, EventType.ROOT));
+    }
+
     // -------------------------------------------------------------------- //
 
+    private boolean rmsRenderPostponed          = false;
     private boolean spectrumRenderPostponed     = false; // Render lock...
     private boolean smoothSignalRenderPostponed = false;
     private boolean restoredRenderPostponed     = false;

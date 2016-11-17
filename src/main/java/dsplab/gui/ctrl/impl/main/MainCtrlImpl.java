@@ -148,11 +148,15 @@ public class MainCtrlImpl extends SimpleController implements
         EachSignalTabController ctrl = Controllers.getFactory()
             .giveMeSomethingLike(EACHSIGNALTAB);
         String sigName = algoRes.getSignal().getName();
-        ctrl.renderAlgoResult(algoRes);
+        ctrl.setRenderingData(algoRes);
 
         Tab tab = new Tab("Details: " + sigName, ctrl.getFxRoot());
         guiTabPane.getTabs().add(tab);
         algoResultTabs.add(tab);
+
+        tab.setOnSelectionChanged(event -> {
+            ctrl.renderAll(); // Kostyl
+        });
     }
 
     private

@@ -5,5 +5,6 @@ import dsplab.logic.algo.production.AlgorithmResult;
 
 public interface EachSignalTabController extends Controller
 {
-    void renderAlgoResult(AlgorithmResult algoResult);
+    void setRenderingData(AlgorithmResult algoResult);
+    void renderAll();
 }
