@@ -36,12 +36,19 @@
             <MenuBar>
               <menus>
                 <Menu mnemonicParsing="false" text="File" />
-                  <Menu mnemonicParsing="false" text="View" />
+                  <Menu mnemonicParsing="false" text="View">
+                     <items>
+                        <MenuItem fx:id="guiRefreshAllMenuItem" mnemonicParsing="false" text="Refresh all...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                           </accelerator>
+                        </MenuItem>
+                     </items></Menu>
                   <Menu mnemonicParsing="false" text="Signal">
                     <items>
                       <MenuItem fx:id="guiSignalListEditMenuItem" mnemonicParsing="false" text="Signal List Editor...">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                              <KeyCodeCombination alt="UP" code="F9" control="UP" meta="UP" shift="UP" shortcut="ANY" />
                            </accelerator>
                         </MenuItem>
                     </items>
@@ -50,7 +57,7 @@
                      <items>
                         <MenuItem fx:id="guiTimelineSetupMenuItem" mnemonicParsing="false" text="Timeline Setup...">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="F6" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                              <KeyCodeCombination alt="UP" code="F10" control="UP" meta="UP" shift="UP" shortcut="ANY" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />

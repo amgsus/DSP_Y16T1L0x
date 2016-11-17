@@ -618,7 +618,7 @@ public class MainCtrlImpl extends SimpleController implements
         /*
          * Recalculates values and renders the graphic.
          */
-        guiRefreshButton.setOnAction(event -> refreshChart(true));
+        guiRefreshAllMenuItem.setOnAction(event -> refreshChart(true));
 
         /*
          * Shows a Signal List Editor stage.
@@ -719,6 +719,10 @@ public class MainCtrlImpl extends SimpleController implements
 
         guiTimelineSetupButton.onActionProperty().bind(
             guiTimelineSetupMenuItem.onActionProperty()
+        );
+
+        guiRefreshButton.onActionProperty().bind(
+            guiRefreshAllMenuItem.onActionProperty()
         );
     }
 
@@ -906,4 +910,7 @@ public class MainCtrlImpl extends SimpleController implements
 
     @FXML
     private CheckMenuItem guiExtendedCalculationsMenuItem;
+
+    @FXML
+    private MenuItem guiRefreshAllMenuItem;
 }
