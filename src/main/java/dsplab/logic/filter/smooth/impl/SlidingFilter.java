@@ -11,7 +11,7 @@ public class SlidingFilter implements SignalFilter
     // Variant: 2 ~ K=5
     public SlidingFilter()
     {
-        this.setK(5);
+        this.setWindowSize(5);
     }
 
     int windowSize;

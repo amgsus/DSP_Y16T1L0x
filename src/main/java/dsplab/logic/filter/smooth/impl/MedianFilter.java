@@ -46,7 +46,8 @@ public class MedianFilter implements SignalFilter
             double[] srt = DoubleStream.of(signal).skip(skipCnt)
                 .limit(wS).sorted().toArray();
 
-            fltSignal[i + wS] = srt[wS / 2 - 1];
+//          fltSignal[i + wS] = srt[wS / 2 - 1];
+            fltSignal[i + wS / 2 - 1] = srt[wS / 2 - 1];
         }
 
         return fltSignal;
