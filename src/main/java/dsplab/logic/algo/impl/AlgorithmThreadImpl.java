@@ -2,6 +2,7 @@ package dsplab.logic.algo.impl;
 
 import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.callback.DelegateWrapper;
+import dsplab.common.Global;
 import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.algo.production.AlgorithmResultBuilder;
@@ -33,7 +34,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -47,6 +47,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     AlgorithmThreadImpl()
     {
         setDaemon(true);
+        this.threadPool = Global.getContext().getThreadPool();
     }
 
     public static AlgorithmThreadImpl newInstance() { return
@@ -54,12 +55,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     // --------------------------------------------------------------------- //
 
-    private final int THREAD_POOL_SIZE = 4; // Four
-
     private List<Signal> signalList = null;
     private volatile List<AlgorithmResult> results = null;
-
-    private static final boolean stopOnDelegateException = false;
 
     private int sampleCount = 0;
 
@@ -72,43 +69,53 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     private boolean extended = true;
 
-    /*
-     * The lifecycle of a thread pool is equal to run() lifecycle.
-     */
-    private volatile ExecutorService threadPool = null;
+    private ExecutorService threadPool;
 
     // --------------------------------------------------------------------- //
+
+    private Generator newGeneratorInstance()
+    {
+        Generator gen = GeneratorFactory.getFactory()
+            .giveMeSomethingLike(generatorID);
+
+        if (generatorID == GenID.WITH_VALUE_MODIFIERS) {
+            GeneratorWithModifiers gMod = cast(gen);
+            gMod.setAmplitudeModifier(amplitudeModifier);
+            gMod.setPhaseModifier(phaseModifier);
+            gMod.setFrequnecyModifier(frequencyModifier);
+        }
+
+        gen.setSampleCount(sampleCount); // T
+        gen.setPeriodCount(periodCount); // n
+
+        return gen;
+    }
 
     @Override
     public void run()
     {
-        threadPool = null;
+        List<Future<AlgorithmResult>> asyncResults =
+            new ArrayList<>(signalList.size());
 
         try {
-
-            threadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-            final ExecutorService _pool_ = threadPool;
-
-            List<Future<AlgorithmResult>> asyncResults =
-                new ArrayList<>(signalList.size());
-
             final CountDownLatch latch =
                 new CountDownLatch(signalList.size());
 
             // * Schedule all mathematic task for each signal * //
 
             signalList.forEach(signal -> {
-
-                asyncResults.add(_pool_.submit(() -> {
+                asyncResults.add(threadPool.submit(() -> {
 
                     AlgorithmResult result = null;
 
                     try {
 
+                        Generator gen = newGeneratorInstance();
+
                         if (extended)
-                            result = impl_DoExtendedMath(signal);
+                            result = impl_DoExtendedMath(signal, gen);
                         else
-                            result = impl_DoMath(signal);
+                            result = impl_DoMath(signal, gen);
 
                     } catch (Exception cause) {
 
@@ -136,7 +143,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
             asyncResults.forEach(algorithmResultFuture -> {
 
                 try {
-                    resultList.add(algorithmResultFuture.get(1000,
+                    resultList.add(algorithmResultFuture.get(2000,
                         TimeUnit.MILLISECONDS));
                 } catch (TimeoutException e) {
                     System.out.println("Timeout for" +
@@ -159,9 +166,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (threadPool != null)
-                threadPool.shutdown();
         }
 
         Platform.runLater(onDone::execute);
@@ -179,11 +183,6 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     // --------------------------------------------------------------------- //
 
-    /* LOGIC */
-
-    private Generator prefGenrt;                        // THE ONLY INSTANCE
-    private final Object prefGenrtLock = new Object();
-
     /**
      * Does mathematical calculations. This method does tasks in the current
      * thread, so it should be called in a separate thread.
@@ -194,32 +193,18 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
      * </ol>
      */
     protected
-    AlgorithmResult impl_DoMath(Signal signal)
+    AlgorithmResult impl_DoMath(Signal signal, Generator gen)
     {
-        synchronized (prefGenrtLock) {
-            prefGenrt = GeneratorFactory.getFactory()
-                .giveMeSomethingLike(generatorID);
+        gen.setSignal(signal);
 
-            if (generatorID == GenID.WITH_VALUE_MODIFIERS) {
-                GeneratorWithModifiers gMod = cast(prefGenrt);
-                gMod.setAmplitudeModifier(amplitudeModifier);
-                gMod.setPhaseModifier(phaseModifier);
-                gMod.setFrequnecyModifier(frequencyModifier);
-            }
+        double[] signalData = gen.run(); // Generate (length=T*n)
 
-            prefGenrt.setSignal(signal);
-            prefGenrt.setSampleCount(sampleCount); // T
-            prefGenrt.setPeriodCount(periodCount); // n
-
-            double[] signalData = prefGenrt.run(); // Generate (length=T*n)
-
-            return AlgorithmResultBuilder.newInstance()
-                .setSignal(signal)
-                .setData(signalData)
-                .setSampleCount(sampleCount)
-                .setPeriodCount(periodCount)
-                .build();
-        }
+        return AlgorithmResultBuilder.newInstance()
+            .setSignal(signal)
+            .setData(signalData)
+            .setSampleCount(sampleCount)
+            .setPeriodCount(periodCount)
+            .build();
     }
 
     /**
@@ -239,15 +224,15 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
      * </ol>
      */
     protected
-    AlgorithmResult impl_DoExtendedMath(Signal signal)
+    AlgorithmResult impl_DoExtendedMath(Signal signal, Generator gen)
     {
-        AlgorithmResult result = impl_DoMath(signal);
+        AlgorithmResult result = impl_DoMath(signal, gen);
 
         task_SignalSpectrum(result);            // Parallel
         task_RMSe(result);                      // Parallel
         task_Ae(result);                        // Parallel
         task_RestoreSignal(result);             // After task_SignalSpectrum
-        task_NoisySignal(result);               // Parallel
+        task_NoisySignal(result, gen);          // Parallel
         task_SliFilterForNoisySignal(result);   // After task_NoisySignal
         task_MdnFilterForNoisySignal(result);   // After task_NoisySignal
         task_PblFilterForNoisySignal(result);   // After task_NoisySignal
@@ -359,7 +344,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     // Must be invocated [in a separate thread] ONLY after
     // impl_DoMath() is done. Locks the generator instance.
     protected
-    void task_NoisySignal(AlgorithmResult result)
+    void task_NoisySignal(AlgorithmResult result, Generator gen)
     {
         Signal signal = cloneSignal(result.getSignal());
 
@@ -370,14 +355,11 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
         double[] data;
 
-        synchronized (prefGenrtLock) {
+        gen.setSignal(signal);
+        gen.setSampleCount(result.getSampleCount());
+        gen.setPeriodCount(result.getPeriodCount());
 
-            prefGenrt.setSignal(signal);
-            prefGenrt.setSampleCount(result.getSampleCount());
-            prefGenrt.setPeriodCount(result.getPeriodCount());
-
-            data = prefGenrt.run();
-        }
+        data = gen.run();
 
         FourierTransform ft = FourierTransformFactory.getFactory()
             .newFFTImplementation(FFTImpl.DISCRETE);

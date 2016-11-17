@@ -2,6 +2,7 @@ package dsplab.gui.ctrl.impl.signal;
 
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
+import dsplab.common.Global;
 import dsplab.common.Resources;
 import dsplab.gui.component.common.OverlayPane;
 import dsplab.gui.ctrl.EQController;
@@ -249,9 +250,7 @@ public class EQCtrlImpl extends SimpleController implements EQController
     private final AtomicReference<double[]> phsSpectrumData =
         new AtomicReference<>();
 
-    private final ExecutorService pool = Executors.newSingleThreadExecutor();
-
-    private Future bgTaskFuture;
+    private volatile Future bgTaskFuture;
 
     private final Runnable fourierTransformBackgroundTask = () -> {
 
@@ -295,7 +294,8 @@ public class EQCtrlImpl extends SimpleController implements EQController
             bgTaskFuture.cancel(true);
         }
 
-        bgTaskFuture = pool.submit(fourierTransformBackgroundTask);
+        bgTaskFuture = Global.getContext().getThreadPool()
+            .submit(fourierTransformBackgroundTask);
     }
 
     private
