@@ -11,7 +11,7 @@ public class SlidingFilter implements SignalFilter
     // Variant: 2 ~ K=5
     public SlidingFilter()
     {
-        this.setK(5);
+        this.setWindowSize(5);
     }
 
     int windowSize;
@@ -53,7 +53,7 @@ public class SlidingFilter implements SignalFilter
         double fltSignal[] = new double[length];
 
         for (int i = 0; i < length - w; i++) {
-            double sum = MathUtils.sum(i, i + w, j -> signal[j]);
+            double sum = MathUtils.sum(i, i + w - 1, j -> signal[j]);
             fltSignal[i + w / 2] = sum / this.windowSize;
         }
 
