@@ -46,4 +46,12 @@ public class DSPLabApplication extends Application
 
         Global.getContext().show();
     }
+
+    @Override
+    public
+    void stop()
+    {
+        getContext().shutdown();
+        System.out.println("The application is about to stop!");
+    }
 }
