@@ -19,6 +19,7 @@ public final class MessageBox
         a.setTitle(dlgText);
         a.setHeaderText(hdrText);
         a.setContentText(msgText);
+        a.setResizable(true);
 
         return a;
     }

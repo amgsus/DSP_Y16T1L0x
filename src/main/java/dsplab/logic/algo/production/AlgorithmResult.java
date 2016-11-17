@@ -2,6 +2,9 @@ package dsplab.logic.algo.production;
 
 import dsplab.logic.signal.Signal;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * The algorithm produces a result for each signal.
  *
@@ -17,59 +20,59 @@ public class AlgorithmResult
 
     // -------------------------------------------------------------------- //
 
-    int sampleCount;
-    int periodCount;
+    final AtomicReference<Signal> signal = new AtomicReference<>();
+
+    public
+    Signal getSignal()
+    {
+        return signal.get();
+    }
+
+    final AtomicInteger sampleCount = new AtomicInteger();
+    final AtomicInteger periodCount = new AtomicInteger();
 
     public
     int getSampleCount()
     {
-        return sampleCount;
+        return sampleCount.get();
     }
 
     public
     int getPeriodCount()
     {
-        return periodCount;
+        return periodCount.get();
     }
 
-    // -------------------------------------------------------------------- //
-
-    Signal signal;
-
-    double[] data;
-    double[] amplitudeSpectrum;
-    double[] phaseSpectrum;
-
-    public
-    Signal getSignal()
-    {
-        return signal;
-    }
+    final AtomicReference<double[]> data = new AtomicReference<>();
+    final AtomicReference<double[]> amplitudeSpectrum
+        = new AtomicReference<>();
+    final AtomicReference<double[]> phaseSpectrum
+        = new AtomicReference<>();
 
     public
     double[] getData()
     {
-        return data;
+        return data.get();
     }
 
     public
     double[] getAmplitudeSpectrum()
     {
-        return this.amplitudeSpectrum;
+        return amplitudeSpectrum.get();
     }
 
     public
     double[] getPhaseSpectrum()
     {
-        return this.phaseSpectrum;
+        return phaseSpectrum.get();
     }
 
     // -------------------------------------------------------------------- //
 
-    double[] rmsA;
-    double[] rmsB;
+    volatile double[] rmsA;
+    volatile double[] rmsB;
 
-    double[] rmsAmplitudes;
+    volatile double[] rmsAmplitudes;
 
     public
     double[] getRMSByFormulaA()
@@ -91,8 +94,8 @@ public class AlgorithmResult
 
     // -------------------------------------------------------------------- //
 
-    double[] restoredSignal;
-    double[] restoredWithPhaseSignal;
+    volatile double[] restoredSignal;
+    volatile double[] restoredWithPhaseSignal;
 
     public
     double[] getRestoredSignal()
@@ -108,38 +111,40 @@ public class AlgorithmResult
 
     // -------------------------------------------------------------------- //
 
-    double[] noisySignal;
-    double[] noisyAmplitudeSpectrum;
-    double[] noisyPhaseSpectrum;
+    final AtomicReference<double[]> noisySignal = new AtomicReference<>();
+    final AtomicReference<double[]> noisyAmplitudeSpectrum
+        = new AtomicReference<>();
+    final AtomicReference<double[]> noisyPhaseSpectrum
+        = new AtomicReference<>();
 
-    double[] slidingWindowSmoothedSignal;
-    double[] slidingWindowSmoothedSignalAmplitudeSpectrum;
-    double[] slidingWindowSmoothedSignalPhaseSpectrum;
+    volatile double[] slidingWindowSmoothedSignal;
+    volatile double[] slidingWindowSmoothedSignalAmplitudeSpectrum;
+    volatile double[] slidingWindowSmoothedSignalPhaseSpectrum;
 
-    double[] medianSmoothedSignal;
-    double[] medianSmoothedSignalAmplitudeSpectrum;
-    double[] medianSmoothedSignalPhaseSpectrum;
+    volatile double[] medianSmoothedSignal;
+    volatile double[] medianSmoothedSignalAmplitudeSpectrum;
+    volatile double[] medianSmoothedSignalPhaseSpectrum;
 
-    double[] parabolicSmoothedSignal;
-    double[] parabolicSmoothedSignalAmplitudeSpectrum;
-    double[] parabolicSmoothedSignalPhaseSpectrum;
+    volatile double[] parabolicSmoothedSignal;
+    volatile double[] parabolicSmoothedSignalAmplitudeSpectrum;
+    volatile double[] parabolicSmoothedSignalPhaseSpectrum;
 
     public
     double[] getNoisySignal()
     {
-        return noisySignal;
+        return noisySignal.get();
     }
 
     public
     double[] getNoisyAmplitudeSpectrum()
     {
-        return noisyAmplitudeSpectrum;
+        return noisyAmplitudeSpectrum.get();
     }
 
     public
     double[] getNoisyPhaseSpectrum()
     {
-        return noisyPhaseSpectrum;
+        return noisyPhaseSpectrum.get();
     }
 
     public
@@ -198,17 +203,17 @@ public class AlgorithmResult
 
     // -------------------------------------------------------------------- //
 
-    double[] lpSignal;
-    double[] lpAmpSpectrum;
-    double[] lpPhsSpectrum;
+    volatile double[] lpSignal;
+    volatile double[] lpAmpSpectrum;
+    volatile double[] lpPhsSpectrum;
 
-    double[] hpSignal;
-    double[] hpAmpSpectrum;
-    double[] hpPhsSpectrum;
+    volatile double[] hpSignal;
+    volatile double[] hpAmpSpectrum;
+    volatile double[] hpPhsSpectrum;
 
-    double[] bpSignal;
-    double[] bpAmpSpectrum;
-    double[] bpPhsSpectrum;
+    volatile double[] bpSignal;
+    volatile double[] bpAmpSpectrum;
+    volatile double[] bpPhsSpectrum;
 
     public double[] getLPFSignal()
     {
@@ -253,5 +258,21 @@ public class AlgorithmResult
     public double[] getBPFPhaseSpectrum()
     {
         return bpPhsSpectrum;
+    }
+
+    // -------------------------------------------------------------------- //
+
+    Exception exception;
+
+    public
+    Exception getException()
+    {
+        return exception;
+    }
+
+    public
+    boolean isSuccess()
+    {
+        return exception == null;
     }
 }

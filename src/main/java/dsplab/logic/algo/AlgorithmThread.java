@@ -29,4 +29,9 @@ public interface AlgorithmThread extends StartFinishDelegates
 
     void setExtendedCalculationEnabled(boolean enabled);
     void start();
+
+    Exception getException();
+    boolean hasFailed();
+    List<AlgorithmResult> getFailedTasks();
+    boolean hasFailedTasks();
 }

@@ -56,6 +56,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static dsplab.architecture.util.MessageBox.getCnfmBox;
+import static dsplab.architecture.util.MessageBox.getErroBox;
 import static dsplab.architecture.util.MessageBox.getWarnBox;
 import static dsplab.common.Const.*;
 import static dsplab.gui.util.Hei.cast;
@@ -349,33 +352,60 @@ public class MainCtrlImpl extends SimpleController implements
             throw new IllegalStateException(msg);
         }
 
-        Platform.runLater(() -> {
+        // * Fetch results * //
 
-            // * Fetch results * //
+        resultList = algoThread.getResults();
 
-            List<AlgorithmResult> results = algoThread.getResults();
+        if (algoThread.hasFailed()) {
+
+            updateWaitOverlay("Oops! Something has broken...");
+
+            StringWriter sw = new StringWriter();
+            algoThread.getException().printStackTrace(new PrintWriter(sw));
+
+            getErroBox(sw.toString(), "Fatal: Algorithm Thread").show();
+            onRenderAnimationDone.execute();
+
+        } else {
+
+            if (algoThread.hasFailedTasks()) {
+
+                StringWriter sw = new StringWriter();
+
+                for (AlgorithmResult failed : algoThread.getFailedTasks()) {
+                    failed.getException().printStackTrace(new PrintWriter(sw));
+                }
+
+                getErroBox(sw.toString(), String.format("%d tasks failed",
+                    algoThread.getFailedTasks().size())).show();
+            }
 
             this.statusBarController.setPeriod(algoThread.getSampleCount());
             this.statusBarController.setNumberOfSamples(
                 algoThread.getSampleCount() * algoThread.getPeriodCount()
             );
 
-            this.updateWaitOverlay("Starting the renderer...");
+            if (resultList.size() > 0) {
 
-            renderSeries(results);
+                this.updateWaitOverlay("Starting the renderer...");
 
-            if (this.extended) {
-                this.updateWaitOverlay("Creating tabs...");
-                createTabsForEachAlgoResult(results);
+                renderSeries(resultList); // Render only successfull tasks
+
+                if (this.extended) {
+                    updateWaitOverlay("Creating tabs...");
+                    createTabsForEachAlgoResult(resultList);
+                }
+
+                this.updateWaitOverlay("Rendering...");
+
+            } else {
+                onRenderAnimationDone.execute();
             }
+        }
 
-            this.updateWaitOverlay("Rendering...");
+        // * Cleanup: Allow thread to be created again * //
 
-            // * Cleanup: Allow algorithm thread to be created again * //
-
-            this.resultList = results;
-            this.algoThread = null;
-        });
+        this.algoThread = null;
     };
 
     private boolean extended;

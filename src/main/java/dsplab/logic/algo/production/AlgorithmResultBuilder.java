@@ -24,16 +24,16 @@ public class AlgorithmResultBuilder extends BuilderEx<AlgorithmResult>
     // -------------------------------------------------------------------- //
 
     public
-    AlgorithmResultBuilder setData(double[] amplitudes)
+    AlgorithmResultBuilder setData(double[] values)
     {
-        getObject().data = amplitudes;
+        getObject().data.set(values);
         return this;
     }
 
     public
     AlgorithmResultBuilder setSignal(Signal signal)
     {
-        getObject().signal = signal;
+        getObject().signal.set(signal);
         return this;
     }
 
@@ -61,14 +61,14 @@ public class AlgorithmResultBuilder extends BuilderEx<AlgorithmResult>
     public
     AlgorithmResultBuilder setSampleCount(int count)
     {
-        getObject().sampleCount = count;
+        getObject().sampleCount.set(count);
         return this;
     }
 
     public
     AlgorithmResultBuilder setNoisySignal(double[] values)
     {
-        getObject().noisySignal = values;
+        getObject().noisySignal.set(values);
         return this;
     }
 
@@ -89,14 +89,14 @@ public class AlgorithmResultBuilder extends BuilderEx<AlgorithmResult>
     public
     AlgorithmResultBuilder setAmplitudeSpectrum(double[] values)
     {
-        getObject().amplitudeSpectrum = values;
+        getObject().amplitudeSpectrum.set(values);
         return this;
     }
 
     public
     AlgorithmResultBuilder setPhaseSpectrum(double[] values)
     {
-        getObject().phaseSpectrum = values;
+        getObject().phaseSpectrum.set(values);
         return this;
     }
 
@@ -152,14 +152,14 @@ public class AlgorithmResultBuilder extends BuilderEx<AlgorithmResult>
     public
     AlgorithmResultBuilder setNoisyAmplitudeSpectrum(double[] values)
     {
-        getObject().noisyAmplitudeSpectrum = values;
+        getObject().noisyAmplitudeSpectrum.set(values);
         return this;
     }
 
     public
     AlgorithmResultBuilder setNoisyPhaseSpectrum(double[] values)
     {
-        getObject().noisyPhaseSpectrum = values;
+        getObject().noisyPhaseSpectrum.set(values);
         return this;
     }
 
@@ -180,7 +180,7 @@ public class AlgorithmResultBuilder extends BuilderEx<AlgorithmResult>
     public
     AlgorithmResultBuilder setPeriodCount(int count)
     {
-        getObject().periodCount = count;
+        getObject().periodCount.set(count);
         return this;
     }
 
@@ -244,6 +244,13 @@ public class AlgorithmResultBuilder extends BuilderEx<AlgorithmResult>
     AlgorithmResultBuilder setBPFPhaseSpectrum(double[] values)
     {
         getObject().bpPhsSpectrum = values;
+        return this;
+    }
+
+    public
+    AlgorithmResultBuilder setException(Exception e)
+    {
+        getObject().exception = e;
         return this;
     }
 }

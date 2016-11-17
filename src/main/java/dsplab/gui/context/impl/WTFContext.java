@@ -3,11 +3,11 @@ package dsplab.gui.context.impl;
 import dsplab.gui.Stages;
 import dsplab.gui.context.AppContext;
 import dsplab.gui.stage.main.MainStage;
-import javafx.application.Platform;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static dsplab.common.Const.MAIN;
@@ -24,7 +24,13 @@ public class WTFContext implements AppContext
         mainStage = Stages.getFactory().giveMeSomethingLike(MAIN);
 
         System.out.println("Initializing thread pool with 16 workers.");
-        threadPool = Executors.newFixedThreadPool(16);
+
+        final int coreThreads = 16;
+        final int maxSize = Integer.MAX_VALUE;
+        final int keepAliveTime = 60; // 5 seconds
+
+        threadPool = new ThreadPoolExecutor(coreThreads, maxSize,
+            keepAliveTime, TimeUnit.SECONDS, new SynchronousQueue<>());
     }
 
     private MainStage mainStage;

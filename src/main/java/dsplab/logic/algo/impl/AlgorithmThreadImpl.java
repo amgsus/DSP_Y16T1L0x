@@ -4,6 +4,9 @@ import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.callback.DelegateWrapper;
 import dsplab.common.Global;
 import dsplab.logic.algo.AlgorithmThread;
+import dsplab.logic.algo.e.EMathInvocation;
+import dsplab.logic.algo.e.EPendingTask;
+import dsplab.logic.algo.e.MultipleCauseException;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.algo.production.AlgorithmResultBuilder;
 import dsplab.logic.filter.band.BandPassFilter;
@@ -30,13 +33,10 @@ import dsplab.logic.signal.enums.Waveform;
 import javafx.application.Platform;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static dsplab.gui.util.Hei.assertThreadNotRunning;
 import static dsplab.gui.util.Hei.cast;
@@ -56,7 +56,9 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     // --------------------------------------------------------------------- //
 
     private List<Signal> signalList = null;
-    private volatile List<AlgorithmResult> results = null;
+
+    private final List<AlgorithmResult> results = new ArrayList<>();
+    private final List<AlgorithmResult> failedTasks = new ArrayList<>();
 
     private int sampleCount = 0;
 
@@ -69,7 +71,10 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
     private boolean extended = true;
 
-    private ExecutorService threadPool;
+    private Exception majorCause;
+
+    private final ExecutorService threadPool;
+    private static final int MAX_CONCURRENT_TASKS = 8;
 
     // --------------------------------------------------------------------- //
 
@@ -91,80 +96,94 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
         return gen;
     }
 
-    @Override
-    public void run()
+    private Future<AlgorithmResult> submitTask(final Signal signal)
+        throws RejectedExecutionException
     {
-        List<Future<AlgorithmResult>> asyncResults =
-            new ArrayList<>(signalList.size());
+        return threadPool.submit(() -> {
+
+            AlgorithmResult result = null;
+            Exception e = null;
+            Semaphore maxActives = this.maxActiveTaskSemaphoreRef.get();
+            CountDownLatch latch = this.latchRef.get();
+
+            try {
+                maxActives.acquire();
+
+                Generator gen = newGeneratorInstance();
+
+                if (extended)
+                    result = impl_DoExtendedMath(signal, gen);
+                else
+                    result = impl_DoMath(signal, gen);
+
+            } catch (EMathInvocation | MultipleCauseException eMath) {
+                e = eMath;
+            } catch (Exception eUnknown) {
+                e = eUnknown;
+            } finally {
+                maxActives.release();
+                latch.countDown();
+            }
+
+            if (e != null) {
+                throw e;
+            }
+
+            return result;
+        });
+    }
+
+    private final AtomicReference<Semaphore> maxActiveTaskSemaphoreRef =
+        new AtomicReference<>();
+    private final AtomicReference<CountDownLatch> latchRef =
+        new AtomicReference<>();
+
+    @Override
+    public
+    void run()
+    {
+        majorCause = null;
+
+        results.clear();
+        failedTasks.clear();
+
+        final int signalCount = signalList.size();
+        List<Future<AlgorithmResult>> futures = new ArrayList<>(signalCount);
+
+        CountDownLatch latch = new CountDownLatch(signalCount);
+        Semaphore maxActives = new Semaphore(MAX_CONCURRENT_TASKS);
+
+        latchRef.set(latch);
+        maxActiveTaskSemaphoreRef.set(maxActives);
 
         try {
-            final CountDownLatch latch =
-                new CountDownLatch(signalList.size());
+            // * Do math for each signal in a separate thread * //
 
-            // * Schedule all mathematic task for each signal * //
+            signalList.forEach(s -> futures.add(submitTask(s)));
 
-            signalList.forEach(signal -> {
-                asyncResults.add(threadPool.submit(() -> {
+            // * Collect all results * //
 
-                    AlgorithmResult result = null;
+            latchRef.get().await();
 
-                    try {
+            for (int i = 0; i < futures.size(); i++) {
 
-                        Generator gen = newGeneratorInstance();
-
-                        if (extended)
-                            result = impl_DoExtendedMath(signal, gen);
-                        else
-                            result = impl_DoMath(signal, gen);
-
-                    } catch (Exception cause) {
-
-                        // ToDo: Handle the exception...
-                        cause.printStackTrace();
-                        throw cause; // ToDo: ???
-
-                    }
-
-                    latch.countDown();
-                    return result;
-                }));
-
-            });
-
-            // * Wait until all calculations are done * //
-
-            latch.await();
-
-            // * Collect calculation results into a single list  * //
-
-            List<AlgorithmResult> resultList =
-                new ArrayList<>(asyncResults.size());
-
-            asyncResults.forEach(algorithmResultFuture -> {
+                Future<AlgorithmResult> f = futures.get(i);
+                AlgorithmResult result;
 
                 try {
-                    resultList.add(algorithmResultFuture.get(2000,
-                        TimeUnit.MILLISECONDS));
-                } catch (TimeoutException e) {
-                    System.out.println("Timeout for" +
-                        asyncResults.indexOf(algorithmResultFuture));
-                } catch (InterruptedException e) {
-                    final String msg
-                        = "Worker thread has been interrupted";
-                    System.err.println(msg);
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    final String msg
-                        = "Worker thread has been interrupted by exception";
-                    System.err.println(msg);
-                    e.printStackTrace();
+                    result = f.get();
+                    results.add(result);
+                } catch (Exception cause) {
+                    failedTasks.add(AlgorithmResultBuilder.newInstance()
+                            .setSignal(signalList.get(i))
+                            .setException(cast(cause.getCause()))
+                            .build()
+                    );
                 }
-
-            });
-
-            this.results = resultList;
+            }
 
         } catch (Exception e) {
+            majorCause = e;
             e.printStackTrace();
         }
 
@@ -194,17 +213,23 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
      */
     protected
     AlgorithmResult impl_DoMath(Signal signal, Generator gen)
+        throws Exception
     {
-        gen.setSignal(signal);
+        try {
+            gen.setSignal(signal);
 
-        double[] signalData = gen.run(); // Generate (length=T*n)
+            double[] signalData = gen.run(); // Generate (length=T*n)
 
-        return AlgorithmResultBuilder.newInstance()
-            .setSignal(signal)
-            .setData(signalData)
-            .setSampleCount(sampleCount)
-            .setPeriodCount(periodCount)
-            .build();
+            return AlgorithmResultBuilder.newInstance()
+                .setSignal(signal)
+                .setData(signalData)
+                .setSampleCount(sampleCount)
+                .setPeriodCount(periodCount)
+                .build();
+
+        } catch (Exception cause) {
+            throw new EMathInvocation(cause);
+        }
     }
 
     /**
@@ -225,22 +250,291 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
      */
     protected
     AlgorithmResult impl_DoExtendedMath(Signal signal, Generator gen)
+        throws Exception
     {
-        AlgorithmResult result = impl_DoMath(signal, gen);
+        /*
+         * Calculate signal form.
+         */
 
-        task_SignalSpectrum(result);            // Parallel
-        task_RMSe(result);                      // Parallel
-        task_Ae(result);                        // Parallel
-        task_RestoreSignal(result);             // After task_SignalSpectrum
-        task_NoisySignal(result, gen);          // Parallel
-        task_SliFilterForNoisySignal(result);   // After task_NoisySignal
-        task_MdnFilterForNoisySignal(result);   // After task_NoisySignal
-        task_PblFilterForNoisySignal(result);   // After task_NoisySignal
-        task_LPSignal(result);                  // Parallel
-        task_HPSignal(result);                  // Parallel
-        task_BPSignal(result);                  // Parallel
+        AlgorithmResult algoResult = impl_DoMath(signal, gen);
 
-        return result;
+        /*
+         * Sumbiting all tasks (including depending ones)
+         * to the thread pool.
+         */
+
+        final Callable<Void> callableSigSpectum = () -> {
+            try {
+                task_SignalSpectrum(algoResult);
+            } catch (Exception cause) {
+                final String s = "FT has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncSigSpectrum = threadPool.submit(callableSigSpectum);
+
+        final Callable<Void> callableRMSeAe = () -> {
+            try {
+                task_RMSe(algoResult);
+            } catch (Exception cause) {
+                final String s = "RMSe calculation has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            try {
+                task_Ae(algoResult);
+            } catch (Exception cause) {
+                final String s = "Ae calculation has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncRMSeAe = threadPool.submit(callableRMSeAe);
+
+        // This will actually block a worker from the thread pool
+        final Callable<Void> callableRestoreSig = () -> {
+            try {
+                asyncSigSpectrum.get();
+            } catch (Exception e) {
+                throw new EPendingTask(e);
+            }
+
+            try {
+                task_RestoreSignal(algoResult);
+            } catch (Exception cause) {
+                final String s = "Reversed FT has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncRestoreSig = threadPool.submit(callableRestoreSig);
+
+        final Callable<Void> callableNoise = () -> {
+            try {
+                task_NoisySignal(algoResult, gen);
+            } catch (Exception cause) {
+                final String s = "Noise generator has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncNoise = threadPool.submit(callableNoise);
+
+        // This will actually block a worker from the thread pool
+        final Callable<Void> callableSliFilter = () -> {
+            try {
+                asyncNoise.get();
+            } catch (Exception e) {
+                throw new EPendingTask(e);
+            }
+
+            try {
+                task_SliFilterForNoisySignal(algoResult);
+            } catch (Exception cause) {
+                final String s = "Sliding filter has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncSliFilter = threadPool.submit(callableSliFilter);
+
+        // This will actually block a worker from the thread pool
+        final Callable<Void> callableMdnFilter = () -> {
+            try {
+                asyncNoise.get();
+            } catch (Exception e) {
+                throw new EPendingTask(e);
+            }
+
+            try {
+                task_MdnFilterForNoisySignal(algoResult);
+            } catch (Exception cause) {
+                final String s = "Median filter has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncMdnFilter = threadPool.submit(callableMdnFilter);
+
+        // This will actually block a worker from the thread pool
+        final Callable<Void> callablePblFilter = () -> {
+            try {
+                asyncNoise.get();
+            } catch (Exception e) {
+                throw new EPendingTask(e);
+            }
+
+            try {
+                task_PblFilterForNoisySignal(algoResult);
+            } catch (Exception cause) {
+                final String s = "Parabolic filter has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncPblFilter = threadPool.submit(callablePblFilter);
+
+        // This will actually block a worker from the thread pool
+        final Callable<Void> callableLPSig = () -> {
+            try {
+                asyncSigSpectrum.get();
+            } catch (Exception e) {
+                throw new EPendingTask(e);
+            }
+
+            try {
+                task_LPSignal(algoResult);
+            } catch (Exception cause) {
+                final String s = "Low-pass filter has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncLPSig = threadPool.submit(callableLPSig);
+
+        // This will actually block a worker from the thread pool
+        final Callable<Void> callableHPSig = () -> {
+            try {
+                asyncSigSpectrum.get();
+            } catch (Exception e) {
+                throw new EPendingTask(e);
+            }
+
+            try {
+                task_HPSignal(algoResult);
+            } catch (Exception cause) {
+                final String s = "High-pass filter has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncHPSig = threadPool.submit(callableHPSig);
+
+        // This will actually block a worker from the thread pool
+        final Callable<Void> callableBPSig = () -> {
+            try {
+                asyncSigSpectrum.get();
+            } catch (Exception e) {
+                throw new EPendingTask(e);
+            }
+
+            try {
+                task_BPSignal(algoResult);
+            } catch (Exception cause) {
+                final String s = "Band-pass filter has failed";
+                throw new EMathInvocation(s, cause);
+            }
+
+            return null;
+        };
+
+        final Future asyncBPSig = threadPool.submit(callableBPSig);
+
+        /*
+         * Awaiting all task to complete. No guarantee that all tasks have
+         * done without exceptions. So, each task is handled separately.
+         */
+
+        List<Throwable> eList = new ArrayList<>(10); // Max num. of exceptions
+
+        try {
+            asyncSigSpectrum.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncRMSeAe.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncRestoreSig.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncNoise.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncSliFilter.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncMdnFilter.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncPblFilter.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncLPSig.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncHPSig.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        try {
+            asyncBPSig.get();
+        } catch (Exception cause) {
+            eList.add(cause);
+            cause.printStackTrace();
+        }
+
+        if (eList.size() > 0) { //  Something has failed...
+
+            String s = String.format("Algo [%s:%s]: Execution has failed " +
+                "with %d exceptions",
+                signal.getName(), signal.getBrushColor(), eList.size());
+            throw new MultipleCauseException(s, eList);
+        }
+
+        return algoResult;
     }
 
     // May be invocated in a separate thread.
@@ -455,7 +749,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
             .build();
     }
 
-    // May be invocated in a separate thread.
+    // Must be invocated [in a separate thread] ONLY after
+    // task_SignalSpectrum() is done.
     protected
     void task_LPSignal(AlgorithmResult result)
     {
@@ -475,7 +770,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
             .build();
     }
 
-    // May be invocated in a separate thread.
+    // Must be invocated [in a separate thread] ONLY after
+    // task_SignalSpectrum() is done.
     protected
     void task_HPSignal(AlgorithmResult result)
     {
@@ -495,7 +791,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
             .build();
     }
 
-    // May be invocated in a separate thread.
+    // Must be invocated [in a separate thread] ONLY after
+    // task_SignalSpectrum() is done.
     protected
     void task_BPSignal(AlgorithmResult result)
     {
@@ -639,5 +936,29 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     void setExtendedCalculationEnabled(boolean enabled)
     {
         this.extended = enabled;
+    }
+
+    @Override
+    public Exception getException()
+    {
+        return majorCause;
+    }
+
+    @Override
+    public List<AlgorithmResult> getFailedTasks()
+    {
+        return failedTasks;
+    }
+
+    @Override
+    public boolean hasFailedTasks()
+    {
+        return failedTasks.size() > 0;
+    }
+
+    @Override
+    public boolean hasFailed()
+    {
+        return majorCause != null;
     }
 }
