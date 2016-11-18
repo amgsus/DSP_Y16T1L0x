@@ -13,6 +13,8 @@ public interface Generator
     void setPeriodCount(int periods);
     double[] run();
 
+    void setOffset(int offset);
+
     // -------------------------------------------------------------------- //
 
     static double calculateMomentaryAmplitude(Harmonic harmonic,

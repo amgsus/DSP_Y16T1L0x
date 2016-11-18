@@ -15,7 +15,7 @@ public final class GeneratorFactory
     // -------------------------------------------------------------------- //
 
     @SuppressWarnings("unchecked")
-    public <T extends Generator> T giveMeSomethingLike(GenID genID)
+    public <T extends Generator> T newGenerator(GenID genID)
     {
         switch (genID)
         {

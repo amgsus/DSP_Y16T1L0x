@@ -33,7 +33,6 @@ import dsplab.logic.signal.enums.Waveform;
 import javafx.application.Platform;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -81,7 +80,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     private Generator newGeneratorInstance()
     {
         Generator gen = GeneratorFactory.getFactory()
-            .giveMeSomethingLike(generatorID);
+            .newGenerator(generatorID);
 
         if (generatorID == GenID.WITH_VALUE_MODIFIERS) {
             GeneratorWithModifiers gMod = cast(gen);

@@ -9,12 +9,15 @@ public class GeneratorImpl implements Generator
 {
     public GeneratorImpl()
     {
-        this.sampleCount = 512; // Default
+        this.sampleCount = 512;
         this.signal = null;
+        this.offset = 0;
+        this.periodCount = 1;
     }
 
     // -------------------------------------------------------------------- //
 
+    protected int offset;
     protected int periodCount;
     protected int sampleCount;
     protected Signal signal;
@@ -28,7 +31,7 @@ public class GeneratorImpl implements Generator
 
         FunctionFactory ff = new CompositeFunctionFactory(this.sampleCount);
 
-        for (int offsetX = 0; offsetX < a.length; offsetX++) {
+        for (int offsetX = this.offset; offsetX < a.length; offsetX++) {
             a[offsetX] = Generator.calculateMomentaryAmplitude(signal, offsetX,
                 this.sampleCount, ff);
         }
@@ -63,5 +66,11 @@ public class GeneratorImpl implements Generator
             throw new IllegalArgumentException("Period count less than ONE");
 
         this.periodCount = periods;
+    }
+
+    @Override
+    public void setOffset(int offset)
+    {
+        this.offset = offset;
     }
 }

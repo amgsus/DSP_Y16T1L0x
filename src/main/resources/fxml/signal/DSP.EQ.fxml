@@ -129,7 +129,7 @@
                               </VBox>
                            </children>
                         </AnchorPane>
-                        <VBox fx:id="guiChartWaitBox" alignment="CENTER">
+                        <VBox fx:id="guiChartWaitBox" alignment="CENTER" visible="false">
                            <children>
                               <ProgressIndicator style="-fx-progress-color: Yellow;" />
                            </children>
@@ -154,7 +154,7 @@
                                           <NumberAxis animated="false" autoRanging="false" side="LEFT" tickUnit="0.25" upperBound="1.0" />
                                        </yAxis>
                                     </BarChart>
-                                    <VBox fx:id="guiAmplitudeSpectrumWaitBox" alignment="CENTER" visible="false">
+                                    <VBox fx:id="guiAmplitudeSpectrumWaitBox" alignment="CENTER">
                                        <children>
                                           <ProgressIndicator style="-fx-progress-color: Yellow;" />
                                        </children>
@@ -175,7 +175,7 @@
                                           <NumberAxis animated="false" autoRanging="false" lowerBound="-2.0" side="LEFT" tickUnit="1.0" upperBound="2.0" />
                                        </yAxis>
                                     </BarChart>
-                                    <VBox fx:id="guiPhaseSpectrumWaitBox" alignment="CENTER" visible="false">
+                                    <VBox fx:id="guiPhaseSpectrumWaitBox" alignment="CENTER">
                                        <children>
                                           <ProgressIndicator style="-fx-progress-color: Yellow;" />
                                        </children>

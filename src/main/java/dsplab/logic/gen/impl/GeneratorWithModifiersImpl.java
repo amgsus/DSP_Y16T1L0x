@@ -3,6 +3,7 @@ package dsplab.logic.gen.impl;
 import dsplab.logic.function.fa.CompositeFunctionFactory;
 import dsplab.logic.function.fa.FunctionFactory;
 import dsplab.logic.gen.Generator;
+import dsplab.logic.gen.GeneratorWithModifiers;
 import dsplab.logic.gen.modifier.ValueModifier;
 import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
@@ -12,7 +13,7 @@ import dsplab.logic.signal.util.SigUtils;
  * Adds modifiers for harmonic amplitude, phase and frequency values.
  */
 public class GeneratorWithModifiersImpl extends GeneratorImpl implements
-    dsplab.logic.gen.GeneratorWithModifiers
+    GeneratorWithModifiers
 {
     public GeneratorWithModifiersImpl()
     {
@@ -62,7 +63,7 @@ public class GeneratorWithModifiersImpl extends GeneratorImpl implements
                 frequencyModifier.getAllValues(this.sampleCount);
         }
 
-        for (int offset = 0; offset < a.length; offset++) {
+        for (int x = this.offset; x < a.length; x++) {
 
             /* Modify */
 
@@ -75,17 +76,17 @@ public class GeneratorWithModifiersImpl extends GeneratorImpl implements
                 double newA = srcHarmonic.getAmplitude();
 
                 if (amplitudeModifierValues != null)
-                    newA *= amplitudeModifierValues[offset];
+                    newA *= amplitudeModifierValues[x];
 
                 double newP = srcHarmonic.getPhase();
 
                 if (phaseModifierValues != null)
-                    newP *= phaseModifierValues[offset];
+                    newP *= phaseModifierValues[x];
 
                 double newF = srcHarmonic.getFrequency();
 
                 if (frequencyModifierValues != null)
-                    newF *= frequencyModifierValues[offset];
+                    newF *= frequencyModifierValues[x];
 
                 modifiedHarmonic.setAmplitude(newA);
                 modifiedHarmonic.setPhase(newP);
@@ -94,8 +95,8 @@ public class GeneratorWithModifiersImpl extends GeneratorImpl implements
 
             /* Calculate */
 
-            a[offset] = Generator.calculateMomentaryAmplitude(modifiedSignal,
-                offset, this.sampleCount, ff);
+            a[x] = Generator.calculateMomentaryAmplitude(modifiedSignal,
+                x, this.sampleCount, ff);
         }
 
         return a;
