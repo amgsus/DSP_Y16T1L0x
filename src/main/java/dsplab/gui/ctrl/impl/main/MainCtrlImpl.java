@@ -750,6 +750,9 @@ public class MainCtrlImpl extends SimpleController implements
 
     // -------------------------------------------------------------------- //
 
+    private int previousCrossOverX = -1;
+    private int previousCrossOverY = -1;
+
     private
     void initCrossOverChart()
     {
@@ -783,26 +786,26 @@ public class MainCtrlImpl extends SimpleController implements
             double x = event.getX();
             double y = event.getY();
 
-            Number xn = axisY.getValueForDisplay(y);
-            Number n = axisX.getValueForDisplay(x);
-
-            final String chartFormat = "X:%.0f  Y:%.0f  n=%.3f  x(n)=%.3f";
-
-            guiChart.setTitle(String.format(chartFormat, x, y,
-                n.doubleValue(), xn.doubleValue()));
-
             Point2D mouseInRegion = region.localToParent(x, y);
-
-            crosslineHrz.setStartY(mouseInRegion.getY());
-            crosslineHrz.setEndY(mouseInRegion.getY());
 
             crosslineVrt.setStartX(mouseInRegion.getX());
             crosslineVrt.setEndX(mouseInRegion.getX());
 
+            crosslineHrz.setStartY(mouseInRegion.getY());
+            crosslineHrz.setEndY(mouseInRegion.getY());
+
+            Number xn = axisY.getValueForDisplay(event.getY());
+            Number n = axisX.getValueForDisplay(event.getX());
+
+            final String chartFormat = "X:%.1f  Y:%.1f  n=%.3f  x(n)=%.3f";
+
+            guiChart.setTitle(String.format(chartFormat, x, y,
+                n.doubleValue(), xn.doubleValue()));
+
             event.consume();
         });
 
-        region.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+        pane.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
             crosslineHrz.setVisible(false);
             crosslineVrt.setVisible(false);
         });
