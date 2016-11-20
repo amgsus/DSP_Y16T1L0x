@@ -7,30 +7,38 @@ import static dsplab.logic.gen.modifier.alg.ValueModifierAlgorithm.LINEAR;
 
 public class LinearValueModifier extends AbstractValueModifier
 {
-    public LinearValueModifier() {}
-
-    // -------------------------------------------------------------------- //
-
     @Override
-    public double[] getAllValues(int size, double startValue,
-        double finalValue)
+    public
+    ValueModifierAlgorithm getScale()
     {
-        double[] c = new double[size];
-
-        final double step = (startValue + finalValue) / size;
-        double offset = 0; // Replace multiplication with sum
-
-        for (int i = 0; i < c.length; i++) {
-            c[i] = startValue + offset;
-            offset = offset + step;
-        }
-
-        return c;
+        return LINEAR;
     }
 
     @Override
-    public ValueModifierAlgorithm getScale()
+    public double[] getAllValues(int tickCount, int ticksPerPeriod)
     {
-        return LINEAR;
+        if (tickCount < 0)
+            throw new IllegalArgumentException("tickCount");
+        if (ticksPerPeriod < 1)
+            throw new IllegalArgumentException("ticksPerPeriod");
+
+        double modValues[] = new double[tickCount];
+
+        double step = (getFinalValue() - getStartValue()) / (tickCount - 1);
+        double offset = 0F;
+
+        for (int i = 0; i < tickCount; i++) {
+
+            if (isResetOnEachPeriod()) {
+                if (i % ticksPerPeriod == 0) {
+                    offset = 0;
+                }
+            }
+
+            modValues[i] = getStartValue() + offset;
+            offset += step;
+        }
+
+        return modValues;
     }
 }

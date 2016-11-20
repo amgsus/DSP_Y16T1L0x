@@ -66,10 +66,10 @@ public class GeneratorValueSetupControllerImpl extends SimpleController
         guiAlgorithmComboBox.setValue(vm.getScale());
         guiOperationComboBox.setValue(vm.getOperation());
 
-        guiStartValueField.setText(Double.toString(vm.getStartBound()));
-        guiFinalValueField.setText(Double.toString(vm.getFinalBound()));
+        guiStartValueField.setText(Double.toString(vm.getStartValue()));
+        guiFinalValueField.setText(Double.toString(vm.getFinalValue()));
 
-        guiEachPeriodCheckBox.setSelected(vm.isForEachPeriod());
+        guiEachPeriodCheckBox.setSelected(vm.isResetOnEachPeriod());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class GeneratorValueSetupControllerImpl extends SimpleController
         vm.setBounds(startValue, finalValue);
         vm.setOperation(guiOperationComboBox.getValue());
 
-        vm.setForEachPeriod(guiEachPeriodCheckBox.isSelected());
+        vm.setResetOnEachPeriod(guiEachPeriodCheckBox.isSelected());
 
         return vm;
     }

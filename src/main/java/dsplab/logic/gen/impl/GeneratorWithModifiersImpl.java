@@ -50,17 +50,17 @@ public class GeneratorWithModifiersImpl extends GeneratorImpl implements
 
         if (amplitudeModifier != null) {
             amplitudeModifierValues =
-                amplitudeModifier.getAllValues(this.sampleCount);
+                amplitudeModifier.getAllValues(a.length, this.sampleCount);
         }
 
         if (phaseModifier != null) {
             phaseModifierValues =
-                phaseModifier.getAllValues(this.sampleCount);
+                phaseModifier.getAllValues(a.length, this.sampleCount);
         }
 
         if (frequencyModifier != null) {
             frequencyModifierValues =
-                frequencyModifier.getAllValues(this.sampleCount);
+                frequencyModifier.getAllValues(a.length, this.sampleCount);
         }
 
         for (int x = this.offset; x < a.length; x++) {
@@ -76,17 +76,20 @@ public class GeneratorWithModifiersImpl extends GeneratorImpl implements
                 double newA = srcHarmonic.getAmplitude();
 
                 if (amplitudeModifierValues != null)
-                    newA *= amplitudeModifierValues[x];
+                    newA = amplitudeModifier.getOperation().apply(newA,
+                        amplitudeModifierValues[x]);
 
                 double newP = srcHarmonic.getPhase();
 
                 if (phaseModifierValues != null)
-                    newP *= phaseModifierValues[x];
+                    newP = phaseModifier.getOperation().apply(newP,
+                        phaseModifierValues[x]);
 
                 double newF = srcHarmonic.getFrequency();
 
                 if (frequencyModifierValues != null)
-                    newF *= frequencyModifierValues[x];
+                    newF = frequencyModifier.getOperation().apply(newF,
+                        frequencyModifierValues[x]);
 
                 modifiedHarmonic.setAmplitude(newA);
                 modifiedHarmonic.setPhase(newP);
