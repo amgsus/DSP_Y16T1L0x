@@ -1,6 +1,7 @@
 package dsplab.logic.gen.modifier.impl;
 
 import dsplab.logic.gen.modifier.ValueModifier;
+import dsplab.logic.gen.modifier.alg.Operation;
 
 public abstract class AbstractValueModifier implements ValueModifier
 {
@@ -29,8 +30,8 @@ public abstract class AbstractValueModifier implements ValueModifier
     @Override
     public double[] getAllValues(int size)
     {
-        return getAllValues(getSize(), getStartValue(),
-            getFinalValue());
+        return getAllValues(getSize(), getStartBound(),
+            getFinalBound());
     }
 
     // -------------------------------------------------------------------- //
@@ -42,13 +43,13 @@ public abstract class AbstractValueModifier implements ValueModifier
     }
 
     @Override
-    public double getStartValue()
+    public double getStartBound()
     {
         return startCoefficient;
     }
 
     @Override
-    public double getFinalValue()
+    public double getFinalBound()
     {
         return finalCoefficient;
     }
@@ -79,9 +80,39 @@ public abstract class AbstractValueModifier implements ValueModifier
     }
 
     @Override
-    public void setCoefficientBounds(double startValue, double finalValue)
+    public void setBounds(double startValue, double finalValue)
     {
         this.setStartValue(startValue);
         this.setFinalValue(finalValue);
+    }
+
+    @Override
+    public double applyToValue(double value, int n, int period, int periods)
+    {
+        return 0;
+    }
+
+    @Override
+    public void setForEachPeriod(boolean forEachPeriod)
+    {
+
+    }
+
+    @Override
+    public boolean isForEachPeriod()
+    {
+        return false;
+    }
+
+    @Override
+    public void setOperation(Operation operation)
+    {
+
+    }
+
+    @Override
+    public Operation getOperation()
+    {
+        return null;
     }
 }

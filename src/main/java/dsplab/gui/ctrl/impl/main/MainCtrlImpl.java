@@ -13,7 +13,6 @@ import dsplab.gui.component.common.WaitIndicatorBox;
 import dsplab.gui.ctrl.EachSignalTabController;
 import dsplab.gui.ctrl.MainController;
 import dsplab.gui.ctrl.MainStatusBarController;
-import dsplab.gui.prop.GeneratorWithValueModifiersProperties;
 import dsplab.gui.prop.TimelineProperties;
 import dsplab.gui.stage.main.SignalListEditorStage;
 import dsplab.gui.stage.settings.GeneratorSetupStage;
@@ -462,11 +461,6 @@ public class MainCtrlImpl extends SimpleController implements
         statusBarController.setStatusText("Working...");
         updateWaitOverlay("Preparing...");
 
-        ValueModifier vm = ValueModifierFactory.getFactory()
-            .newValueModifier(ValueModifierAlgorithm.LINEAR);
-
-        vm.setCoefficientBounds(0.0, 1.0);
-
         algoThread = AlgorithmThreadBuilder.newInstance()
             .setSignalList(signalList)
             .setOnBeforeStart(algoStartDelegate)
@@ -475,7 +469,9 @@ public class MainCtrlImpl extends SimpleController implements
             .setPeriodCount(periods)
             .setGeneratorID(genAlgo)
             .setMathEx(extended)
-            .setAmpModifier(vm)
+            .setAmpModifier(amplitudeValueModifier)
+            .setPhsModifier(phaseValueModifier)
+            .setFrqModifier(frequencyValueModifier)
             .build();
 
         algoThread.start();
@@ -525,8 +521,9 @@ public class MainCtrlImpl extends SimpleController implements
 
     // -------------------------------------------------------------------- //
 
-    private GeneratorWithValueModifiersProperties genWithVMProperties =
-        new GeneratorWithValueModifiersProperties();
+    private ValueModifier amplitudeValueModifier = null;
+    private ValueModifier phaseValueModifier = null;
+    private ValueModifier frequencyValueModifier = null;
 
     private
     void initGenList()
@@ -575,9 +572,22 @@ public class MainCtrlImpl extends SimpleController implements
                     GeneratorSetupStage s = Stages.getFactory()
                         .giveMeSomethingLike(GENERATORSETUP);
 
-                    boolean okIssued = s.showModal(this.genWithVMProperties);
+                    boolean okIssued = s.showModal(amplitudeValueModifier,
+                        phaseValueModifier, frequencyValueModifier);
 
                     if (okIssued) {
+
+                        /*
+                         * Next methods return 'null' if the appropriate
+                         * options are disabled
+                         */
+
+                        amplitudeValueModifier =
+                            s.getNewAmplitudeModifierInstance();
+                        phaseValueModifier = s.getNewPhaseModifierInstance();
+                        frequencyValueModifier =
+                            s.getNewFrequencyModifierInstance();
+
                         this.toggleOutdated();
                     }
 
@@ -749,9 +759,6 @@ public class MainCtrlImpl extends SimpleController implements
     }
 
     // -------------------------------------------------------------------- //
-
-    private int previousCrossOverX = -1;
-    private int previousCrossOverY = -1;
 
     private
     void initCrossOverChart()

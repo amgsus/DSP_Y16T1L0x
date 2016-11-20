@@ -4,10 +4,12 @@ import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.callback.DelegateWrapper;
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
+import dsplab.architecture.util.MessageBox;
 import dsplab.common.Resources;
 import dsplab.gui.Controllers;
 import dsplab.gui.ctrl.GeneratorSetupController;
 import dsplab.gui.ctrl.GeneratorValueSetupController;
+import dsplab.logic.gen.modifier.ValueModifier;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -15,6 +17,7 @@ import javafx.scene.layout.Priority;
 
 import java.net.URL;
 
+import static dsplab.architecture.util.MessageBox.getErroBox;
 import static dsplab.common.Const.GENERATORVALUESETUP;
 
 public class GenSetupCtrlImpl extends SimpleController implements
@@ -33,25 +36,25 @@ public class GenSetupCtrlImpl extends SimpleController implements
 
         /* Values Modifier Controllers */
 
-        this.amplitudeModifierCtrl = Controllers.getFactory()
+        this.ampModifierCtrl = Controllers.getFactory()
             .giveMeSomethingLike(GENERATORVALUESETUP);
-        this.phaseModifierCtrl = Controllers.getFactory()
+        this.phsModifierCtrl = Controllers.getFactory()
             .giveMeSomethingLike(GENERATORVALUESETUP);
-        this.frequencyModifierCtrl = Controllers.getFactory()
+        this.frqModifierCtrl = Controllers.getFactory()
             .giveMeSomethingLike(GENERATORVALUESETUP);
 
-        this.amplitudeModifierCtrl.setCaption("Amplitude");
-        this.phaseModifierCtrl.setCaption("Phase");
-        this.frequencyModifierCtrl.setCaption("Frequency");
+        this.ampModifierCtrl.setCaption("Amplitude");
+        this.phsModifierCtrl.setCaption("Phase");
+        this.frqModifierCtrl.setCaption("Frequency");
 
-        HBox.setHgrow(this.amplitudeModifierCtrl.getFxRoot(), Priority.ALWAYS);
-        HBox.setHgrow(this.phaseModifierCtrl.getFxRoot(), Priority.ALWAYS);
-        HBox.setHgrow(this.frequencyModifierCtrl.getFxRoot(), Priority.ALWAYS);
+        HBox.setHgrow(this.ampModifierCtrl.getFxRoot(), Priority.ALWAYS);
+        HBox.setHgrow(this.phsModifierCtrl.getFxRoot(), Priority.ALWAYS);
+        HBox.setHgrow(this.frqModifierCtrl.getFxRoot(), Priority.ALWAYS);
 
         guiCenterBox.getChildren().addAll(
-            this.amplitudeModifierCtrl.getFxRoot(),
-            this.phaseModifierCtrl.getFxRoot(),
-            this.frequencyModifierCtrl.getFxRoot()
+            this.ampModifierCtrl.getFxRoot(),
+            this.phsModifierCtrl.getFxRoot(),
+            this.frqModifierCtrl.getFxRoot()
         );
 
         // ...
@@ -62,18 +65,72 @@ public class GenSetupCtrlImpl extends SimpleController implements
 
     // -------------------------------------------------------------------- //
 
-    // ...
+    private ValueModifier ampValueModifier = null;
+    private ValueModifier phsValueModifier = null;
+    private ValueModifier frqValueModifier = null;
+
+    @Override
+    public
+    ValueModifier getNewAmplitudeModifierInstance()
+    {
+        return ampValueModifier;
+    }
+
+    @Override
+    public
+    ValueModifier getNewPhaseModifierInstance()
+    {
+        return phsValueModifier;
+    }
+
+    @Override
+    public
+    ValueModifier getNewFrequencyModifierInstance()
+    {
+        return frqValueModifier;
+    }
+
+    @Override
+    public
+    void setAmplitudeModifierInstance(ValueModifier modifier)
+    {
+        ampModifierCtrl.peekValuesFrom(modifier);
+    }
+
+    @Override
+    public
+    void setPhaseModifierInstance(ValueModifier modifier)
+    {
+        phsModifierCtrl.peekValuesFrom(modifier);
+    }
+
+    @Override
+    public
+    void setFrequencyModifierInstance(ValueModifier modifier)
+    {
+        frqModifierCtrl.peekValuesFrom(modifier);
+    }
+
+    // -------------------------------------------------------------------- //
 
     protected
     void initComponentHandlers()
     {
         guiOKButton.setOnAction(event -> {
-            // ...
+            try {
+                ampValueModifier = ampModifierCtrl.buildInstance();
+                phsValueModifier = phsModifierCtrl.buildInstance();
+                frqValueModifier = frqModifierCtrl.buildInstance();
+            } catch (IllegalArgumentException cause) {
+                getErroBox(cause.getCause().getLocalizedMessage(),
+                    cause.getMessage()).show();
+                return;
+            }
+
             okDelegate.execute();
         });
 
         guiCancelButton.setOnAction(event -> {
-            // ...
             cancelDelegate.execute();
         });
     }
@@ -100,9 +157,9 @@ public class GenSetupCtrlImpl extends SimpleController implements
 
     // -------------------------------------------------------------------- //
 
-    private GeneratorValueSetupController amplitudeModifierCtrl;
-    private GeneratorValueSetupController phaseModifierCtrl;
-    private GeneratorValueSetupController frequencyModifierCtrl;
+    private GeneratorValueSetupController ampModifierCtrl;
+    private GeneratorValueSetupController phsModifierCtrl;
+    private GeneratorValueSetupController frqModifierCtrl;
 
     private final DelegateWrapper okDelegate = new DelegateWrapper();
     private final DelegateWrapper cancelDelegate = new DelegateWrapper();

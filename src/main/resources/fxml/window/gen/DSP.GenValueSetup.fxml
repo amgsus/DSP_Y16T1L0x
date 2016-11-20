@@ -4,10 +4,8 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -27,40 +25,38 @@
             <Separator prefWidth="200.0" />
          </children>
       </VBox>
-      <VBox spacing="6.0" VBox.vgrow="ALWAYS">
+      <VBox spacing="10.0" VBox.vgrow="ALWAYS">
          <children>
-            <CheckBox fx:id="guiEnableModifierCheckBox" mnemonicParsing="false" text="Modify" />
-            <GridPane fx:id="guiFieldsGrid" hgap="12.0">
+            <CheckBox fx:id="guiEnableModifierCheckBox" mnemonicParsing="false" text="Apply coefficient:" />
+            <GridPane fx:id="guiFieldsGrid" hgap="12.0" vgap="6.0">
                <columnConstraints>
                   <ColumnConstraints />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" />
+                  <RowConstraints minHeight="25.0" />
+                  <RowConstraints minHeight="25.0" />
+                  <RowConstraints minHeight="25.0" />
                </rowConstraints>
                <children>
-                  <Label text="Algorithm:" />
-                  <Label text="Value:" GridPane.rowIndex="1" />
-                  <TextField fx:id="guiValueField" promptText="0.20" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Scale:" />
                   <ComboBox fx:id="guiAlgorithmComboBox" maxWidth="1.7976931348623157E308" prefWidth="165.0" GridPane.columnIndex="1" />
-                  <CheckBox fx:id="guiEachPeriodCheckBox" mnemonicParsing="false" text="Apply for each period" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                  <CheckBox fx:id="guiEachPeriodCheckBox" mnemonicParsing="false" text="Apply for each period of a signal" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
                   <Label text="Operation:" GridPane.rowIndex="2" />
-                  <HBox alignment="CENTER_LEFT" minWidth="-Infinity" spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <Label text="Range:" GridPane.rowIndex="1" />
+                  <HBox alignment="CENTER_LEFT" spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <RadioButton fx:id="sumRadioBtn" mnemonicParsing="false" selected="true" text="Sum">
-                           <toggleGroup>
-                              <ToggleGroup fx:id="opRadioBtnGroup" />
-                           </toggleGroup>
-                        </RadioButton>
-                        <RadioButton fx:id="multiplicationRadioBtn" mnemonicParsing="false" text="Multiplication" toggleGroup="$opRadioBtnGroup" />
+                        <Label text="from" />
+                        <TextField fx:id="guiStartValueField" prefWidth="60.0" promptText="0.00" />
+                        <Label text="to" />
+                        <TextField fx:id="guiFinalValueField" prefWidth="60.0" promptText="0.20" />
                      </children>
                   </HBox>
+                  <ComboBox fx:id="guiOperationComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
                <padding>
-                  <Insets left="12.0" />
+                  <Insets left="21.0" />
                </padding>
             </GridPane>
          </children>

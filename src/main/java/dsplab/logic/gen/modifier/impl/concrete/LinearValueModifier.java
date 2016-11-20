@@ -1,6 +1,9 @@
 package dsplab.logic.gen.modifier.impl.concrete;
 
+import dsplab.logic.gen.modifier.alg.ValueModifierAlgorithm;
 import dsplab.logic.gen.modifier.impl.AbstractValueModifier;
+
+import static dsplab.logic.gen.modifier.alg.ValueModifierAlgorithm.LINEAR;
 
 public class LinearValueModifier extends AbstractValueModifier
 {
@@ -23,5 +26,11 @@ public class LinearValueModifier extends AbstractValueModifier
         }
 
         return c;
+    }
+
+    @Override
+    public ValueModifierAlgorithm getScale()
+    {
+        return LINEAR;
     }
 }
