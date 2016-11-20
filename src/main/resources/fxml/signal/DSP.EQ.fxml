@@ -167,7 +167,7 @@
                            <children>
                               <StackPane fx:id="guiPhaseSpectrumStackPane" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <BarChart fx:id="guiPhaseSpectrumChart" animated="false" barGap="1.0" categoryGap="0.0" legendVisible="false" title="Phase Spectrum" verticalGridLinesVisible="false">
+                                    <BarChart fx:id="guiPhaseSpectrumChart" animated="false" barGap="0.0" categoryGap="0.0" legendVisible="false" title="Phase Spectrum" verticalGridLinesVisible="false">
                                        <xAxis>
                                           <CategoryAxis animated="false" side="BOTTOM" tickLabelsVisible="false" tickMarkVisible="false" />
                                        </xAxis>
