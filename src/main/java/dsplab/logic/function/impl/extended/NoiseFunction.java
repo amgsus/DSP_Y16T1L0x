@@ -16,8 +16,6 @@ public class NoiseFunction implements Function
     static Function instance = new NoiseFunction();
     public static Function getInstance() { return instance; }
 
-    public static final double B2 = 0.0625; // ToDo: Variant!
-
     @Override
     public double calculate(Harmonic h, double x, double period)
     {
@@ -26,9 +24,10 @@ public class NoiseFunction implements Function
             = 2 * Math.PI * x * h.getFrequency() / period;
 
         double exp = ThreadLocalRandom.current().nextBoolean() ? 1 : 0;
+        double b2 = h.getAmplitude() / 25;
 
         // 50 & 70 - magic numbers?..
         return h.getAmplitude() * sin(sinArg + phase0) +
-            sum(50, 70, j -> pow(-1, exp) * B2 * sin(sinArg * j + phase0));
+            sum(50, 70, j -> pow(-1, exp) * b2 * sin(sinArg * j + phase0));
     }
 }
