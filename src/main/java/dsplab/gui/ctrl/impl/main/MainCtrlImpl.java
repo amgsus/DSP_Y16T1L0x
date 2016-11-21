@@ -4,6 +4,7 @@ import dsplab.architecture.callback.Delegate;
 import dsplab.architecture.ctrl.SimpleController;
 import dsplab.architecture.ex.ControllerInitException;
 import dsplab.architecture.util.MessageBox;
+import dsplab.common.Global;
 import dsplab.common.Resources;
 import dsplab.gui.Controllers;
 import dsplab.gui.Stages;
@@ -18,13 +19,14 @@ import dsplab.gui.stage.main.SignalListEditorStage;
 import dsplab.gui.stage.settings.GeneratorSetupStage;
 import dsplab.gui.stage.settings.TimelineSetupStage;
 import dsplab.gui.util.Percentage;
+import dsplab.io.signal.SignalListReader;
+import dsplab.io.signal.SignalListWriter;
+import dsplab.io.signal.fa.SignalListIO;
 import dsplab.logic.algo.AlgorithmThread;
 import dsplab.logic.algo.AlgorithmThreadBuilder;
 import dsplab.logic.algo.production.AlgorithmResult;
 import dsplab.logic.gen.alg.GenID;
 import dsplab.logic.gen.modifier.ValueModifier;
-import dsplab.logic.gen.modifier.ValueModifierFactory;
-import dsplab.logic.gen.modifier.alg.ValueModifierAlgorithm;
 import dsplab.logic.signal.Harmonic;
 import dsplab.logic.signal.Signal;
 import dsplab.logic.signal.enums.Waveform;
@@ -54,7 +56,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
@@ -63,9 +68,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static dsplab.architecture.util.MessageBox.getCnfmBox;
-import static dsplab.architecture.util.MessageBox.getErroBox;
-import static dsplab.architecture.util.MessageBox.getWarnBox;
+import static dsplab.architecture.util.MessageBox.*;
 import static dsplab.common.Const.*;
 import static dsplab.gui.util.Hei.cast;
 
@@ -132,6 +135,62 @@ public class MainCtrlImpl extends SimpleController implements
     private volatile AlgorithmThread algoThread = null;
     private final AtomicLong algoStartTime = new AtomicLong(0);
     private List<AlgorithmResult> resultList; // Returned by AlgorithmThread.
+
+    // -------------------------------------------------------------------- //
+
+    @Override
+    public
+    void loadSignalList(File file)
+    {
+        statusBarController.setStatusText("Loading from a file...");
+
+        Runnable loadTask = () -> {
+
+            SignalListReader slr = SignalListIO.newFileReader(file);
+
+            try {
+                slr.fetchAll(signalList);
+
+                Platform.runLater(() -> {
+                    statusBarController.setStatusText("Successfull load!");
+                });
+            } catch (IOException e) {
+                Platform.runLater(() -> {
+                    getErroBox(e.getCause().getLocalizedMessage(),
+                        e.getMessage()).show();
+                });
+            }
+        };
+
+        Global.getContext().getThreadPool().submit(loadTask);
+    }
+
+    @Override
+    public
+    void saveSignalList(File file)
+    {
+        statusBarController.setStatusText("Saving to a file...");
+
+        Runnable saveTask = () -> {
+
+            SignalListWriter slw = SignalListIO.newFileWriter(file);
+
+            try {
+                slw.writeAll(signalList);
+
+                Platform.runLater(() -> {
+                    statusBarController.setStatusText("Successfull save!");
+                });
+            } catch (IOException e) {
+                Platform.runLater(() -> {
+                    getErroBox(e.getCause().getLocalizedMessage(),
+                        e.getMessage()).show();
+                });
+            }
+        };
+
+        Global.getContext().getThreadPool().submit(saveTask);
+    }
 
     // -------------------------------------------------------------------- //
 
@@ -622,6 +681,10 @@ public class MainCtrlImpl extends SimpleController implements
         }
     }
 
+    private static final String MSG_SIGLIST_NOT_EMPTY_APPEND =
+        "The signal is NOT empty.\n" +
+            "Do you want to clear it before loading the file?";
+
     private
     void initComponentsHandlers()
     {
@@ -651,16 +714,45 @@ public class MainCtrlImpl extends SimpleController implements
             }
         });
 
-        guiFileNewButton.setOnAction(event -> {
-            // ...
+        guiFileNewButton .setOnAction(event -> {
+            removeAllAlgoResultTabs();
+            guiChart.getData().clear();
+            signalList.clear();
+            guiOutdatedLabel.setVisible(false);
+            statusBarController.setStatusText("'New File' has been issued.");
         });
 
         guiFileOpenButton.setOnAction(event -> {
-            // ...
+            FileChooser dlg = SignalListIO.newFileChooser();
+            dlg.setTitle("Load signals from a file...");
+
+            File selected;
+
+            if ((selected = dlg.showOpenDialog(null)) != null) {
+
+                if (signalList.size() > 0) {
+
+                    Optional<ButtonType> btn = getCnfmBox
+                        (MSG_SIGLIST_NOT_EMPTY_APPEND).showAndWait();
+
+                    if (btn.get() == ButtonType.OK) {
+                        guiFileNewButton.getOnAction().handle(event);
+                    }
+                }
+
+                loadSignalList(selected);
+            }
         });
 
         guiFileSaveButton.setOnAction(event -> {
-            // ...
+            FileChooser dlg = SignalListIO.newFileChooser();
+            dlg.setTitle("Load signals from a file...");
+
+            File selected;
+
+            if ((selected = dlg.showSaveDialog(null)) != null) {
+                saveSignalList(selected);
+            }
         });
 
         guiGenSetupButton.setOnAction(event -> showGenSetupDialog());

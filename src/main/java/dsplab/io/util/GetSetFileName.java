@@ -1,9 +1,9 @@
-package dsplab.io;
+package dsplab.io.util;
 
 import java.io.File;
 
 public interface GetSetFileName
 {
-    void setFile(File file);
     File getFile();
+    void setFile(File file);
 }
