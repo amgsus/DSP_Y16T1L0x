@@ -149,7 +149,8 @@ public class MainCtrlImpl extends SimpleController implements
             SignalListReader slr = SignalListIO.newFileReader(file);
 
             try {
-                slr.fetchAll(signalList);
+                slr.fetchAll(signalListBack);
+                Platform.runLater(this::start);
 
                 Platform.runLater(() -> {
                     statusBarController.setStatusText("Successfull load!");

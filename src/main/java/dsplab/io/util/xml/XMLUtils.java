@@ -43,4 +43,13 @@ public final class XMLUtils
             throw e;
         }
     }
+
+    public static Document loadDocumentFromFile(File file)
+        throws Exception
+    {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        return builder.parse(file);
+    }
 }
