@@ -24,7 +24,10 @@ public class LinearValueModifier extends AbstractValueModifier
 
         double modValues[] = new double[tickCount];
 
-        double step = (getFinalValue() - getStartValue()) / (tickCount - 1);
+        int ticksForStep = tickCount != ticksPerPeriod ?
+            ticksPerPeriod : tickCount;
+
+        double step = (getFinalValue() - getStartValue()) / (ticksForStep - 1);
         double offset = 0F;
 
         for (int i = 0; i < tickCount; i++) {
