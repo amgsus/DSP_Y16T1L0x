@@ -6,8 +6,14 @@ import dsplab.io.signal.impl.SigListXMLReaderImpl;
 import dsplab.io.signal.impl.SigListXMLWriterImpl;
 import javafx.stage.FileChooser;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.JarFile;
 
 public final class SignalListIO
 {
@@ -60,5 +66,40 @@ public final class SignalListIO
         ));
 
         return dlg;
+    }
+
+    public static List<File> getDefaultSignalTemplates() throws IOException
+    {
+        final String TEMPLATE_PATH = "/templates";
+
+        List<File> fileList = new ArrayList<>();
+
+        try {
+
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            InputStream in = cl.getResourceAsStream(TEMPLATE_PATH);
+
+            if (in == null) {
+                in = SignalListIO.class.getResourceAsStream(TEMPLATE_PATH);
+            }
+
+            try (BufferedReader buff =
+                     new BufferedReader(new InputStreamReader(in))) {
+
+                String resourceName;
+
+                while ((resourceName = buff.readLine()) != null) {
+                    fileList.add(new File(SignalListIO.class
+                        .getResource(TEMPLATE_PATH + "/" + resourceName)
+                        .toURI()));
+                }
+
+            }
+
+        } catch (Exception cause) {
+            throw new IOException(cause);
+        }
+
+        return fileList;
     }
 }

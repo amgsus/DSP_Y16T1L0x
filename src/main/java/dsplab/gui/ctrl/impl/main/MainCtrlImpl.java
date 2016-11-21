@@ -112,6 +112,7 @@ public class MainCtrlImpl extends SimpleController implements
         initCrossOverChart();
         initGenList();
         initDefaultSignalListItems();
+        initFileTemplateList();
     }
 
     /**
@@ -883,6 +884,48 @@ public class MainCtrlImpl extends SimpleController implements
         sig.getHarmonics().add(new Harmonic(0.2, 120, 50.0, Waveform.Sine));
 
         signalList.add(sig);
+    }
+
+    private
+    void initFileTemplateList()
+    {
+        guiTemplatesMenu.getItems().clear();
+
+        List<File> fileList;
+
+        try {
+            fileList = SignalListIO.getDefaultSignalTemplates();
+        } catch (Exception cause) {
+            getErroBox(cause.getLocalizedMessage(), cause.getMessage());
+            return;
+        }
+
+        for (File f : fileList) {
+
+            String fileName = f.getName();
+            int delimPos = fileName.lastIndexOf(".");
+
+            MenuItem mi = new MenuItem(delimPos == -1 ? fileName :
+                fileName.substring(0, delimPos));
+
+            mi.setUserData(f);
+
+            mi.setOnAction(event -> {
+                if (signalList.size() > 0) {
+
+                    Optional<ButtonType> btn = getCnfmBox
+                        (MSG_SIGLIST_NOT_EMPTY_APPEND).showAndWait();
+
+                    if (btn.get() == ButtonType.OK) {
+                        guiFileNewButton.getOnAction().handle(event);
+                    }
+                }
+
+                loadSignalList((File) mi.getUserData());
+            });
+
+            guiTemplatesMenu.getItems().add(mi);
+        }
     }
 
     // -------------------------------------------------------------------- //
