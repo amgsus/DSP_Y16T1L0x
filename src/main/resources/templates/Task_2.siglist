@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><SignalList><Signal Color="0xb31a1aff" Name="Task 2 (without phase)"><Harmonic Amplitude="1.0" Frequency="1.0" Phase="0.0" Waveform="Sine"/></Signal><Signal Color="0x669966ff" Name="Task 2 (with phase)"><Harmonic Amplitude="1.0" Frequency="1.0" Phase="11.25" Waveform="Sine"/></Signal></SignalList>
