@@ -747,7 +747,7 @@ public class MainCtrlImpl extends SimpleController implements
 
         guiFileSaveButton.setOnAction(event -> {
             FileChooser dlg = SignalListIO.newFileChooser();
-            dlg.setTitle("Load signals from a file...");
+            dlg.setTitle("Save signals to a file...");
 
             File selected;
 
