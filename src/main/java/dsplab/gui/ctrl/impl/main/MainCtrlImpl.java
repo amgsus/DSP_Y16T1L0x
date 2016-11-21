@@ -686,6 +686,9 @@ public class MainCtrlImpl extends SimpleController implements
         "The signal is NOT empty.\n" +
             "Do you want to clear it before loading the file?";
 
+    private static final String MSG_REPLACE_WITH_DEFAULT =
+        "Replace current signal(s) with the default?";
+
     private
     void initComponentsHandlers()
     {
@@ -715,7 +718,7 @@ public class MainCtrlImpl extends SimpleController implements
             }
         });
 
-        guiFileNewButton .setOnAction(event -> {
+        guiFileNewMenuItem .setOnAction(event -> {
             removeAllAlgoResultTabs();
             guiChart.getData().clear();
             signalList.clear();
@@ -723,7 +726,7 @@ public class MainCtrlImpl extends SimpleController implements
             statusBarController.setStatusText("'New File' has been issued.");
         });
 
-        guiFileOpenButton.setOnAction(event -> {
+        guiFileOpenMenuItem.setOnAction(event -> {
             FileChooser dlg = SignalListIO.newFileChooser();
             dlg.setTitle("Load signals from a file...");
 
@@ -745,7 +748,7 @@ public class MainCtrlImpl extends SimpleController implements
             }
         });
 
-        guiFileSaveButton.setOnAction(event -> {
+        guiFileSaveMenuItem.setOnAction(event -> {
             FileChooser dlg = SignalListIO.newFileChooser();
             dlg.setTitle("Save signals to a file...");
 
@@ -798,6 +801,25 @@ public class MainCtrlImpl extends SimpleController implements
             updateTickCount();
             updateHScrollProperties();
         });
+
+        guiExitMenuItem.setOnAction(event -> {
+            Platform.exit();
+        });
+
+        guiRestoreDefaultMenuItem.setOnAction(event -> {
+            if (signalList.size() > 0) {
+                Optional<ButtonType> btn = getCnfmBox(MSG_REPLACE_WITH_DEFAULT)
+                    .showAndWait();
+
+                if (btn.get() != ButtonType.OK) {
+                    event.consume();
+                    return;
+                }
+            }
+
+            signalList.clear();
+            initDefaultSignalListItems();
+        });
     }
 
     private
@@ -826,6 +848,18 @@ public class MainCtrlImpl extends SimpleController implements
 
         guiRefreshButton.onActionProperty().bind(
             guiRefreshAllMenuItem.onActionProperty()
+        );
+
+        guiFileNewButton.onActionProperty().bind(
+            guiFileNewMenuItem.onActionProperty()
+        );
+
+        guiFileOpenButton.onActionProperty().bind(
+            guiFileOpenMenuItem.onActionProperty()
+        );
+
+        guiFileSaveButton.onActionProperty().bind(
+            guiFileSaveMenuItem.onActionProperty()
         );
     }
 
@@ -1016,4 +1050,22 @@ public class MainCtrlImpl extends SimpleController implements
 
     @FXML
     private MenuItem guiRefreshAllMenuItem;
+
+    @FXML
+    private MenuItem guiFileNewMenuItem;
+
+    @FXML
+    private MenuItem guiRestoreDefaultMenuItem;
+
+    @FXML
+    private MenuItem guiFileOpenMenuItem;
+
+    @FXML
+    private Menu guiTemplatesMenu;
+
+    @FXML
+    private MenuItem guiFileSaveMenuItem;
+
+    @FXML
+    private MenuItem guiExitMenuItem;
 }

@@ -35,10 +35,33 @@
          <children>
             <MenuBar>
               <menus>
-                <Menu mnemonicParsing="false" text="File" />
+                <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem fx:id="guiFileNewMenuItem" mnemonicParsing="false" text="New...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="guiRestoreDefaultMenuItem" mnemonicParsing="false" text="Restore Default..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="guiFileOpenMenuItem" mnemonicParsing="false" text="Open...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <Menu fx:id="guiTemplatesMenu" mnemonicParsing="false" text="Open From Templates..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="guiFileSaveMenuItem" mnemonicParsing="false" text="Save As...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="guiExitMenuItem" mnemonicParsing="false" text="Exit" />
+                     </items></Menu>
                   <Menu mnemonicParsing="false" text="View">
                      <items>
-                        <MenuItem fx:id="guiRefreshAllMenuItem" mnemonicParsing="false" text="Refresh all...">
+                        <MenuItem fx:id="guiRefreshAllMenuItem" mnemonicParsing="false" text="Refresh All...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="ANY" />
                            </accelerator>
@@ -61,7 +84,7 @@
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <CheckMenuItem fx:id="guiExtendedCalculationsMenuItem" mnemonicParsing="false" selected="true" text="Extended calculations" />
+                        <CheckMenuItem fx:id="guiExtendedCalculationsMenuItem" mnemonicParsing="false" selected="true" text="Enable Extended Calculations" />
                      </items>
                   </Menu>
                 <Menu mnemonicParsing="false" text="Help" />
