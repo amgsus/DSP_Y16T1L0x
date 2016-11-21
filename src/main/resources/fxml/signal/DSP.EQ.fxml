@@ -156,7 +156,7 @@
                                     </BarChart>
                                     <VBox fx:id="guiAmplitudeSpectrumWaitBox" alignment="CENTER">
                                        <children>
-                                          <ProgressIndicator style="-fx-progress-color: Yellow;" />
+                                          <ProgressIndicator />
                                        </children>
                                     </VBox>
                                  </children>
@@ -177,7 +177,7 @@
                                     </BarChart>
                                     <VBox fx:id="guiPhaseSpectrumWaitBox" alignment="CENTER">
                                        <children>
-                                          <ProgressIndicator style="-fx-progress-color: Yellow;" />
+                                          <ProgressIndicator />
                                        </children>
                                     </VBox>
                                  </children>

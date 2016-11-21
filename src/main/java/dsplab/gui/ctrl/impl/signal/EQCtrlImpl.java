@@ -33,6 +33,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,6 +61,7 @@ public class EQCtrlImpl extends SimpleController implements EQController
 
         initChartEventListeners();
         initRadioBtnEventListeners();
+        initComponentsHandlers();
 
         /*
          * Add OverlayPane for the signal chart.
@@ -148,6 +151,41 @@ public class EQCtrlImpl extends SimpleController implements EQController
 
     // -------------------------------------------------------------------- //
 
+    private int totalSamples = 0;
+    private int period = 0;
+
+    private
+    void updateTickCount()
+    {
+        NumberAxis axisX = cast(guiSignalChart.getXAxis());
+
+        int w = (int) axisX.getUpperBound() - (int) axisX.getLowerBound();
+        int tickUnit = (w != 0 ? /*w /*/ Math.max(2, w / 8) : 4);
+
+        axisX.setTickUnit(tickUnit);
+    }
+
+    private int scrollAmount;
+
+    private
+    void updateHScrollProperties()
+    {
+        NumberAxis axisX = cast(guiSignalChart.getXAxis());
+
+        int viewportSize = (int) (axisX.getUpperBound() -
+            axisX.getLowerBound());
+
+        scrollAmount = (int) axisX.getTickUnit();
+
+        guiChartHScrollBar.setMax((totalSamples - viewportSize) /
+            scrollAmount);
+        guiChartHScrollBar.setValue((int)
+            axisX.getLowerBound() / scrollAmount);
+        guiChartHScrollBar.setBlockIncrement((int) axisX.getTickUnit());
+    }
+
+    // -------------------------------------------------------------------- //
+
     @Override
     public
     void renderAll()
@@ -169,10 +207,20 @@ public class EQCtrlImpl extends SimpleController implements EQController
 
         double[] data = supplier.get();
 
+        NumberAxis axisX = cast(guiSignalChart.getXAxis());
+        axisX.setLowerBound(0);
+        axisX.setUpperBound(Math.min(data.length, 512));
+
+        period = (int) axisX.getUpperBound();
+        totalSamples = data.length;
+
+        updateTickCount();
+        updateHScrollProperties();
+
         guiSignalChart.getData().remove(signalSeries);
         signalSeries.getData().clear();
 
-        for (int i = 0; i < data.length / 2; i++) {
+        for (int i = 0; i < data.length; i += 2) {
             signalSeries.getData().add(new Data<>(i, data[i]));
         }
 
@@ -194,7 +242,7 @@ public class EQCtrlImpl extends SimpleController implements EQController
         eqSeries.getData().clear();
 
         for (int i = 0; i < data.length; i++) {
-            eqSeries.getData().add(new Data<>(i, data[i]));
+            eqSeries.getData().add(new Data<>(i * 2, data[i]));
         }
 
         guiSignalChart.getData().add(eqSeries);
@@ -244,6 +292,28 @@ public class EQCtrlImpl extends SimpleController implements EQController
     }
 
     // -------------------------------------------------------------------- //
+
+    private final Timer rangedUpdateTimer = new Timer(true);
+    private volatile long lastUpdateTick = 0;
+    private volatile boolean rangeUpdated = false;
+
+    private
+    void scheduleRangeUpdate()
+    {
+        rangedUpdateTimer.scheduleAtFixedRate(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                if (rangeUpdated) {
+                    if (System.currentTimeMillis() - lastUpdateTick >= 1000) {
+                        rangeUpdated = false;
+                        scheduleSpectrumsUpdate();
+                    }
+                }
+            }
+        }, 0, 500);
+    }
 
     private final AtomicReference<double[]> ampSpectrumData =
         new AtomicReference<>();
@@ -691,6 +761,52 @@ public class EQCtrlImpl extends SimpleController implements EQController
     }
 
     // -------------------------------------------------------------------- //
+
+    protected
+    void initComponentsHandlers()
+    {
+        NumberAxis axisX = cast(guiSignalChart.getXAxis());
+
+        guiChartHScrollBar.valueProperty().addListener(l -> {
+            int offset = (int) guiChartHScrollBar.getValue();
+            int viewportSize = (int)(axisX.getUpperBound() -
+                axisX.getLowerBound());
+
+            axisX.setLowerBound(offset * scrollAmount);
+            axisX.setUpperBound(offset * scrollAmount + viewportSize);
+
+            if (guiRangedSpectrumRadioBtn.isSelected()) {
+                lastUpdateTick = System.currentTimeMillis();
+                rangeUpdated = true;
+                scheduleRangeUpdate();
+            }
+        });
+
+        guiScaleComboBox.valueProperty().addListener(o -> {
+
+            double scale = guiScaleComboBox.getValue().getValue();
+            int window = (int) (this.period * scale);
+            int prefBound = (int) (axisX.getLowerBound() + window);
+
+            if (window <= this.totalSamples) {
+                axisX.setLowerBound(Math.max(Math.min(totalSamples - window,
+                    (int) axisX.getLowerBound()), 0));
+                axisX.setUpperBound(Math.min(totalSamples, prefBound));
+            } else {
+                axisX.setUpperBound(prefBound);
+                axisX.setLowerBound(0);
+            }
+
+            updateTickCount();
+            updateHScrollProperties();
+
+            if (guiRangedSpectrumRadioBtn.isSelected()) {
+                lastUpdateTick = System.currentTimeMillis();
+                rangeUpdated = true;
+                scheduleRangeUpdate();
+            }
+        });
+    }
 
     private OverlayPane chartOverlay;
     private OverlayPane ampSpectrumOverlayPane;
