@@ -75,6 +75,8 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     private final ExecutorService threadPool;
     private static final int MAX_CONCURRENT_TASKS = 8;
 
+    private static final int SPECTRUM_MAX_DATA_LENGTH = 512;
+
     // --------------------------------------------------------------------- //
 
     private Generator newGeneratorInstance()
@@ -546,7 +548,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
         double[] signal = algoResult.getData();
 
         ft.setSpectrum(signal);
-        ft.setRange(signal.length);
+        ft.setRange(Math.min(SPECTRUM_MAX_DATA_LENGTH, signal.length));
 
         double[] ampSpectrum = ft.calculateAmplitudeSpectrum();
         double[] phsSpectrum = ft.calculatePhaseSpectrum();
@@ -571,11 +573,14 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
         rmsACalc.setSpectrum(signalData);
         rmsBCalc.setSpectrum(signalData);
 
-        double[] rmsA = new double[signalData.length];
-        double[] rmsB = new double[signalData.length];
+        final int spectrumLength = Math.min(SPECTRUM_MAX_DATA_LENGTH,
+            signalData.length);
+
+        double[] rmsA = new double[spectrumLength];
+        double[] rmsB = new double[spectrumLength];
 
         // ToDo: Iterate i -> 1..length?
-        for (int i = 0; i < rmsA.length; i++) {
+        for (int i = 0; i < spectrumLength; i++) {
             rmsACalc.setRange(i);
             rmsA[i] = rmsACalc.calculateRMS();
             rmsBCalc.setRange(i);
@@ -594,7 +599,10 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     {
         double[] signalData = algoResult.getData();
 
-        double[] aeData = new double[signalData.length];
+        final int spectrumLength = Math.min(SPECTRUM_MAX_DATA_LENGTH,
+            signalData.length);
+
+        double[] aeData = new double[spectrumLength];
 
         FourierTransform ft = FourierTransformFactory.getFactory()
             .newFFTImplementation(FFTImpl.DISCRETE);
@@ -650,7 +658,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
 
         gen.setSignal(signal);
         gen.setSampleCount(result.getSampleCount());
-        gen.setPeriodCount(result.getPeriodCount());
+        gen.setPeriodCount(1); // PAR: result.getPeriodCount()
 
         data = gen.run();
 
