@@ -593,7 +593,7 @@ public class EQCtrlImpl extends SimpleController implements EQController
         axisY.setTickUnit(tickUnit);
         axisY.setUpperBound(Math.max(1.0, maxAmplitude + tickUnit));
 
-        SpectrumRender.renderByMaxValue(data, SPECTRUM_RENDER_SIZE, obj ->
+        SpectrumRender.render(data, SPECTRUM_RENDER_SIZE, obj ->
             ampSpectrumSeries.getData().add(cast(obj)));
 
         guiAmplitudeSpectrumChart.getData().add(ampSpectrumSeries);
@@ -613,7 +613,7 @@ public class EQCtrlImpl extends SimpleController implements EQController
             return;
         }
 
-        SpectrumRender.renderByAvgValue(data, SPECTRUM_RENDER_SIZE, obj ->
+        SpectrumRender.render(data, SPECTRUM_RENDER_SIZE, obj ->
             phsSpectrumSeries.getData().add(cast(obj)));
 
         guiPhaseSpectrumChart.getData().add(phsSpectrumSeries);

@@ -273,7 +273,7 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         guiAmplitudeSpectrumChart.getData().remove(srcAmpSpectrumSeries);
         srcAmpSpectrumSeries.getData().clear();
 
-        SpectrumRender.renderByMaxValue(data, SPECTRUM_RENDER_SIZE, obj ->
+        SpectrumRender.render(data, SPECTRUM_RENDER_SIZE, obj ->
             srcAmpSpectrumSeries.getData().add(obj));
 
         guiAmplitudeSpectrumChart.getData().add(srcAmpSpectrumSeries);
@@ -315,7 +315,7 @@ public class SmoothChartCtrlImpl extends SimpleController implements
         guiPhaseSpectrumChart.getData().remove(srcPhsSpectrumSeries);
         srcPhsSpectrumSeries.getData().clear();
 
-        SpectrumRender.renderByAvgValue(data, SPECTRUM_RENDER_SIZE, obj ->
+        SpectrumRender.render(data, SPECTRUM_RENDER_SIZE, obj ->
             srcPhsSpectrumSeries.getData().add(obj));
 
         guiPhaseSpectrumChart.getData()

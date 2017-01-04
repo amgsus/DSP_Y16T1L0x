@@ -63,4 +63,19 @@ public final class SpectrumRender
 
         return maxCycle;
     }
+
+    public static int render(double[] data, int maxRenderPoints,
+        Callback<XYChart.Data<String, Double>> callback)
+    {
+        if (data == null)
+            throw new IllegalArgumentException("data:null");
+
+        final int length = Math.min(data.length, maxRenderPoints);
+
+        for (int i = 0; i < length; i++) {
+            callback.call(new XYChart.Data<>(Integer.toString(i), data[i]));
+        }
+
+        return length;
+    }
 }

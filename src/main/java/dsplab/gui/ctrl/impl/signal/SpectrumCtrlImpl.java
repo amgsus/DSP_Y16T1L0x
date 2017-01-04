@@ -68,7 +68,7 @@ public class SpectrumCtrlImpl extends SimpleController implements
         guiAmplitudeSpectrumChart.getData().remove(ampSpectrumSeries);
         ampSpectrumSeries.getData().clear();
 
-        SpectrumRender.renderByMaxValue(data, SPECTRUM_RENDER_SIZE * 2, obj ->
+        SpectrumRender.render(data, SPECTRUM_RENDER_SIZE * 2, obj ->
             ampSpectrumSeries.getData().add(obj));
 
         guiAmplitudeSpectrumChart.getData().add(ampSpectrumSeries);
@@ -85,7 +85,7 @@ public class SpectrumCtrlImpl extends SimpleController implements
         guiPhaseSpectrumChart.getData().remove(phsSpectrumSeries);
         phsSpectrumSeries.getData().clear();
 
-        SpectrumRender.renderByAvgValue(data, SPECTRUM_RENDER_SIZE * 2, obj ->
+        SpectrumRender.render(data, SPECTRUM_RENDER_SIZE * 2, obj ->
             phsSpectrumSeries.getData().add(obj));
 
         guiPhaseSpectrumChart.getData().add(phsSpectrumSeries);
