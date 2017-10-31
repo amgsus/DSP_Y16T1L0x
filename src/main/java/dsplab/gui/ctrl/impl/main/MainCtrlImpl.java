@@ -763,6 +763,22 @@ public class MainCtrlImpl extends SimpleController implements
         guiGenSetupButton.setOnAction(event -> showGenSetupDialog());
 
         guiTimelineSetupMenuItem.setOnAction(e -> {
+
+            Toggle selGen = this.genRadioBtnGroup.getSelectedToggle();
+
+            if (selGen != null) {
+
+                GenID genID = cast(selGen.getUserData());
+
+                if (genID == GenID.FILE_STREAM) {
+                    String msg = "The timeline setup is not available for " +
+                        "the chosen generator (%s).";
+                    MessageBox.getInfoBox(String.format(msg, genID.toString()))
+                        .show();
+                    return;
+                }
+            }
+
             TimelineSetupStage setup
                 = Stages.getFactory().giveMeSomethingLike(TIMELINESETUP);
 

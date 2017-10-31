@@ -19,7 +19,7 @@ public final class SigUtils
         if (source == null)
             throw new IllegalArgumentException("source is null");
 
-        Signal signal = new Signal(source.getName(), source.getBrushColor());
+        Signal signal = new Signal(source);
         for (Harmonic srcHarm : source.getHarmonics())
             signal.getHarmonics().add(newHarmonicLike(srcHarm));
 

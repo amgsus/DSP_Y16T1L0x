@@ -1,15 +1,10 @@
 package dsplab.logic.signal;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.paint.Color;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -24,6 +19,12 @@ public class Signal
         = new SimpleObjectProperty<>(Color.BLACK);
     private final ListProperty<Harmonic> harmonicListProperty
         = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final StringProperty dataFileNameProperty
+        = new SimpleStringProperty(null);
+    private final IntegerProperty dataFileChannelProperty
+        = new SimpleIntegerProperty(0);
+    private final BooleanProperty fileSourceProperty
+        = new SimpleBooleanProperty(false);
 
     public Signal()
     {
@@ -34,6 +35,15 @@ public class Signal
     {
         nameProperty.set(name);
         seriesColorProperty.set(brushColor);
+    }
+
+    public Signal(Signal prototype)
+    {
+        nameProperty.set(prototype.getNameProperty().getValue());
+        seriesColorProperty.set(prototype.getSeriesColorProperty().getValue());
+        dataFileNameProperty.set(prototype.getDataFileNameProperty().getValue());
+        dataFileChannelProperty.set(prototype.getDataFileChannelProperty().getValue());
+        fileSourceProperty.set(prototype.getFileSourceProperty().getValue());
     }
 
     public
@@ -99,5 +109,41 @@ public class Signal
     List<Harmonic> getHarmonics()
     {
         return harmonicListProperty.get();
+    }
+
+    public
+    StringProperty getDataFileNameProperty()
+    {
+        return this.dataFileNameProperty;
+    }
+
+    public
+    IntegerProperty getDataFileChannelProperty()
+    {
+        return this.dataFileChannelProperty;
+    }
+
+    public
+    BooleanProperty getFileSourceProperty()
+    {
+        return this.fileSourceProperty;
+    }
+
+    public
+    boolean isSourcingFromFile()
+    {
+        return getFileSourceProperty().getValue();
+    }
+
+    public
+    String getDataSourceFileName()
+    {
+        return getDataFileNameProperty().getValue();
+    }
+
+    public
+    int getDataSourceChannel()
+    {
+        return getDataFileChannelProperty().getValue();
     }
 }

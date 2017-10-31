@@ -11,7 +11,7 @@ public interface Generator
     void setSignal(Signal signal);
     void setSampleCount(int samples);
     void setPeriodCount(int periods);
-    double[] run();
+    double[] run() throws Exception;
 
     void setOffset(int offset);
 

@@ -25,7 +25,7 @@ public class GeneratorImpl implements Generator
     // -------------------------------------------------------------------- //
 
     @Override
-    public double[] run()
+    public double[] run() throws Exception
     {
         double[] a = new double[this.sampleCount * this.periodCount];
 

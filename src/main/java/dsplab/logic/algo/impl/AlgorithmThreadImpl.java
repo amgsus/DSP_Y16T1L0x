@@ -23,6 +23,7 @@ import dsplab.logic.gen.Generator;
 import dsplab.logic.gen.GeneratorWithModifiers;
 import dsplab.logic.gen.alg.GenID;
 import dsplab.logic.gen.fa.GeneratorFactory;
+import dsplab.logic.gen.impl.GeneratorFileStream;
 import dsplab.logic.gen.modifier.ValueModifier;
 import dsplab.logic.rms.RMSCalculator;
 import dsplab.logic.rms.alg.RMSFormula;
@@ -219,13 +220,22 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
         try {
             gen.setSignal(signal);
 
-            double[] signalData = gen.run(); // Generate (length=T*n)
+            double[] signalData = gen.run(); // Generate (length=T*n).
+
+            int samples = sampleCount;
+            int periods = periodCount;
+
+            if (gen instanceof GeneratorFileStream)
+            {
+                samples = signalData.length;
+                periods = 1;
+            }
 
             return AlgorithmResultBuilder.newInstance()
                 .setSignal(signal)
                 .setData(signalData)
-                .setSampleCount(sampleCount)
-                .setPeriodCount(periodCount)
+                .setSampleCount(samples)
+                .setPeriodCount(periods)
                 .build();
 
         } catch (Exception cause) {
@@ -645,7 +655,7 @@ public class AlgorithmThreadImpl extends Thread implements AlgorithmThread
     // Must be invocated [in a separate thread] ONLY after
     // impl_DoMath() is done. Locks the generator instance.
     protected
-    void task_NoisySignal(AlgorithmResult result, Generator gen)
+    void task_NoisySignal(AlgorithmResult result, Generator gen) throws Exception
     {
         Signal signal = cloneSignal(result.getSignal());
 

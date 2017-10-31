@@ -2,8 +2,10 @@ package dsplab.io.signal.fa;
 
 import dsplab.io.signal.SignalListReader;
 import dsplab.io.signal.SignalListWriter;
+import dsplab.io.signal.TembrFileReader;
 import dsplab.io.signal.impl.SigListXMLReaderImpl;
 import dsplab.io.signal.impl.SigListXMLWriterImpl;
+import dsplab.io.signal.impl.tmb.TembrFileReaderImpl;
 import javafx.stage.FileChooser;
 
 import java.io.BufferedReader;
@@ -68,6 +70,23 @@ public final class SignalListIO
         return dlg;
     }
 
+    public static FileChooser newFileChooserTembr()
+    {
+        FileChooser dlg = new FileChooser();
+        List<FileChooser.ExtensionFilter> filters = dlg.getExtensionFilters();
+
+        filters.add(new FileChooser.ExtensionFilter(
+            "Tembr Signals (*.bin)",
+            "*.bin"
+        ));
+        filters.add(new FileChooser.ExtensionFilter(
+            "All files (*.*)",
+            "*.*"
+        ));
+
+        return dlg;
+    }
+
     public static List<File> getDefaultSignalTemplates() throws IOException
     {
         final String TEMPLATE_PATH = "/templates";
@@ -101,5 +120,10 @@ public final class SignalListIO
         }
 
         return fileList;
+    }
+
+    public static TembrFileReader newTembrFileReader(File fileToRead)
+    {
+        return new TembrFileReaderImpl(fileToRead);
     }
 }
